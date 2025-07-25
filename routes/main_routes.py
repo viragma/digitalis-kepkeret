@@ -1,37 +1,35 @@
-# routes/main_routes.py
+# routes/main_routes.py - BŐVÍTVE
 
-from flask import Blueprint, render_template
-
+from flask import Blueprint, render_template, jsonify
+import os
 from services import data_manager
 
-main_bp = Blueprint(
-    'main_bp', __name__,
-    template_folder='templates',
-    static_folder='static'
-)
+main_bp = Blueprint('main_bp', __name__)
 
 @main_bp.route('/')
 def index():
-    persons_data = data_manager.get_persons()
-    faces_data = data_manager.get_faces()
-    
+    # Ez a rész változatlan
+    return render_template('index.html')
 
-    person_counts = {person: 0 for person in persons_data}
-    total_faces = len(faces_data)
-    known_faces = 0
-    unknown_faces = 0
+# --- ÚJ ÚTVONALAK A VETÍTŐHÖZ ---
 
-    for face in faces_data:
-        if face.get('name') and face['name'] != 'Ismeretlen':
-            if face['name'] in person_counts:
-                person_counts[face['name']] += 1
-            known_faces += 1
-        else:
-            unknown_faces += 1
+@main_bp.route('/config')
+def get_slideshow_config():
+    """ Kiadja a vetítés beállításait a frontendnek. """
+    config_data = data_manager.get_config()
+    return jsonify(config_data.get('slideshow', {})) # Csak a 'slideshow' részt adjuk vissza
+
+@main_bp.route('/imagelist')
+def get_image_list():
+    """ Kiadja a vetítendő képek listáját. """
+    config_data = data_manager.get_config()
+    image_folder_path = config_data.get('UPLOAD_FOLDER', 'static/images')
     
-    return render_template('index.html', 
-                           person_counts=person_counts, 
-                           total_faces=total_faces, 
-                           known_faces=known_faces, 
-                           unknown_faces=unknown_faces,
-                           persons_data=persons_data)
+    try:
+        # Létrehozzuk a képek relatív URL-jeinek listáját
+        all_files = os.listdir(image_folder_path)
+        image_files = [os.path.join(image_folder_path, f).replace('\\', '/') 
+                       for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        return jsonify(image_files)
+    except FileNotFoundError:
+        return jsonify([]) # Ha a mappa nem létezik, üres listát adunk vissza
