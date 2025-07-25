@@ -1,8 +1,11 @@
-// ----- DIAVETÍTÉS SZEMÉLY SZŰRŐ (Choices.js keresős) -----
+// --- Személy/szülinapos kizárás Choices.js-zel ---
 document.addEventListener("DOMContentLoaded", function () {
     const personsSelect = document.getElementById('persons');
-    if (personsSelect) {
-        const personsList = window.persons_list || [];
+    const birthdayModeSwitch = document.getElementById('birthday_mode');
+    if (personsSelect && birthdayModeSwitch) {
+        const personsRaw = window.persons_list || {};
+        // Mindig tömböt kapunk
+        const personsList = Array.isArray(personsRaw) ? personsRaw : Object.keys(personsRaw);
         const selectedPersons = window.selected_persons || [];
         personsList.forEach(name => {
             const option = document.createElement('option');
@@ -13,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             personsSelect.appendChild(option);
         });
-        new Choices(personsSelect, {
+        const choices = new Choices(personsSelect, {
             removeItemButton: true,
             shouldSort: false,
             placeholderValue: 'Válassz személyeket...',
@@ -22,25 +25,46 @@ document.addEventListener("DOMContentLoaded", function () {
             noChoicesText: 'Nincs választható személy',
             itemSelectText: 'Kiválaszt'
         });
+
+        function togglePersonsBirthdayMode() {
+            if (birthdayModeSwitch.checked) {
+                personsSelect.disabled = true;
+                choices.disable();
+            } else {
+                personsSelect.disabled = false;
+                choices.enable();
+            }
+        }
+        birthdayModeSwitch.addEventListener('change', function () {
+            if (birthdayModeSwitch.checked) {
+                choices.clearStore(); // törli a kiválasztott személyeket
+            }
+            togglePersonsBirthdayMode();
+        });
+        personsSelect.addEventListener('change', function () {
+            if (personsSelect.selectedOptions.length > 0) {
+                birthdayModeSwitch.checked = false;
+                togglePersonsBirthdayMode();
+            }
+        });
+        togglePersonsBirthdayMode();
     }
 });
 
-// ----- KIEMELT SZEMÉLYEK FILTER BLOKK -----
-
+// --- Highlight személy + overlay AJAX blokk ---
 async function loadHighlightPersons() {
-    // persons.json beolvasása
     const resp = await fetch('/api/persons.json');
     const persons = await resp.json();
     const select = document.getElementById('highlight-persons');
     select.innerHTML = '';
-    Object.keys(persons).forEach(name => {
+    const personsList = Array.isArray(persons) ? persons : Object.keys(persons);
+    personsList.forEach(name => {
         const opt = document.createElement('option');
         opt.value = name;
         opt.textContent = name;
         select.appendChild(opt);
     });
 
-    // Aktuális filter betöltése
     const filterResp = await fetch('/api/highlight_filter');
     const filter = await filterResp.json();
     [...select.options].forEach(opt => {

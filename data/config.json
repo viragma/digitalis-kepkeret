@@ -17,15 +17,15 @@
         "background_opacity": 0.4,
         "enable_overlay": true,
         "enable_vignette": true,
-        "enable_clock": true,
-        "birthday_boost": true,
+        "enable_clock": false,
+        "birthday_boost": false,
         "focus_on": "",
         "custom_message": "",
         "family_mode": false,
         "debug_log": false,
         "tolerance": 0.4,
         "manual_mode": false,
-        "randomize_playlist": true,
-        "clock_size": "3.5rem"
+        "randomize_playlist": false,
+        "clock_size": "2.5rem"
     }
 }
