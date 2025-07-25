@@ -1,8 +1,8 @@
-# routes/main_routes.py - BŐVÍTVE A RANDOM SORREND LOGIKÁVAL
+# routes/main_routes.py - VÉGLEGES JAVÍTÁS
 
 from flask import Blueprint, render_template, jsonify
 import os
-import random # <-- ÚJ IMPORT
+import random
 from services import data_manager
 
 main_bp = Blueprint('main_bp', __name__)
@@ -14,7 +14,6 @@ def index():
 @main_bp.route('/config')
 def get_slideshow_config():
     config_data = data_manager.get_config()
-    # A config.json teljes 'slideshow' részét visszaadjuk
     return jsonify(config_data.get('slideshow', {}))
 
 @main_bp.route('/imagelist')
@@ -27,14 +26,13 @@ def get_image_list():
         abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
         all_files = os.listdir(abs_image_folder_path)
         
-        image_urls = [f'/{image_folder_name}/{f}'.replace('\\', '/') 
-                      for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        # --- VÁLTOZÁS ---
+        # Most már véglegesen csak a fájlneveket adjuk vissza.
+        image_files = [f for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
         
-        # --- ÚJ LOGIKA ---
-        # Ha a beállítás aktív, megkeverjük a listát
-        if slideshow_config.get('randomize_playlist', True): # Alapértelmezetten bekapcsolva
-            random.shuffle(image_urls)
+        if slideshow_config.get('randomize_playlist', True):
+            random.shuffle(image_files)
             
-        return jsonify(image_urls)
+        return jsonify(image_files)
     except FileNotFoundError:
         return jsonify([])

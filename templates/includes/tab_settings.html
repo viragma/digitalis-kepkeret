@@ -10,8 +10,52 @@
                         
                         <h5><i class="bi bi-clock"></i> Időzítés</h5>
                         <hr>
+                        <div class="mb-3 row">
+                            <label for="interval" class="col-sm-4 col-form-label">Képváltás sebessége</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="interval" name="interval" value="{{ config.slideshow.get('interval', 10000) }}">
+                                    <span class="input-group-text">ms</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="transition_speed" class="col-sm-4 col-form-label">Áttűnés sebessége</label>
+                            <div class="col-sm-8">
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="transition_speed" name="transition_speed" value="{{ config.slideshow.get('transition_speed', 1000) }}">
+                                    <span class="input-group-text">ms</span>
+                                </div>
+                            </div>
+                        </div>
+
                         <h5 class="mt-4"><i class="bi bi-palette"></i> Vizuális Effektek</h5>
                         <hr>
+                        <div class="mb-3 row">
+                            <label for="zoom_enabled" class="col-sm-4 col-form-label">Ken Burns (zoom) effekt</label>
+                            <div class="col-sm-8">
+                                <div class="form-check form-switch fs-5">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="zoom_enabled" name="zoom_enabled" {% if config.slideshow.get('zoom_enabled', true) %}checked{% endif %}>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="blur_strength" class="col-sm-4 col-form-label">Háttér elmosásának erőssége</label>
+                            <div class="col-sm-8">
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-range" id="blur_strength" name="blur_strength" min="0" max="50" value="{{ config.slideshow.get('blur_strength', 20) }}" oninput="this.nextElementSibling.value = this.value">
+                                    <output class="ms-2">{{ config.slideshow.get('blur_strength', 20) }}</output>
+                                </div>
+                            </div>
+                        </div>
+                         <div class="mb-3 row">
+                            <label for="image_filter" class="col-sm-4 col-form-label">Kép CSS filter</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" id="image_filter" name="image_filter" value="{{ config.slideshow.get('image_filter', 'contrast(1.05) saturate(1.1)') }}">
+                                <div class="form-text">Például: <code>contrast(1.1) saturate(1.2)</code></div>
+                            </div>
+                        </div>
+
                         <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
                         <hr>
                         <div class="mb-3 row">
@@ -20,10 +64,9 @@
                                 <div class="form-check form-switch fs-5">
                                     <input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}>
                                 </div>
-                                <div class="form-text">Ha be van kapcsolva, a képek véletlenszerűen jelennek meg.</div>
                             </div>
                         </div>
-                        <div class="mb-3 row">
+                         <div class="mb-3 row">
                             <label for="birthday_boost" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
                             <div class="col-sm-8">
                                 <div class="form-check form-switch fs-5">
