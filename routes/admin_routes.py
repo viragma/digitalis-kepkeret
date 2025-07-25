@@ -1,39 +1,65 @@
-# routes/api_routes.py - JAVÍTVA BLUEPRINTTÉ
+# routes/admin_routes.py - VÉGLEGES, JAVÍTOTT VERZIÓ
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager
 
-# --- VÁLTOZÁS ---
-# Létrehozzuk az API blueprintet '/api' előtaggal
-api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
+# Létrehozzuk az admin blueprintet egy '/admin' előtaggal
+admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
-@api_bp.route('/faces', methods=['GET'])
-def get_all_faces():
-    """ Visszaadja az összes arc adatait JSON formátumban. """
-    faces_data = data_manager.get_faces()
-    return jsonify(faces_data)
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Ezt a jelszót a config.json-ból olvassuk majd
+        if request.form['password'] == 'admin': 
+            session['logged_in'] = True
+            # A redirect a főoldalra mutat, ami a 'main_bp'-ben van
+            return redirect(url_for('main_bp.index'))
+        else:
+            flash('Hibás jelszó!')
+    # A render_template relatív a 'templates' mappához, ami a főkönyvtárban van
+    return render_template('login.html')
 
-@api_bp.route('/update_face_name', methods=['POST'])
-def update_face_name():
-    """ Frissíti egy adott archoz tartozó nevet. """
-    data = request.get_json()
-    face_path = data.get('face_path')
-    new_name = data.get('new_name')
+@admin_bp.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    return redirect(url_for('admin_bp.login'))
 
-    if not face_path or new_name is None:
-        return jsonify({'status': 'error', 'message': 'Hiányzó adatok'}), 400
-
-    faces_data = data_manager.get_faces()
+@admin_bp.route('/persons')
+def persons_page():
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_bp.login'))
     
-    face_found = False
-    for face in faces_data:
-        if face.get('face_path') == face_path:
-            face['name'] = new_name
-            face_found = True
-            break
+    persons_data = data_manager.get_persons()
+    # Mivel a Blueprint máshol van, meg kell adnunk a template relatív elérési útját
+    return render_template('admin/persons.html', persons=persons_data)
+
+@admin_bp.route('/add_person', methods=['POST'])
+def add_person():
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_bp.login'))
     
-    if face_found:
-        data_manager.save_faces(faces_data)
-        return jsonify({'status': 'success', 'message': f'Arc frissítve: {new_name}'})
-    else:
-        return jsonify({'status': 'error', 'message': 'A megadott arc nem található'}), 404
+    name = request.form['name']
+    birthday = request.form['birthday']
+    
+    persons_data = data_manager.get_persons()
+    
+    if name and name not in persons_data:
+        persons_data[name] = birthday
+        data_manager.save_persons(persons_data)
+        flash(f'{name} sikeresen hozzáadva.', 'success')
+            
+    return redirect(url_for('admin_bp.persons_page'))
+
+@admin_bp.route('/delete_person/<name>')
+def delete_person(name):
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_bp.login'))
+        
+    persons_data = data_manager.get_persons()
+
+    if name in persons_data:
+        del persons_data[name]
+        data_manager.save_persons(persons_data)
+        flash(f'{name} sikeresen törölve.', 'warning')
+            
+    return redirect(url_for('admin_bp.persons_page'))
