@@ -1,39 +1,41 @@
 {% extends "admin_base.html" %}
 
-{% block title %}Admin – Arckezelés{% endblock %}
-
-{% block content %}
-  <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+{% block sidebar %}
+<ul class="nav nav-pills flex-column" id="v-pills-tab" role="tablist" aria-orientation="vertical">
     <li class="nav-item" role="presentation">
-      <button class="nav-link active" id="arcok-tab" data-bs-toggle="tab" data-bs-target="#arcok" type="button" role="tab">Arcok</button>
+        <button class="nav-link active" id="v-pills-faces-tab" data-bs-toggle="pill" data-bs-target="#v-pills-faces" type="button" role="tab" aria-controls="v-pills-faces" aria-selected="true">
+            <i class="bi bi-person-bounding-box"></i> Ismeretlen Arcok
+        </button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="beallitasok-tab" data-bs-toggle="tab" data-bs-target="#beallitasok" type="button" role="tab">Beállítások</button>
+        <button class="nav-link" id="v-pills-birthdays-tab" data-bs-toggle="pill" data-bs-target="#v-pills-birthdays" type="button" role="tab" aria-controls="v-pills-birthdays" aria-selected="false">
+            <i class="bi bi-calendar-heart"></i> Születésnapok
+        </button>
     </li>
     <li class="nav-item" role="presentation">
-      <button class="nav-link" id="statisztika-tab" data-bs-toggle="tab" data-bs-target="#statisztika" type="button" role="tab">Statisztika</button>
+        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">
+            <i class="bi bi-gear"></i> Beállítások
+        </button>
     </li>
-    <li class="nav-item" role="presentation">
-      <button class="nav-link" id="szulinapok-tab" data-bs-toggle="tab" data-bs-target="#szulinapok" type="button" role="tab">Születésnapok</button>
-    </li>
-  </ul>
-
-  <div class="tab-content" id="adminTabsContent">
-    <div class="tab-pane fade show active" id="arcok" role="tabpanel">
-      {% include "includes/tab_faces.html" %}
-    </div>
-    <div class="tab-pane fade" id="beallitasok" role="tabpanel">
-      {% include "includes/tab_settings.html" %}
-    </div>
-    <div class="tab-pane fade" id="statisztika" role="tabpanel">
-      {% include "includes/tab_stats.html" %}
-    </div>
-    <div class="tab-pane fade" id="szulinapok" role="tabpanel">
-      {% include "includes/tab_birthdays.html" %}
-    </div>
-  </div>
+</ul>
 {% endblock %}
 
-{% block scripts %}
-  <script src="{{ url_for('static', filename='admin.js') }}"></script>
+
+{% block page_title %}
+    <h1 class="h2">Vezérlőpult</h1>
+{% endblock %}
+
+
+{% block content %}
+<div class="tab-content" id="v-pills-tabContent">
+    <div class="tab-pane fade show active" id="v-pills-faces" role="tabpanel" aria-labelledby="v-pills-faces-tab">
+        {% include "includes/tab_faces.html" %}
+    </div>
+    <div class="tab-pane fade" id="v-pills-birthdays" role="tabpanel" aria-labelledby="v-pills-birthdays-tab">
+        {% include "includes/tab_birthdays.html" %}
+    </div>
+    <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+        {% include "includes/tab_settings.html" %}
+    </div>
+</div>
 {% endblock %}
