@@ -1,40 +1,14 @@
-
-<div class="card mt-4">
-  <div class="card-header">
-    <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Kiemelt személy(ek) és egyedi felirat</h5>
-  </div>
-  <div class="card-body">
-    <form id="highlight-filter-form" autocomplete="off">
-      <div class="mb-3">
-        <label for="highlight-persons" class="form-label">Kiemelt személy(ek) kiválasztása</label>
-        <select multiple class="form-select" id="highlight-persons" style="min-height: 100px;">
-          <!-- JS tölti fel a neveket persons.json-ból -->
-        </select>
-        <div class="form-text">Több személy is kijelölhető (Ctrl vagy Shift).</div>
-      </div>
-      <div class="mb-3">
-        <label for="highlight-text" class="form-label">Egyedi felirat (overlay)</label>
-        <input type="text" class="form-control" id="highlight-text" maxlength="100" placeholder="Pl. Szeretünk, Benett!">
-      </div>
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i> Mentés</button>
-        <button type="button" id="highlight-reset-btn" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Alaphelyzet</button>
-      </div>
-      <div id="highlight-saved-msg" class="mt-2 text-success fw-bold" style="display: none;">Mentve!</div>
-    </form>
-    <div class="form-text mt-2">Ez a beállítás minden más funkciót (szülinapos/vegyes mód) felülír, amíg aktív.</div>
-  </div>
-</div>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <form method="POST" action="{{ url_for('admin_bp.save_config_route') }}">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="mb-0">Diavetítés Beállításai</h4>
+                        <h4 class="mb-0"><i class="bi bi-gear"></i> Beállítások</h4>
                     </div>
                     <div class="card-body">
-                        
+
+                        <!-- Diavetítés időzítés -->
                         <h5><i class="bi bi-clock"></i> Időzítés</h5>
                         <hr>
                         <div class="mb-3 row">
@@ -56,11 +30,12 @@
                             </div>
                         </div>
 
+                        <!-- Diavetítés effektek -->
                         <h5 class="mt-4"><i class="bi bi-palette"></i> Vizuális Effektek</h5>
                         <hr>
                         <div class="mb-3 row">
                             <label for="zoom_enabled" class="col-sm-4 col-form-label">Ken Burns (zoom) effekt</label>
-                            <div class="col-sm-8">
+                            <div class="col-sm-8 d-flex align-items-center">
                                 <div class="form-check form-switch fs-5">
                                     <input class="form-check-input" type="checkbox" role="switch" id="zoom_enabled" name="zoom_enabled" {% if config.slideshow.get('zoom_enabled', true) %}checked{% endif %}>
                                 </div>
@@ -75,75 +50,59 @@
                                 </div>
                             </div>
                         </div>
-                         <div class="mb-3 row">
+                        <div class="mb-3 row">
                             <label for="image_filter" class="col-sm-4 col-form-label">Kép CSS filter</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="image_filter" name="image_filter" value="{{ config.slideshow.get('image_filter', 'contrast(1.05) saturate(1.1)') }}">
-                                <div class="form-text">Például: <code>contrast(1.1) saturate(1.2)</code></div>
+                                <input type="text" class="form-control" id="image_filter" name="image_filter" value="{{ config.slideshow.get('image_filter','') }}">
                             </div>
                         </div>
 
-                        <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
-                        <hr>
-                        <div class="mb-3 row">
-                            <label for="randomize_playlist" class="col-sm-4 col-form-label">Véletlenszerű sorrend</label>
-                            <div class="col-sm-8">
-                                <div class="form-check form-switch fs-5">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}>
-                                </div>
-                            </div>
-                        </div>
-                         <div class="mb-3 row">
-                            <label for="birthday_boost" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
-                            <div class="col-sm-8">
-                                <div class="form-check form-switch fs-5">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="birthday_boost" name="birthday_boost" {% if config.slideshow.get('birthday_boost', true) %}checked{% endif %}>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="enable_clock" class="col-sm-4 col-form-label">Óra megjelenítése</label>
-                            <div class="col-sm-8">
-                                <div class="form-check form-switch fs-5">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="enable_clock" name="enable_clock" {% if config.slideshow.get('enable_clock', false) %}checked{% endif %}>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="clock_size" class="col-sm-4 col-form-label">Óra betűmérete</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="clock_size" name="clock_size" value="{{ config.slideshow.get('clock_size', '2.5rem') }}">
-                                <div class="form-text">Adj meg egy CSS mértékegységet (pl. <code>2.5rem</code>, <code>4vw</code>, <code>48px</code>).</div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-    <label for="birthday_story_mode" class="col-sm-4 col-form-label">Szülinapos történet mód</label>
-    <div class="col-sm-8">
-        <div class="form-check form-switch fs-5">
-            <input class="form-check-input" type="checkbox" role="switch"
-                id="birthday_story_mode" name="birthday_story_mode"
-                {% if config.slideshow.get('birthday_story_mode', false) %}checked{% endif %}>
-        </div>
-    </div>
-</div>
-<div class="mb-3 row">
-    <label for="greeting_enabled" class="col-sm-4 col-form-label">Üdvözlő felirat mutatása</label>
-    <div class="col-sm-8">
-        <div class="form-check form-switch fs-5">
-            <input class="form-check-input" type="checkbox" role="switch"
-                id="greeting_enabled" name="greeting_enabled"
-                {% if config.slideshow.get('greeting_enabled', true) %}checked{% endif %}>
-        </div>
-    </div>
-</div>
-
-                    </div>
-                    <div class="card-footer text-end">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Beállítások Mentése</button>
+                       
                     </div>
                 </div>
             </form>
+
+            <!-- Highlight személyek filter: külön AJAX-os blokk -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-star"></i> Kiemelt személyek szűrő</h5>
+                </div>
+                <div class="card-body">
+                    <form id="highlight-filter-form" autocomplete="off">
+                        <div class="mb-3 row">
+                            <label for="highlight-persons" class="col-sm-4 col-form-label">Kiemelt személy(ek)</label>
+                            <div class="col-sm-8">
+                                <select id="highlight-persons" name="highlight_persons" class="form-select" multiple></select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <label for="highlight-text" class="col-sm-4 col-form-label">Egyedi kiemelt szöveg</label>
+                            <div class="col-sm-8">
+                                <input type="text" id="highlight-text" name="highlight_text" class="form-control" maxlength="100">
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <button id="highlight-reset-btn" type="button" class="btn btn-outline-secondary btn-sm">Visszaállítás</button>
+                                <span id="highlight-saved-msg" class="text-success ms-3" style="display:none;">Mentve!</span>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-sm">Mentés</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- CHOICES.JS stílus -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<!-- Backendből jövő lista JS-nek -->
+<script>
+    window.persons_list = {{ persons|tojson|safe }} || [];
+    window.selected_persons = {{ config.slideshow.get('persons', [])|tojson|safe }};
+</script>
+<!-- Saját beállítások JS -->
+<script src="{{ url_for('static', filename='tab_settings.js') }}"></script>
+<!-- Choices.js script (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
