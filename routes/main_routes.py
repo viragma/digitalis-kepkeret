@@ -82,3 +82,9 @@ def get_birthday_info():
         age = today.year - year if year else ""
         result.append({"name": name, "age": age})
     return jsonify(result)
+
+@main_bp.route('/api/persons.json')
+def get_persons():
+    import json
+    with open('data/persons.json', encoding='utf-8') as f:
+        return jsonify(json.load(f))

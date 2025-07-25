@@ -31,7 +31,7 @@ function showToast(message, category = 'success') {
 // Feltölti a személylistát és betölti az aktuális filtert
 async function loadHighlightPersons() {
     // persons.json beolvasása
-    const resp = await fetch('/static/data/persons.json');
+    const resp = await fetch('/api/persons.json');
     const persons = await resp.json();
     const select = document.getElementById('highlight-persons');
     select.innerHTML = '';

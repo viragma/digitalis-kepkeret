@@ -1,3 +1,30 @@
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Kiemelt személy(ek) és egyedi felirat</h5>
+  </div>
+  <div class="card-body">
+    <form id="highlight-filter-form" autocomplete="off">
+      <div class="mb-3">
+        <label for="highlight-persons" class="form-label">Kiemelt személy(ek) kiválasztása</label>
+        <select multiple class="form-select" id="highlight-persons" style="min-height: 100px;">
+          <!-- JS tölti fel a neveket persons.json-ból -->
+        </select>
+        <div class="form-text">Több személy is kijelölhető (Ctrl vagy Shift).</div>
+      </div>
+      <div class="mb-3">
+        <label for="highlight-text" class="form-label">Egyedi felirat (overlay)</label>
+        <input type="text" class="form-control" id="highlight-text" maxlength="100" placeholder="Pl. Szeretünk, Benett!">
+      </div>
+      <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i> Mentés</button>
+        <button type="button" id="highlight-reset-btn" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Alaphelyzet</button>
+      </div>
+      <div id="highlight-saved-msg" class="mt-2 text-success fw-bold" style="display: none;">Mentve!</div>
+    </form>
+    <div class="form-text mt-2">Ez a beállítás minden más funkciót (szülinapos/vegyes mód) felülír, amíg aktív.</div>
+  </div>
+</div>
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -119,31 +146,4 @@
         </div>
     </div>
 </div>
-<!-- ... a meglévő tartalom alá, pl. a kártya végére illeszd: -->
 
-<div class="card mt-4">
-  <div class="card-header">
-    <h5 class="mb-0"><i class="bi bi-person-lines-fill"></i> Kiemelt személy(ek) és egyedi felirat</h5>
-  </div>
-  <div class="card-body">
-    <form id="highlight-filter-form" autocomplete="off">
-      <div class="mb-3">
-        <label for="highlight-persons" class="form-label">Kiemelt személy(ek) kiválasztása</label>
-        <select multiple class="form-select" id="highlight-persons" style="min-height: 100px;">
-          <!-- JS tölti fel a neveket persons.json-ból -->
-        </select>
-        <div class="form-text">Több személy is kijelölhető (Ctrl vagy Shift).</div>
-      </div>
-      <div class="mb-3">
-        <label for="highlight-text" class="form-label">Egyedi felirat (overlay)</label>
-        <input type="text" class="form-control" id="highlight-text" maxlength="100" placeholder="Pl. Szeretünk, Benett!">
-      </div>
-      <div class="d-flex gap-2">
-        <button type="submit" class="btn btn-success"><i class="bi bi-check2"></i> Mentés</button>
-        <button type="button" id="highlight-reset-btn" class="btn btn-secondary"><i class="bi bi-x-circle"></i> Alaphelyzet</button>
-      </div>
-      <div id="highlight-saved-msg" class="mt-2 text-success fw-bold" style="display: none;">Mentve!</div>
-    </form>
-    <div class="form-text mt-2">Ez a beállítás minden más funkciót (szülinapos/vegyes mód) felülír, amíg aktív.</div>
-  </div>
-</div>
