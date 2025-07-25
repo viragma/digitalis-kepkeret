@@ -1,23 +1,41 @@
+# app.py - JAVÍTVA BLUEPRINTEK HASZNÁLATÁHOZ
+
 from flask import Flask
-from flask_socketio import SocketIO
-from flask_cors import CORS
-from config import SECRET_KEY
-from routes import register_routes
-from routes.socket_events import register_socket_events
+import os
+import json
 
-app = Flask(__name__)
-app.secret_key = SECRET_KEY
+# --- VÁLTOZÁS ---
+# A blueprint objektumokat importáljuk, nem a teljes fájlt
+from routes.main_routes import main_bp
+from routes.admin_routes import admin_bp
+# A többi routes fájlt is hasonlóan kell majd átalakítani és importálni
 
-# WebSocket + CORS
-socketio = SocketIO(app, cors_allowed_origins="*")
-CORS(app)
+def create_app():
+    app = Flask(__name__)
+    app.secret_key = os.urandom(24)
 
-# SocketIO hozzáférhető legyen máshol is
-app.socketio = socketio
+    # Konfiguráció betöltése
+    try:
+        with open('config.json', 'r') as f:
+            app.config.update(json.load(f))
+    except FileNotFoundError:
+        print("HIBA: config.json nem található!")
+        app.config.update(ADMIN_PASSWORD="admin")
 
-# Route-ok és WebSocket események regisztrálása
-register_routes(app, socketio)
-register_socket_events(socketio)
+    # --- VÁLTOZÁS ---
+    # Regisztráljuk a blueprinteket az alkalmazáson
+    app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp)
+
+    return app
+
+app = create_app()
+
+# --- VÁLTOZÁS ---
+# A régi "from routes import *" sorokat töröljük, mert már a create_app-ban regisztrálunk
+# from routes.main_routes import *
+# from routes.admin_routes import *
+# ...
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True, host='0.0.0.0', port=5050)
+    app.run(debug=True, host='0.0.0.0', port=5000)

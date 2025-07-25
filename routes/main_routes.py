@@ -1,16 +1,21 @@
-# routes/main_routes.py 
+# routes/main_routes.py
 
-from flask import render_template, redirect, url_for, session
-from app import app
+from flask import Blueprint, render_template
+
 from services import data_manager
 
+main_bp = Blueprint(
+    'main_bp', __name__,
+    template_folder='templates',
+    static_folder='static'
+)
 
-@app.route('/')
+@main_bp.route('/')
 def index():
-
     persons_data = data_manager.get_persons()
     faces_data = data_manager.get_faces()
     
+
     person_counts = {person: 0 for person in persons_data}
     total_faces = len(faces_data)
     known_faces = 0
@@ -30,5 +35,3 @@ def index():
                            known_faces=known_faces, 
                            unknown_faces=unknown_faces,
                            persons_data=persons_data)
-
-
