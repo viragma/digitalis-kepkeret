@@ -1,19 +1,38 @@
-// static/admin.js - JAVÍTVA
+// static/admin.js - JAVÍTVA A FÜLES NÉZETHEZ
 
 document.addEventListener('DOMContentLoaded', function() {
-    // A hiba kereséséhez ideiglenesen kivesszük a feltételt,
-    // és mindenképpen megpróbáljuk betölteni az arcokat,
-    // ha a '#unknown-faces-container' elem létezik az oldalon.
-    if (document.getElementById('unknown-faces-container')) {
-        loadUnknownFaces();
+    const facesTabButton = document.getElementById('v-pills-faces-tab');
+    
+    if (facesTabButton) {
+        // Zászló, ami jelzi, hogy betöltöttük-e már az arcokat
+        let facesLoaded = false;
+
+        // Ha a fül már a betöltéskor aktív, azonnal töltsük be az adatokat
+        if (facesTabButton.classList.contains('active')) {
+            loadUnknownFaces();
+            facesLoaded = true;
+        }
+
+        // Figyeljük, hogy a felhasználó mikor kattint erre a fülre
+        facesTabButton.addEventListener('show.bs.tab', function () {
+            // Csak akkor töltsük be újra, ha még nem tettük meg
+            if (!facesLoaded) {
+                loadUnknownFaces();
+                facesLoaded = true;
+            }
+        });
     }
 });
+
 
 async function loadUnknownFaces() {
     const container = document.getElementById('unknown-faces-container');
     const template = document.getElementById('face-card-template');
     const loadingSpinner = document.getElementById('loading-spinner');
     const noFacesMessage = document.getElementById('no-unknown-faces');
+
+    // Ha nincs konténer, ne csináljunk semmit
+    if (!container) return;
 
     try {
         const [personsResponse, facesResponse] = await Promise.all([
@@ -39,6 +58,7 @@ async function loadUnknownFaces() {
             const cardClone = template.content.cloneNode(true);
             const cardElement = cardClone.querySelector('.card');
             
+            // A kép relatív útvonalát használjuk
             cardElement.querySelector('.face-image').src = `/${face.face_path}`;
             
             const select = cardElement.querySelector('.name-select');
