@@ -1,20 +1,27 @@
-# routes/api_routes.py - HELYES, BLUEPRINT VERZIÓ
+# routes/api_routes.py - BŐVÍTVE
 
 from flask import Blueprint, request, jsonify
 from services import data_manager
 
-# Létrehozzuk az API blueprintet '/api' előtaggal
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
-@api_bp.route('/faces', methods=['GET'])
-def get_all_faces():
-    """ Visszaadja az összes arc adatait JSON formátumban. """
-    faces_data = data_manager.get_faces()
-    return jsonify(faces_data)
+@api_bp.route('/faces/unknown', methods=['GET'])
+def get_unknown_faces():
+    """ Csak az 'Ismeretlen' arcok listáját adja vissza. """
+    all_faces = data_manager.get_faces()
+    unknown_faces = [face for face in all_faces if face.get('name') == 'Ismeretlen']
+    return jsonify(unknown_faces)
+
+@api_bp.route('/persons', methods=['GET'])
+def get_persons_api():
+    """ Visszaadja a személyek listáját a dropdown menühöz. """
+    persons_data = data_manager.get_persons()
+    # A nevek listájára van szükségünk
+    return jsonify(list(persons_data.keys()))
 
 @api_bp.route('/update_face_name', methods=['POST'])
 def update_face_name():
-    """ Frissíti egy adott archoz tartozó nevet. """
+    """ Frissíti egy adott archoz tartozó nevet. (Ez változatlan) """
     data = request.get_json()
     face_path = data.get('face_path')
     new_name = data.get('new_name')
@@ -23,7 +30,6 @@ def update_face_name():
         return jsonify({'status': 'error', 'message': 'Hiányzó adatok'}), 400
 
     faces_data = data_manager.get_faces()
-    
     face_found = False
     for face in faces_data:
         if face.get('face_path') == face_path:
