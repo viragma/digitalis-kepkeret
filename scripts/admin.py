@@ -1,68 +1,57 @@
-# --- admin_routes.py ---
-from flask import Flask, render_template, request, redirect, url_for
+# scripts/admin.py - JAVÍTOTT VERZIÓ
+
+import sys
 import os
-import json
-from PIL import Image
+import argparse
 
-app = Flask(__name__)
+# Hozzáadjuk a projekt gyökérkönyvtárát a Python path-hoz
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-FACES_JSON = 'faces.json'
-IMAGES_DIR = 'static/images'
-KNOWN_DIR = 'known_faces'
-CROP_DIR = 'static/cropped'
+# A központi moduljainkat használjuk
+from services import data_manager
 
-# Segédfüggvény: ismert nevek lekérdezése
-def get_known_people():
-    return sorted([d for d in os.listdir(KNOWN_DIR) if os.path.isdir(os.path.join(KNOWN_DIR, d))])
+def assign_name_to_unknown_faces(image_filename, new_name):
+    """
+    Egy adott képfájlhoz tartozó összes 'Ismeretlen' arcot átnevezi a megadott névre.
+    """
+    print(f"Arcok átnevezése a(z) '{image_filename}' képen '{new_name}' névre...")
 
-# Segédfüggvény: arc kivágása a képről
-def crop_face(image_path, location):
-    image = Image.open(image_path)
-    top, right, bottom, left = location
-    return image.crop((left, top, right, bottom))
+    faces_data = data_manager.get_faces()
+    
+    updated_count = 0
+    # Végigmegyünk az összes arc adaton
+    for face in faces_data:
+        # Ha a képfájl megegyezik és a név 'Ismeretlen'
+        if face.get('image_file') == image_filename and face.get('name') == 'Ismeretlen':
+            face['name'] = new_name
+            updated_count += 1
+    
+    if updated_count > 0:
+        print(f"{updated_count} arc sikeresen átnevezve.")
+        print("Változtatások mentése...")
+        data_manager.save_faces(faces_data)
+        print("Sikeres mentés.")
+    else:
+        print(f"Nem található 'Ismeretlen' arc a(z) '{image_filename}' képen.")
 
-# --- Admin felület: képek listája ---
-@app.route('/admin')
-def admin():
-    with open(FACES_JSON, 'r') as f:
-        data = json.load(f)
+def main():
+    """
+    Parancssori argumentumokat kezelő fő funkció.
+    """
+    parser = argparse.ArgumentParser(description="Adminisztrációs scriptek a képkerethez.")
+    subparsers = parser.add_subparsers(dest='command', help='Elérhető parancsok')
 
-    unrecognized = {
-        file: [face for face in faces if face['name'] is None]
-        for file, faces in data.items()
-        if any(face['name'] is None for face in faces)
-    }
-    return render_template('admin.html', data=unrecognized, known=get_known_people())
+    # Parancs: 'assign_name'
+    parser_assign = subparsers.add_parser('assign_name', help="Arcok átnevezése egy képen.")
+    parser_assign.add_argument('image_filename', type=str, help="A képfájl neve (pl. 'img_0001.jpg')")
+    parser_assign.add_argument('new_name', type=str, help="Az új név, amire cserélni kell (pl. 'Anya')")
 
-# --- Admin címkézés beküldése ---
-@app.route('/admin/label', methods=['POST'])
-def label_face():
-    file = request.form['file']
-    index = int(request.form['index'])
-    name = request.form['name']
+    args = parser.parse_args()
 
-    # Update faces.json
-    with open(FACES_JSON, 'r') as f:
-        data = json.load(f)
+    if args.command == 'assign_name':
+        assign_name_to_unknown_faces(args.image_filename, args.new_name)
+    else:
+        parser.print_help()
 
-    data[file][index]['name'] = name
-
-    with open(FACES_JSON, 'w') as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
-    # Create directory if needed
-    person_dir = os.path.join(KNOWN_DIR, name)
-    os.makedirs(person_dir, exist_ok=True)
-
-    # Save cropped face
-    image_path = os.path.join(IMAGES_DIR, file)
-    location = data[file][index]['location']
-    cropped = crop_face(image_path, location)
-    cropped_filename = f"{name}_{len(os.listdir(person_dir))+1}.jpg"
-    cropped.save(os.path.join(person_dir, cropped_filename))
-
-    return redirect(url_for('admin'))
-
-# --- Indítás ---
 if __name__ == '__main__':
-    app.run(debug=True)
+    main()
