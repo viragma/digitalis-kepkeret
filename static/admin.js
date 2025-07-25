@@ -1,21 +1,14 @@
-// static/admin.js - JAVÍTVA A FÜLES NÉZETHEZ
+// static/admin.js - BŐVÍTVE TÖMEGES MŰVELETEKKEL
 
 document.addEventListener('DOMContentLoaded', function() {
     const facesTabButton = document.getElementById('v-pills-faces-tab');
-    
     if (facesTabButton) {
-        // Zászló, ami jelzi, hogy betöltöttük-e már az arcokat
         let facesLoaded = false;
-
-        // Ha a fül már a betöltéskor aktív, azonnal töltsük be az adatokat
         if (facesTabButton.classList.contains('active')) {
             loadUnknownFaces();
             facesLoaded = true;
         }
-
-        // Figyeljük, hogy a felhasználó mikor kattint erre a fülre
         facesTabButton.addEventListener('show.bs.tab', function () {
-            // Csak akkor töltsük be újra, ha még nem tettük meg
             if (!facesLoaded) {
                 loadUnknownFaces();
                 facesLoaded = true;
@@ -24,26 +17,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-
 async function loadUnknownFaces() {
     const container = document.getElementById('unknown-faces-container');
     const template = document.getElementById('face-card-template');
     const loadingSpinner = document.getElementById('loading-spinner');
     const noFacesMessage = document.getElementById('no-unknown-faces');
-
-    // Ha nincs konténer, ne csináljunk semmit
-    if (!container) return;
+    const batchActionsPanel = document.getElementById('batch-actions-panel');
+    const batchNameSelect = document.getElementById('batch-name-select');
 
     try {
         const [personsResponse, facesResponse] = await Promise.all([
             fetch('/api/persons'),
             fetch('/api/faces/unknown')
         ]);
-
-        if (!personsResponse.ok || !facesResponse.ok) {
-            throw new Error('Hiba a szerverrel való kommunikáció során.');
-        }
-
         const personNames = await personsResponse.json();
         const unknownFaces = await facesResponse.json();
         
@@ -53,12 +39,24 @@ async function loadUnknownFaces() {
             noFacesMessage.style.display = 'block';
             return;
         }
+        
+        batchActionsPanel.style.display = 'block'; // Tömeges panel mutatása
+
+        // Tömeges és egyedi dropdown menük feltöltése
+        personNames.forEach(name => {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            batchNameSelect.appendChild(option.cloneNode(true));
+        });
 
         unknownFaces.forEach(face => {
             const cardClone = template.content.cloneNode(true);
             const cardElement = cardClone.querySelector('.card');
+            const cardCheckbox = cardClone.querySelector('.card-checkbox');
             
-            // A kép relatív útvonalát használjuk
+            cardElement.dataset.facePath = face.face_path; // Adatként tároljuk az útvonalat
+            cardCheckbox.value = face.face_path;
             cardElement.querySelector('.face-image').src = `/${face.face_path}`;
             
             const select = cardElement.querySelector('.name-select');
@@ -69,16 +67,15 @@ async function loadUnknownFaces() {
                 select.appendChild(option);
             });
 
-            const saveButton = cardElement.querySelector('.save-button');
-            saveButton.addEventListener('click', async () => {
-                const selectedName = select.value;
-                if (selectedName) {
-                    await saveFaceName(face.face_path, selectedName, cardElement);
-                }
+            // Egyedi mentés gomb
+            cardElement.querySelector('.save-button').addEventListener('click', async () => {
+                await saveFaceName(face.face_path, select.value, cardElement);
             });
 
             container.appendChild(cardClone);
         });
+
+        setupBatchActions();
 
     } catch (error) {
         console.error('Hiba az ismeretlen arcok betöltésekor:', error);
@@ -86,31 +83,66 @@ async function loadUnknownFaces() {
     }
 }
 
+function setupBatchActions() {
+    const selectAllCheckbox = document.getElementById('select-all-checkbox');
+    const batchSaveButton = document.getElementById('batch-save-button');
+    const batchNameSelect = document.getElementById('batch-name-select');
+    const allCardCheckboxes = document.querySelectorAll('.card-checkbox');
+
+    // "Összes kijelölése" logika
+    selectAllCheckbox.addEventListener('change', () => {
+        allCardCheckboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+    });
+
+    // Tömeges mentés logika
+    batchSaveButton.addEventListener('click', async () => {
+        const selectedName = batchNameSelect.value;
+        if (selectedName === 'Válassz egy nevet...') {
+            alert('Kérlek, válassz egy nevet a tömeges mentéshez!');
+            return;
+        }
+
+        const checkedBoxes = document.querySelectorAll('.card-checkbox:checked');
+        if (checkedBoxes.length === 0) {
+            alert('Nincs kijelölt arc a mentéshez!');
+            return;
+        }
+
+        // Párhuzamosan mentjük az összes kijelölt arcot
+        const savePromises = Array.from(checkedBoxes).map(box => {
+            const card = box.closest('.card');
+            return saveFaceName(card.dataset.facePath, selectedName, card);
+        });
+
+        await Promise.all(savePromises);
+        alert(`${checkedBoxes.length} arc sikeresen mentve!`);
+    });
+}
+
+
 async function saveFaceName(facePath, newName, cardElement) {
     try {
         const response = await fetch('/api/update_face_name', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                face_path: facePath,
-                new_name: newName
-            }),
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ face_path: facePath, new_name: newName }),
         });
 
-        if (!response.ok) {
-            throw new Error('A mentés sikertelen.');
-        }
+        if (!response.ok) throw new Error('A mentés sikertelen.');
 
         const result = await response.json();
         if (result.status === 'success') {
-            cardElement.parentElement.remove();
-            
-            const container = document.getElementById('unknown-faces-container');
-            if (container.children.length === 0) {
-                 document.getElementById('no-unknown-faces').style.display = 'block';
-            }
+            cardElement.parentElement.style.transition = 'opacity 0.5s ease';
+            cardElement.parentElement.style.opacity = '0';
+            setTimeout(() => {
+                cardElement.parentElement.remove();
+                if (document.getElementById('unknown-faces-container').children.length === 0) {
+                    document.getElementById('no-unknown-faces').style.display = 'block';
+                    document.getElementById('batch-actions-panel').style.display = 'none';
+                }
+            }, 500);
         } else {
             alert(`Hiba: ${result.message}`);
         }

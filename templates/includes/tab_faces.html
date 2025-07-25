@@ -1,6 +1,24 @@
 <div class="container mt-4">
     <h3 class="mb-3">Ismeretlen arcok címkézése</h3>
-    <p>Itt rendelhetsz neveket a felismert, de még azonosítatlan arcokhoz.</p>
+
+    <div id="batch-actions-panel" class="card mb-4" style="display: none;">
+        <div class="card-body">
+            <h5 class="card-title">Kijelölt arcok kezelése</h5>
+            <div class="input-group">
+                <select id="batch-name-select" class="form-select">
+                    <option selected disabled>Válassz egy nevet...</option>
+                </select>
+                <button id="batch-save-button" class="btn btn-primary">Kijelöltek mentése</button>
+            </div>
+            <div class="form-check mt-2">
+                <input class="form-check-input" type="checkbox" id="select-all-checkbox">
+                <label class="form-check-label" for="select-all-checkbox">
+                    Összes kijelölése
+                </label>
+            </div>
+        </div>
+    </div>
+
     <div id="loading-spinner" class="text-center mt-5">
         <div class="spinner-border" role="status">
             <span class="visually-hidden">Töltés...</span>
@@ -14,13 +32,15 @@
 <template id="face-card-template">
     <div class="col">
         <div class="card h-100">
+            <input type="checkbox" class="form-check-input card-checkbox">
             <img src="" class="card-img-top face-image" alt="Ismeretlen arc">
             <div class="card-body p-2">
+                <small>Egyedi mentés:</small>
                 <select class="form-select form-select-sm name-select">
                     </select>
             </div>
             <div class="card-footer p-2">
-                <button class="btn btn-primary btn-sm w-100 save-button">Mentés</button>
+                <button class="btn btn-outline-secondary btn-sm w-100 save-button">Mentés</button>
             </div>
         </div>
     </div>
