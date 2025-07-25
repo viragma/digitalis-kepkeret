@@ -44,6 +44,29 @@ async function fetchConfigAndImages() {
         console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error);
     }
 }
+let birthdayInfo = null;
+
+async function fetchBirthdayInfo() {
+    try {
+        const resp = await fetch('/birthday_info');
+        birthdayInfo = await resp.json();
+    } catch (e) {
+        birthdayInfo = [];
+    }
+}
+
+function showBirthdayGreeting() {
+    if (!config.greeting_enabled || !birthdayInfo || birthdayInfo.length === 0) return;
+    const container = document.getElementById('birthday-container');
+    if (!container) return;
+    const person = birthdayInfo[0]; // ha több van, csak az elsőt használjuk most
+    container.innerHTML = `<div class="greeting animated">
+        <span>Boldog születésnapot, <b>${person.name}</b>!</span><br>
+        <span>Ma lettél <b>${person.age}</b> éves!</span>
+    </div>`;
+    container.style.display = 'block';
+    setTimeout(() => { container.style.display = 'none'; }, 7000); // 7 mp-ig látszik
+}
 
 function startSlideshow() {
     if (imageList.length === 0) return;
@@ -115,7 +138,10 @@ function updateClock() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchConfigAndImages();
+// Slideshow indításakor:
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchConfigAndImages();
+    await fetchBirthdayInfo();
+    showBirthdayGreeting();
     setInterval(updateClock, 1000);
 });

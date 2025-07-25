@@ -2,6 +2,8 @@
     "UPLOAD_FOLDER": "static/images",
     "ADMIN_PASSWORD": "admin",
     "slideshow": {
+        "birthday_story_mode": true,
+        "greeting_enabled": true,
         "interval": 10000,
         "zoom_enabled": true,
         "blur_strength": 30,
@@ -24,6 +26,6 @@
         "tolerance": 0.4,
         "manual_mode": false,
         "randomize_playlist": true,
-        "clock_size": "2.5rem"
+        "clock_size": "3.5rem"
     }
 }

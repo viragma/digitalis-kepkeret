@@ -3,6 +3,7 @@
 import json
 import os
 import shutil
+from datetime import datetime
 
 # --- VÁLTOZÁS ---
 # A gyökérkönyvtárat meghatározzuk, hogy bárhonnan fusson a kód
@@ -55,3 +56,19 @@ def save_faces(faces_data):
 def save_config(config_data):
     """Elmenti a konfigurációs beállításokat."""
     _save_json(CONFIG_FILE, config_data)
+
+
+def get_birthday_persons():
+    persons = get_persons()
+    today = datetime.today()
+    birthday_names = []
+    for name, birthdate in persons.items():
+        if not birthdate:
+            continue
+        try:
+            bdate = datetime.strptime(birthdate, "%Y-%m-%d")
+            if bdate.month == today.month and bdate.day == today.day:
+                birthday_names.append((name, bdate.year))
+        except Exception:
+            continue
+    return birthday_names
