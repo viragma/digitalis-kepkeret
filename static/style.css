@@ -1,98 +1,70 @@
 /* static/style.css */
 
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background-color: #000;
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden; background-color: #000;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* ÚJ: A háttérkép stílusa */
-.background-image {
+/* ÚJ: A háttér rétegek közös stílusa */
+.background-layer {
     position: fixed;
-    top: -20px; /* Nagyobb, hogy az elmosott szél ne látszódjon */
-    left: -20px;
+    top: -20px; left: -20px;
     width: calc(100% + 40px);
     height: calc(100% + 40px);
     background-size: cover;
     background-position: center center;
-    transition: background-image 1.5s ease-in-out; /* Finom váltás a háttérképek között is */
+    opacity: 0;
+    transition: opacity 5s ease-in-out; /* Az áttűnés itt történik */
     z-index: 0;
 }
-
+/* A látható réteg (mind a háttérre, mind az előtérre érvényes) */
+.background-layer.visible, .image.visible {
+    opacity: 1;
+}
 .slideshow-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* A háttérkép fölé helyezzük */
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 1;
 }
 
-.image-wrapper {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+.image-wrapper, .image {
+    position: absolute; width: 100%; height: 100%;
 }
 
 .image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
     opacity: 0;
-    /* VÁLTOZÁS: Az időtartamot a JS fogja beállítani */
-    transition: opacity ease-in-out;
+    transition: opacity 5s ease-in-out; /* VÁLTOZÁS: Egységesített áttűnés */
     transform: scale(1.0);
 }
-
 .image.visible {
     opacity: 1;
 }
 
 .image.ken-burns {
-    animation-name: kenburns;
-    animation-timing-function: linear;
-    animation-iteration-count: 1;
-    animation-direction: normal;
-    animation-fill-mode: forwards;
+    animation-name: kenburns; animation-timing-function: linear;
+    animation-iteration-count: 1; animation-direction: normal; animation-fill-mode: forwards;
 }
-
 @keyframes kenburns {
     0% { transform: scale(1.0); }
     100% { transform: scale(1.2); }
 }
 
 .vignette, .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1; /* A kép fölé helyezzük őket */
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 1;
 }
 .vignette { box-shadow: inset 0 0 150px rgba(0,0,0,0.8); }
 .overlay {
     background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.5) 100%);
-    color: white;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+    color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
-
-.clock, .info-container, .birthday-container {
-    z-index: 2; /* Mindig legfelül legyenek */
-}
+.clock, .info-container, .birthday-container { z-index: 2; }
 .clock {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    font-size: 2.5rem;
-    font-weight: 300;
-    line-height: 1.2;
+    position: absolute; top: 30px; left: 30px;
+    font-size: 2.5rem; font-weight: 300; line-height: 1.2;
 }
 .clock .date { font-size: 0.5em; font-weight: 400; }
 .info-container { position: absolute; bottom: 30px; left: 30px; font-size: 1.5rem; }

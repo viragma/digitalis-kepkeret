@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div id="background-image" class="background-image"></div>
+<div id="background-wrapper">
+    <div id="current-background" class="background-layer"></div>
+    <div id="next-background" class="background-layer"></div>
+</div>
 
 <div class="slideshow-container">
     <div class="image-wrapper">
