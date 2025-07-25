@@ -42,3 +42,31 @@ def update_face_name():
         return jsonify({'status': 'success', 'message': f'Arc frissítve: {new_name}'})
     else:
         return jsonify({'status': 'error', 'message': 'A megadott arc nem található'}), 404
+    
+    # routes/api_routes.py - A FÁJL VÉGÉRE
+
+@api_bp.route('/update_faces_batch', methods=['POST'])
+def update_faces_batch():
+    """ Egyszerre több arc nevét frissíti. """
+    updates = request.get_json() # [{face_path: '...', new_name: '...'}, ...]
+    if not isinstance(updates, list):
+        return jsonify({'status': 'error', 'message': 'Hibás adatformátum'}), 400
+
+    faces_data = data_manager.get_faces()
+    
+    # A gyorsabb kereséshez készítünk egy szótárat a face_path alapján
+    faces_map = {face.get('face_path'): face for face in faces_data if face.get('face_path')}
+
+    updated_count = 0
+    for update in updates:
+        face_path = update.get('face_path')
+        new_name = update.get('new_name')
+        if face_path in faces_map:
+            faces_map[face_path]['name'] = new_name
+            updated_count += 1
+            
+    if updated_count > 0:
+        data_manager.save_faces(faces_data)
+        return jsonify({'status': 'success', 'message': f'{updated_count} arc sikeresen frissítve'})
+    else:
+        return jsonify({'status': 'error', 'message': 'Nincs frissítendő arc'}), 400
