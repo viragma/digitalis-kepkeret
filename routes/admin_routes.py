@@ -1,31 +1,28 @@
-# routes/admin_routes.py - BŐVÍTVE
+# routes/admin_routes.py - JAVÍTVA
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager
 
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
-# --- ÚJ ÁTIRÁNYÍTÁS ---
 @admin_bp.route('/')
 def admin_index():
-    """ Átirányít a login oldalra, vagy ha be van jelentkezve, a persons oldalra. """
     if not session.get('logged_in'):
         return redirect(url_for('admin_bp.login'))
+    # Ha már be van lépve, az admin főoldalára irányítunk
     return redirect(url_for('admin_bp.persons_page'))
-
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
-    # ... (ez a függvény változatlan)
     if request.method == 'POST':
         if request.form['password'] == 'admin': 
             session['logged_in'] = True
-            return redirect(url_for('main_bp.index')) # Visszairányít a FŐOLDALRA
+            # Sikeres login után az admin főoldalára megyünk
+            return redirect(url_for('admin_bp.persons_page'))
         else:
             flash('Hibás jelszó!')
     return render_template('login.html')
 
-# ... (a többi függvény változatlan)
 @admin_bp.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -35,8 +32,11 @@ def logout():
 def persons_page():
     if not session.get('logged_in'):
         return redirect(url_for('admin_bp.login'))
+    
     persons_data = data_manager.get_persons()
-    return render_template('admin/persons.html', persons=persons_data)
+    # --- VÁLTOZÁS ---
+    # A helyes template fájlra hivatkozunk
+    return render_template('admin.html', persons=persons_data)
 
 # ... (add_person és delete_person változatlan)
 @admin_bp.route('/add_person', methods=['POST'])
