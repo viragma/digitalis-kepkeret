@@ -49,3 +49,9 @@ def get_faces():
 
 def save_faces(faces_data):
     _save_json(FACES_FILE, faces_data)
+
+    # services/data_manager.py - A FÁJL VÉGÉRE
+
+def save_config(config_data):
+    """Elmenti a konfigurációs beállításokat."""
+    _save_json(CONFIG_FILE, config_data)

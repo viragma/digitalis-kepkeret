@@ -60,3 +60,26 @@ def delete_person(name):
         data_manager.save_persons(persons_data)
         flash(f'{name} sikeresen törölve.', 'warning')
     return redirect(url_for('admin_bp.persons_page'))
+
+    # routes/admin_routes.py - A FÁJL VÉGÉRE
+
+@admin_bp.route('/save_config', methods=['POST'])
+def save_config_route():
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_bp.login'))
+    
+    # Betöltjük a jelenlegi konfigurációt
+    config_data = data_manager.get_config()
+    
+    # Frissítjük a slideshow beállításokat a formról kapott adatokkal
+    slideshow_config = config_data.get('slideshow', {})
+    slideshow_config['delay'] = int(request.form.get('delay', 5000))
+    slideshow_config['effect'] = request.form.get('effect', 'fade')
+    
+    config_data['slideshow'] = slideshow_config
+    
+    # Elmentjük a frissített adatokat
+    data_manager.save_config(config_data)
+    
+    flash('Beállítások sikeresen mentve!', 'success')
+    return redirect(url_for('admin_bp.persons_page')) # Visszairányítjuk az admin oldalra
