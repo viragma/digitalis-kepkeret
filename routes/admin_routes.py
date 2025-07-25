@@ -83,3 +83,21 @@ def save_config_route():
     
     flash('Beállítások sikeresen mentve!', 'success')
     return redirect(url_for('admin_bp.persons_page')) # Visszairányítjuk az admin oldalra
+
+# routes/admin_routes.py - A FÁJL VÉGÉRE
+
+@admin_bp.route('/save_persons', methods=['POST'])
+def save_persons_route():
+    if not session.get('logged_in'):
+        return redirect(url_for('admin_bp.login'))
+    
+    # A formról érkező összes adatot feldolgozzuk
+    persons_data = {}
+    for key, value in request.form.items():
+        if key.startswith('birthday_'):
+            person_name = key.replace('birthday_', '')
+            persons_data[person_name] = value
+            
+    data_manager.save_persons(persons_data)
+    flash('Születésnapok sikeresen mentve!', 'success')
+    return redirect(url_for('admin_bp.persons_page'))

@@ -1,4 +1,4 @@
-# routes/main_routes.py - JAVÍTVA
+# routes/main_routes.py - VÉGLEGESEN JAVÍTVA
 
 from flask import Blueprint, render_template, jsonify
 import os
@@ -18,13 +18,18 @@ def get_slideshow_config():
 @main_bp.route('/imagelist')
 def get_image_list():
     config_data = data_manager.get_config()
-    image_folder_path = config_data.get('UPLOAD_FOLDER', 'static/images')
+    # A config.json-ban relatív útvonalnak kell lennie, pl. "static/images"
+    image_folder_name = config_data.get('UPLOAD_FOLDER', 'static/images')
     
     try:
-        all_files = os.listdir(image_folder_path)
+        # A projekt gyökeréhez képest keressük meg a mappát
+        abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
+        all_files = os.listdir(abs_image_folder_path)
+        
         # --- VÁLTOZÁS ---
-        # Csak a fájlneveket adjuk vissza, nem a teljes útvonalat
-        image_files = [f for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        return jsonify(image_files)
+        # Teljes, böngésző által értelmezhető URL-t generálunk
+        image_urls = [f'/{image_folder_name}/{f}'.replace('\\', '/') 
+                      for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        return jsonify(image_urls)
     except FileNotFoundError:
         return jsonify([])
