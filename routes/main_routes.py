@@ -1,47 +1,34 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
-import os
-import json
-from config import ADMIN_PASSWORD
+# routes/main_routes.py 
 
-main_bp = Blueprint('main', __name__)
-
-IMAGE_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.webp')
-IMAGE_FOLDER = 'static/images'
-CONFIG_FILE = 'data/config.json'
+from flask import render_template, redirect, url_for, session
+from app import app
+from services import data_manager
 
 
-@main_bp.route('/')
+@app.route('/')
 def index():
-    return render_template('index.html')
+
+    persons_data = data_manager.get_persons()
+    faces_data = data_manager.get_faces()
+    
+    person_counts = {person: 0 for person in persons_data}
+    total_faces = len(faces_data)
+    known_faces = 0
+    unknown_faces = 0
+
+    for face in faces_data:
+        if face.get('name') and face['name'] != 'Ismeretlen':
+            if face['name'] in person_counts:
+                person_counts[face['name']] += 1
+            known_faces += 1
+        else:
+            unknown_faces += 1
+    
+    return render_template('index.html', 
+                           person_counts=person_counts, 
+                           total_faces=total_faces, 
+                           known_faces=known_faces, 
+                           unknown_faces=unknown_faces,
+                           persons_data=persons_data)
 
 
-@main_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        password = request.form.get('password')
-        if password == ADMIN_PASSWORD:
-            session['logged_in'] = True
-            return redirect(url_for('admin.admin_page'))
-        return render_template('login.html', error='Hibás jelszó')
-    return render_template('login.html')
-
-
-@main_bp.route('/config')
-def get_config():
-    try:
-        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-            return jsonify(json.load(f))
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
-@main_bp.route('/imagelist')
-def imagelist():
-    try:
-        files = sorted([
-            f for f in os.listdir(IMAGE_FOLDER)
-            if f.lower().endswith(IMAGE_EXTENSIONS)
-        ])
-        return jsonify(files)
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
