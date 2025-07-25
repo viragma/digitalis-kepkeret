@@ -1,4 +1,4 @@
-# scripts/detect_faces.py - JAVÍTOTT VERZIÓ
+# scripts/detect_faces.py - JAVÍTOTT VERZIÓ 2.0
 
 import sys
 import os
@@ -12,10 +12,15 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 # A központi data_manager-t használjuk
 from services import data_manager
 
+# --- JAVÍTÁS 1: Abszolút útvonalak használata ---
+# Meghatározzuk a projekt gyökerét, és ehhez képest adjuk meg a fájlok útvonalát
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
 def load_config():
-    """Betölti a konfigurációt a config.json fájlból."""
+    """Betölti a konfigurációt a data/config.json fájlból."""
+    config_path = os.path.join(PROJECT_ROOT, 'data', 'config.json')
     try:
-        with open('config.json', 'r') as f:
+        with open(config_path, 'r') as f:
             return json.load(f)
     except FileNotFoundError:
         print("HIBA: config.json nem található! Alapértelmezett értékek használata.")
@@ -27,15 +32,16 @@ def scan_images_for_faces():
     """
     print("Arcfelismerő script elindítva...")
 
-    # Betöltjük az adatokat és a konfigurációt
     all_faces = data_manager.get_faces()
     config = load_config()
     
-    processed_images = {face['image_file'] for face in all_faces}
-    print(f"Eddig {len(processed_images)} kép lett feldgozva.")
+    # --- JAVÍTÁS 2: Hibatűrő adatelemzés ---
+    # Csak azokat a bejegyzéseket vesszük figyelembe, amikben biztosan van 'image_file' kulcs.
+    processed_images = {face['image_file'] for face in all_faces if 'image_file' in face}
+    print(f"Eddig {len(processed_images)} kép lett feldolgozva.")
 
-    image_folder = config.get('UPLOAD_FOLDER', 'static/images')
-    faces_folder = 'static/faces'
+    image_folder = os.path.join(PROJECT_ROOT, config.get('UPLOAD_FOLDER', 'static/images'))
+    faces_folder = os.path.join(PROJECT_ROOT, 'static/faces')
     new_faces_found = 0
 
     if not os.path.exists(faces_folder):
@@ -65,24 +71,29 @@ def scan_images_for_faces():
 
             print(f"   {len(face_locations)} arc található.")
             pil_image = Image.open(image_path)
+            pil_image.verify() # Ellenőrizzük, hogy a kép nem sérült-e
+            pil_image = Image.open(image_path) # Újra meg kell nyitni a verify() után
 
             for i, (top, right, bottom, left) in enumerate(face_locations):
                 face_image = pil_image.crop((left, top, right, bottom))
                 face_filename = f"{os.path.splitext(filename)[0]}_face_{i}.jpg"
-                face_filepath = os.path.join(faces_folder, face_filename)
+                face_filepath = os.path.join('static/faces', face_filename) # Relatív útvonal a webes eléréshez
                 
-                face_image.save(face_filepath)
+                # Mentés abszolút útvonallal
+                face_image.save(os.path.join(PROJECT_ROOT, face_filepath))
 
                 all_faces.append({
                     "image_file": filename,
                     "face_location": [top, right, bottom, left],
-                    "face_path": face_filepath,
+                    "face_path": face_filepath.replace('\\', '/'), # Egységesítjük a mappaelválasztót
                     "name": "Ismeretlen"
                 })
                 new_faces_found += 1
 
+        except (IOError, SyntaxError) as e:
+            print(f"!!! Hiba: A(z) {filename} képfájl sérült vagy nem olvasható. Kihagyom. Hiba: {e}")
         except Exception as e:
-            print(f"Hiba történt a(z) {filename} feldolgozása közben: {e}")
+            print(f"!!! Általános hiba történt a(z) {filename} feldolgozása közben: {e}")
 
     if new_faces_found > 0:
         print(f"\nÖsszesen {new_faces_found} új arc mentése...")
