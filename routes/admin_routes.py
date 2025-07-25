@@ -1,11 +1,10 @@
-# routes/admin_routes.py - BŐVÍTVE A RANDOM SORREND MENTÉSÉVEL
+# routes/admin_routes.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager
 
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
-# ... (a nem változó részek, mint login, logout stb.) ...
 @admin_bp.route('/')
 def admin_index():
     if not session.get('logged_in'):
@@ -45,7 +44,6 @@ def save_config_route():
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
     
-    # Meglévő beállítások mentése
     slideshow_config['interval'] = int(request.form.get('interval', 10000))
     slideshow_config['transition_speed'] = int(request.form.get('transition_speed', 1000))
     slideshow_config['blur_strength'] = int(request.form.get('blur_strength', 20))
@@ -53,9 +51,8 @@ def save_config_route():
     slideshow_config['zoom_enabled'] = 'zoom_enabled' in request.form
     slideshow_config['enable_clock'] = 'enable_clock' in request.form
     slideshow_config['birthday_boost'] = 'birthday_boost' in request.form
-
-    # --- ÚJ BEÁLLÍTÁS HOZZÁADÁSA ---
     slideshow_config['randomize_playlist'] = 'randomize_playlist' in request.form
+    slideshow_config['clock_size'] = request.form.get('clock_size', '2.5rem')
     
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
@@ -63,7 +60,6 @@ def save_config_route():
     flash('Beállítások sikeresen mentve!', 'success')
     return redirect(url_for('admin_bp.persons_page'))
 
-# ... (a többi, személyekkel kapcsolatos függvény változatlan) ...
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))

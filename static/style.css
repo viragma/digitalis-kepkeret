@@ -149,3 +149,27 @@ body, html {
   display: none;
   font-family: sans-serif;
 }
+/* A FÁJL VÉGÉRE */
+
+#refresh-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.3s, transform 0.3s;
+    color: white;
+    text-shadow: 0 0 5px black;
+}
+#refresh-button:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+#refresh-button.spinning i {
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
