@@ -35,7 +35,7 @@ def get_image_list():
             # faces.json alapján csak azokat a képeket, ahol az ünnepelt szerepel
             faces = data_manager.get_faces()
             bp_names = [bp[0] for bp in birthday_persons]
-            image_files = [face['image_file'] for face in faces if face.get('name') in bp_names]
+            image_files = [face['image_file'] for face in faces if 'image_file' in face and face.get('name') in bp_names]
             # csak egyszer szerepeljen egy kép
             image_files = list(set(image_files))
             if slideshow_config.get('randomize_playlist', True):
