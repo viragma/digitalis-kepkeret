@@ -1,17 +1,15 @@
-/* static/style.css - A VETÍTŐ TELJES STÍLUSLAPJA */
+/* static/style.css */
 
-/* Alapbeállítások, hogy a vetítés kitöltse a teljes képernyőt */
 html, body {
     margin: 0;
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden; /* Nincs görgetősáv */
+    overflow: hidden;
     background-color: #000;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* A fő konténer, ami mindent magába foglal */
 .slideshow-container {
     position: absolute;
     top: 0;
@@ -20,14 +18,12 @@ html, body {
     height: 100%;
 }
 
-/* A két kép réteget tartalmazó wrapper */
 .image-wrapper {
     position: absolute;
     width: 100%;
     height: 100%;
 }
 
-/* Az egyes képrétegek stílusa (az aktuális és a következő) */
 .image {
     position: absolute;
     width: 100%;
@@ -35,16 +31,32 @@ html, body {
     background-size: cover;
     background-position: center center;
     background-repeat: no-repeat;
-    opacity: 0; /* Alapból minden kép láthatatlan */
-    transition: opacity 1.5s ease-in-out; /* Az áttűnés animációja */
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+    transform: scale(1.1); 
 }
 
-/* Ez az osztály teszi láthatóvá a képet */
 .image.visible {
     opacity: 1;
 }
 
-/* Sötétítő effektek a jobb olvashatóságért */
+.image.ken-burns {
+    animation-name: kenburns;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+    animation-fill-mode: forwards;
+}
+
+@keyframes kenburns {
+    0% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1.3);
+    }
+}
+
 .vignette {
     position: absolute;
     top: 0;
@@ -67,22 +79,20 @@ html, body {
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
-/* Az óra stílusa */
 .clock {
     position: absolute;
     top: 30px;
     left: 30px;
-    font-size: 2.5rem; /* Ezt fogja a JS felülírni a beállításokból */
+    font-size: 2.5rem;
     font-weight: 300;
     line-height: 1.2;
 }
 
 .clock .date {
-    font-size: 0.5em; /* A dátum feleakkora, mint az óra */
+    font-size: 0.5em;
     font-weight: 400;
 }
 
-/* A kép információinak konténere (ezt fogjuk használni a következő funkciónál) */
 .info-container {
     position: absolute;
     bottom: 30px;
@@ -90,7 +100,6 @@ html, body {
     font-size: 1.5rem;
 }
 
-/* A szülinapos köszöntő konténere */
 .birthday-container {
     position: absolute;
     bottom: 30px;

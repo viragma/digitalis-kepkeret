@@ -1,3 +1,5 @@
+// static/script.js
+
 let config = {};
 let imageList = [];
 let currentIndex = 0;
@@ -6,8 +8,6 @@ let isPaused = false;
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
-const infoContainer = document.getElementById('info-container');
-const birthdayContainer = document.getElementById('birthday-container');
 
 async function fetchConfigAndImages() {
     try {
@@ -18,8 +18,6 @@ async function fetchConfigAndImages() {
         config = await configRes.json();
         imageList = await imageListRes.json();
         
-        // --- ÚJ RÉSZ ---
-        // Óra méretének és láthatóságának beállítása a config alapján
         if (clockDiv) {
             if (config.enable_clock) {
                 clockDiv.style.display = 'block';
@@ -28,7 +26,6 @@ async function fetchConfigAndImages() {
                 clockDiv.style.display = 'none';
             }
         }
-        // --- ÚJ RÉSZ VÉGE ---
 
         startSlideshow();
     } catch (error) {
@@ -59,7 +56,25 @@ function showNextImage() {
     img.onload = () => {
         nextImageDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextImageDiv.style.filter = config.image_filter || 'none';
+
+        // Ken Burns effekt kezelése
+        nextImageDiv.classList.remove('ken-burns');
         
+        if (config.zoom_enabled) {
+            nextImageDiv.style.animationDuration = (config.zoom_duration || 30000) + 'ms';
+            
+            const origins = ['top left', 'top right', 'bottom left', 'bottom right', 'center center'];
+            const randomOrigin = origins[Math.floor(Math.random() * origins.length)];
+            nextImageDiv.style.transformOrigin = randomOrigin;
+            
+            setTimeout(() => {
+                nextImageDiv.classList.add('ken-burns');
+            }, 50);
+
+        } else {
+            nextImageDiv.style.transform = `scale(${config.nozoom_scale || 1.1})`;
+        }
+
         currentImageDiv.classList.remove('visible');
         nextImageDiv.classList.add('visible');
 

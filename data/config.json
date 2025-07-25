@@ -23,6 +23,7 @@
         "debug_log": false,
         "tolerance": 0.4,
         "manual_mode": false,
-        "randomize_playlist": true
+        "randomize_playlist": true,
+        "clock_size": "2.5rem"
     }
 }
