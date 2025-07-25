@@ -11,8 +11,9 @@ const nextBackgroundDiv = document.getElementById('next-background');
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
-// ...
+const errorDiv = document.getElementById('slideshow-error'); // ÚJ! (tedd be a html-be is!)
 
+// Konfig és képlista betöltése
 async function fetchConfigAndImages() {
     try {
         const [configRes, imageListRes] = await Promise.all([
@@ -21,15 +22,16 @@ async function fetchConfigAndImages() {
         ]);
         config = await configRes.json();
         imageList = await imageListRes.json();
+        if (!Array.isArray(imageList)) imageList = [];
         
-       const transitionSpeed = (config.transition_speed || 1500) / 1000;
-        // Az áttűnés sebességét beállítjuk mind a 4 rétegen
+        const transitionSpeed = (config.transition_speed || 1500) / 1000;
+        // Áttűnés sebesség mind a 4 rétegen
         currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
         nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
         currentBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
         nextBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
 
-        // Óra beállításai
+        // Óra
         if (clockDiv) {
             if (config.enable_clock) {
                 clockDiv.style.display = 'block';
@@ -39,8 +41,23 @@ async function fetchConfigAndImages() {
             }
         }
 
+        // HIBA: ha nincs kép
+        if (imageList.length === 0) {
+            if (errorDiv) {
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = "Nincs megjeleníthető kép a kiválasztott szűrőkkel!";
+            }
+            return;
+        } else if (errorDiv) {
+            errorDiv.style.display = 'none';
+        }
+
         startSlideshow();
     } catch (error) {
+        if (errorDiv) {
+            errorDiv.style.display = 'block';
+            errorDiv.innerHTML = "Hiba a konfiguráció vagy képlista betöltésekor!";
+        }
         console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error);
     }
 }
@@ -65,13 +82,13 @@ function showBirthdayGreeting() {
         <span>Ma lettél <b>${person.age}</b> éves!</span>
     </div>`;
     container.style.display = 'block';
-    //setTimeout(() => { container.style.display = 'none'; }, 7000); // 7 mp-ig látszik
 }
 
+// Vetítés
 function startSlideshow() {
-    if (imageList.length === 0) return;
+    if (!Array.isArray(imageList) || imageList.length === 0) return;
     currentIndex = -1;
-    // Az első kép betöltése háttérként és előtérként is, áttűnés nélkül
+    // Első kép betöltése háttérként és előtérként is, áttűnés nélkül
     const initialImageUrl = `/static/images/${imageList[0]}`;
     currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
@@ -87,6 +104,7 @@ function showNextImage() {
         setTimeout(showNextImage, 1000);
         return;
     }
+    if (!Array.isArray(imageList) || imageList.length === 0) return;
 
     currentIndex = (currentIndex + 1) % imageList.length;
     const imageUrl = `/static/images/${imageList[currentIndex]}`;
@@ -94,13 +112,13 @@ function showNextImage() {
     const img = new Image();
     img.src = imageUrl;
     img.onload = () => {
-        // 1. Az új képet betöltjük a rejtett "következő" rétegekbe
+        // 1. Új kép betöltése a "következő" rétegekbe
         nextBackgroundDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
         nextImageDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextImageDiv.style.filter = config.image_filter || 'none';
 
-        // Ken Burns effekt kezelése
+        // Ken Burns effekt
         nextImageDiv.classList.remove('ken-burns');
         if (config.zoom_enabled) {
             nextImageDiv.style.animationDuration = (config.zoom_duration || 30000) + 'ms';
@@ -112,19 +130,19 @@ function showNextImage() {
             nextImageDiv.style.transform = `scale(1.0)`;
         }
 
-        // 2. Egyszerre láthatóvá tesszük a "következő" rétegeket és eltüntetjük az "aktuálisat"
+        // 2. Rétegek váltása
         currentImageDiv.classList.remove('visible');
         nextImageDiv.classList.add('visible');
         currentBackgroundDiv.classList.remove('visible');
         nextBackgroundDiv.classList.add('visible');
         
-        // 3. Egy kis idő után felcseréljük a szerepeket a háttérben
+        // 3. Háttércsere
         setTimeout(() => {
             currentImageDiv.style.backgroundImage = nextImageDiv.style.backgroundImage;
             currentBackgroundDiv.style.backgroundImage = nextBackgroundDiv.style.backgroundImage;
         }, config.transition_speed || 1500);
         
-        // 4. Időzítjük a következő váltást
+        // 4. Következő váltás időzítése
         setTimeout(showNextImage, config.interval || 10000);
     };
 }

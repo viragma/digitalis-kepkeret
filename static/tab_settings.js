@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
             itemSelectText: 'Kiválaszt'
         });
 
+        // Kölcsönös kizárás
         function updateMutualExclusion() {
             if (birthdayModeSwitch.checked) {
                 choices.clearStore();

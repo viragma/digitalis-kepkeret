@@ -13,22 +13,22 @@ def index():
     return render_template('index.html')
 
 @main_bp.route('/config')
-def get_slideshow_config():
-    config_data = data_manager.get_config()
-    return jsonify(config_data.get('slideshow', {}))
+def get_config():
+    config = data_manager.get_config()
+    return jsonify(config.get("slideshow", {}))
 
 @main_bp.route('/imagelist')
 def get_image_list():
     faces = data_manager.get_faces()
-    slideshow_config = data_manager.get_config().get("slideshow", {})
-    highlight = data_manager.get_highlight_filter()
+    config = data_manager.get_config()
+    slideshow_config = config.get("slideshow", {})
 
     selected_names = slideshow_config.get("persons", [])
     birthday_story_mode = slideshow_config.get("birthday_mode", False)
 
     image_files = []
 
-    # 1. Ha van kiválasztott személy(ek) *ÉS* nincs szülinapos mód
+    # 1. Ha van kiválasztott személy(ek) ÉS nincs szülinapos mód
     if selected_names and not birthday_story_mode:
         image_files = [face['image'] for face in faces
                        if 'image' in face
@@ -64,6 +64,7 @@ def get_image_list():
     if slideshow_config.get('randomize_playlist', True):
         random.shuffle(image_files)
     return jsonify(image_files)
+
 @main_bp.route('/birthday_info')
 def get_birthday_info():
     birthday_persons = data_manager.get_birthday_persons()
