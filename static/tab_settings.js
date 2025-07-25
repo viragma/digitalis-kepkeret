@@ -1,10 +1,8 @@
-// --- Személy/szülinapos kizárás Choices.js-zel ---
 document.addEventListener("DOMContentLoaded", function () {
     const personsSelect = document.getElementById('persons');
     const birthdayModeSwitch = document.getElementById('birthday_mode');
     if (personsSelect && birthdayModeSwitch) {
         const personsRaw = window.persons_list || {};
-        // Mindig tömböt kapunk
         const personsList = Array.isArray(personsRaw) ? personsRaw : Object.keys(personsRaw);
         const selectedPersons = window.selected_persons || [];
         personsList.forEach(name => {
@@ -26,28 +24,26 @@ document.addEventListener("DOMContentLoaded", function () {
             itemSelectText: 'Kiválaszt'
         });
 
-        function togglePersonsBirthdayMode() {
+        function updateMutualExclusion() {
             if (birthdayModeSwitch.checked) {
+                choices.clearStore();
                 personsSelect.disabled = true;
                 choices.disable();
+                birthdayModeSwitch.disabled = false;
+            } else if (personsSelect.selectedOptions.length > 0) {
+                personsSelect.disabled = false;
+                choices.enable();
+                birthdayModeSwitch.checked = false;
+                birthdayModeSwitch.disabled = true;
             } else {
                 personsSelect.disabled = false;
                 choices.enable();
+                birthdayModeSwitch.disabled = false;
             }
         }
-        birthdayModeSwitch.addEventListener('change', function () {
-            if (birthdayModeSwitch.checked) {
-                choices.clearStore(); // törli a kiválasztott személyeket
-            }
-            togglePersonsBirthdayMode();
-        });
-        personsSelect.addEventListener('change', function () {
-            if (personsSelect.selectedOptions.length > 0) {
-                birthdayModeSwitch.checked = false;
-                togglePersonsBirthdayMode();
-            }
-        });
-        togglePersonsBirthdayMode();
+        birthdayModeSwitch.addEventListener('change', updateMutualExclusion);
+        personsSelect.addEventListener('change', updateMutualExclusion);
+        updateMutualExclusion();
     }
 });
 
