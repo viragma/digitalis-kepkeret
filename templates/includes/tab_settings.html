@@ -1,55 +1,50 @@
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-8">
-
             <form method="POST" action="{{ url_for('admin_bp.save_config_route') }}">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="mb-0">Általános Beállítások</h4>
+                        <h4 class="mb-0">Diavetítés Beállításai</h4>
                     </div>
                     <div class="card-body">
                         
-                        <h5><i class="bi bi-images"></i> Diavetítés</h5>
+                        <h5><i class="bi bi-clock"></i> Időzítés</h5>
                         <hr>
-                        
+                        <h5 class="mt-4"><i class="bi bi-palette"></i> Vizuális Effektek</h5>
+                        <hr>
+                        <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
+                        <hr>
                         <div class="mb-3 row">
-                            <label for="delay" class="col-sm-4 col-form-label">Képváltás sebessége</label>
+                            <label for="randomize_playlist" class="col-sm-4 col-form-label">Véletlenszerű sorrend</label>
                             <div class="col-sm-8">
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="delay" name="delay" value="{{ config.get('slideshow', {}).get('delay', 5000) }}">
-                                    <span class="input-group-text">ms</span>
+                                <div class="form-check form-switch fs-5">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}>
                                 </div>
-                                <div class="form-text">Idő milliszekundumban (1000 ms = 1 másodperc).</div>
+                                <div class="form-text">Ha be van kapcsolva, a képek véletlenszerűen jelennek meg.</div>
                             </div>
                         </div>
-
-                        <div class="mb-3 row">
-                            <label for="effect" class="col-sm-4 col-form-label">Áttűnési effekt</label>
-                            <div class="col-sm-8">
-                                <select class="form-select" id="effect" name="effect">
-                                    <option value="fade" {% if config.get('slideshow', {}).get('effect') == 'fade' %}selected{% endif %}>Áttűnés (fade)</option>
-                                    <option value="slide" {% if config.get('slideshow', {}).get('effect') == 'slide' %}selected{% endif %}>Csúszás (slide)</option>
-                                </select>
-                            </div>
-                        </div>
-                        
                         <div class="mb-3 row">
                             <label for="birthday_boost" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
                             <div class="col-sm-8">
                                 <div class="form-check form-switch fs-5">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="birthday_boost" name="birthday_boost" {% if config.get('slideshow', {}).get('birthday_boost') %}checked{% endif %}>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="birthday_boost" name="birthday_boost" {% if config.slideshow.get('birthday_boost', true) %}checked{% endif %}>
                                 </div>
-                                <div class="form-text">Ha be van kapcsolva, a szülinaposok képei gyakrabban jelennek meg.</div>
                             </div>
                         </div>
-
+                        <div class="mb-3 row">
+                            <label for="enable_clock" class="col-sm-4 col-form-label">Óra megjelenítése</label>
+                            <div class="col-sm-8">
+                                <div class="form-check form-switch fs-5">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="enable_clock" name="enable_clock" {% if config.slideshow.get('enable_clock', false) %}checked{% endif %}>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer text-end">
                         <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Beállítások Mentése</button>
                     </div>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
