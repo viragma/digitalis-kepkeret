@@ -1,9 +1,10 @@
-// static/admin.js
+// static/admin.js - JAVÍTVA
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Ez a kód csak akkor fut le, ha az admin oldalon a "Faces" fül aktív
-    const facesTab = document.getElementById('tab-faces');
-    if (facesTab) {
+    // A hiba kereséséhez ideiglenesen kivesszük a feltételt,
+    // és mindenképpen megpróbáljuk betölteni az arcokat,
+    // ha a '#unknown-faces-container' elem létezik az oldalon.
+    if (document.getElementById('unknown-faces-container')) {
         loadUnknownFaces();
     }
 });
@@ -15,7 +16,6 @@ async function loadUnknownFaces() {
     const noFacesMessage = document.getElementById('no-unknown-faces');
 
     try {
-        // 1. Lekérjük a választható neveket és az ismeretlen arcokat párhuzamosan
         const [personsResponse, facesResponse] = await Promise.all([
             fetch('/api/persons'),
             fetch('/api/faces/unknown')
@@ -28,22 +28,19 @@ async function loadUnknownFaces() {
         const personNames = await personsResponse.json();
         const unknownFaces = await facesResponse.json();
         
-        loadingSpinner.style.display = 'none'; // Töltés ikon elrejtése
+        loadingSpinner.style.display = 'none';
 
         if (unknownFaces.length === 0) {
-            noFacesMessage.style.display = 'block'; // Üzenet megjelenítése, ha nincs több arc
+            noFacesMessage.style.display = 'block';
             return;
         }
 
-        // 2. Minden ismeretlen archoz létrehozunk egy kártyát
         unknownFaces.forEach(face => {
             const cardClone = template.content.cloneNode(true);
             const cardElement = cardClone.querySelector('.card');
             
-            // Beállítjuk a kép forrását
             cardElement.querySelector('.face-image').src = `/${face.face_path}`;
             
-            // Feltöltjük a dropdown menüt a nevekkel
             const select = cardElement.querySelector('.name-select');
             personNames.forEach(name => {
                 const option = document.createElement('option');
@@ -52,7 +49,6 @@ async function loadUnknownFaces() {
                 select.appendChild(option);
             });
 
-            // Eseménykezelő a mentés gombra
             const saveButton = cardElement.querySelector('.save-button');
             saveButton.addEventListener('click', async () => {
                 const selectedName = select.value;
@@ -89,10 +85,8 @@ async function saveFaceName(facePath, newName, cardElement) {
 
         const result = await response.json();
         if (result.status === 'success') {
-            // Sikeres mentés után eltávolítjuk a kártyát a felületről
             cardElement.parentElement.remove();
             
-            // Ellenőrizzük, maradt-e még kártya
             const container = document.getElementById('unknown-faces-container');
             if (container.children.length === 0) {
                  document.getElementById('no-unknown-faces').style.display = 'block';
