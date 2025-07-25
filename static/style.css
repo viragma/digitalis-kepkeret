@@ -1,0 +1,151 @@
+:root {
+  /* Konfigurációs értékek változókban */
+  --zoom-duration: 30000ms;
+  --blur-strength: 10px;
+  --nozoom-scale: 1.6;
+  --transition-speed: 3s;
+  --image-blend-mode: normal;
+  --image-filter: none;
+  --background-opacity: 0.4;
+}
+
+/* Alapstílusok */
+body, html {
+  cursor: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+}
+
+/* Háttérréteg (elmosott háttérkép) */
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(var(--blur-strength)) brightness(var(--background-opacity));
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease-in-out;
+  z-index: 0;
+}
+.background.visible {
+  opacity: 1;
+}
+
+/* Fő képmegjelenítő réteg */
+.slideshow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 100%;
+  max-height: 100%;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity var(--transition-speed) ease-in-out;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  mix-blend-mode: var(--image-blend-mode);
+  filter: var(--image-filter);
+}
+.slideshow.visible {
+  opacity: 1;
+}
+
+/* Zoom animáció */
+.zoom-effect {
+  animation: zoomIn var(--zoom-duration) ease-in-out forwards;
+}
+
+/* Zoom nélküli méretezés */
+.nozoom-scale {
+  transform: translate(-50%, -50%) scale(var(--nozoom-scale));
+}
+
+@keyframes zoomIn {
+  from {
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1.6);
+  }
+}
+
+/* -----------------------------------
+   Kiegészítő vizuális rétegek
+----------------------------------- */
+
+/* Fény/szín overlay - erősebb hatással */
+#overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(0,0,0,0.6));
+  pointer-events: none;
+  z-index: 2;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Vignette (sötét keret) */
+#vignette {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: radial-gradient(circle, transparent 60%, rgba(0,0,0,0.6));
+  pointer-events: none;
+  z-index: 3;
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+/* Óra - jobb alsó sarokban */
+#clock {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  color: white;
+  font-size: 12px;
+  background: rgba(0,0,0,0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  z-index: 5;
+  font-family: monospace;
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* Dátum - bal alsó sarokban */
+#date {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: white;
+  font-size: 12px;
+  background: rgba(0,0,0,0.3);
+  padding: 4px 10px;
+  border-radius: 4px;
+  z-index: 5;
+  font-family: monospace;
+  opacity: 1;
+}
+
+/* Születésnapi banner - fent középen */
+#birthday-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #b81111;
+  font-size: 12px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  z-index: 6;
+  display: none;
+  font-family: sans-serif;
+}

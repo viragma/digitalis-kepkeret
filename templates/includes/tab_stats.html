@@ -1,0 +1,38 @@
+<div class="container mt-3">
+  <h3>Statisztika</h3>
+  {% if stats %}
+   <canvas id="statsChart" width="400" height="200"></canvas>
+<script>
+  const statsData = {
+    labels: {{ stats|map(attribute='0')|list|tojson }},
+    datasets: [{
+      label: 'Felismerések száma',
+      data: {{ stats|map(attribute='1')|list|tojson }},
+      backgroundColor: 'rgba(54, 162, 235, 0.6)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1
+    }]
+  };
+
+  const statsChart = new Chart(document.getElementById('statsChart'), {
+    type: 'bar',
+    data: statsData,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            precision: 0
+          }
+        }
+      }
+    }
+  });
+</script>
+
+  {% else %}
+    <p>Nincs elérhető statisztikai adat.</p>
+  {% endif %}
+</div>

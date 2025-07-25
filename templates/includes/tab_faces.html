@@ -1,0 +1,26 @@
+{% if faces %}
+  {% for item in faces %}
+    {% set base = item.image.rsplit('.', 1)[0] %}
+    <h5 class="mt-3">{{ item.image }}</h5>
+    <div class="row">
+      {% for face in item.faces %}
+        {% set loc = face.location %}
+        <div class="col-md-3 face-box">
+          <img src="/static/faces/{{ base }}_{{ loop.index0 }}.jpg" class="face-img img-fluid rounded" alt="Arc {{ loop.index }}" onerror="this.style.display='none'">
+          <select id="select_{{ loop.index }}" class="form-select form-select-sm mb-1">
+            <option value="">-- Válassz személyt --</option>
+            {% for person in known_names %}
+              <option value="{{ person }}">{{ person }}</option>
+            {% endfor %}
+            <option value="UNKNOWN">Ismeretlen (kihagyás)</option>
+          </select>
+          <input type="text" class="form-control form-control-sm mt-1" placeholder="Új név" id="newname_{{ loop.index }}">
+          <button class="btn btn-primary btn-sm mt-2" onclick="saveFace('{{ face.face_id }}', '{{ item.image }}', {{ loop.index }})">Mentés</button>
+          <small class="text-muted d-block mt-2">Fényerő: {{ face.brightness }}, Élesség: {{ face.sharpness }}</small>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="mt-3">Nincs felismerhető arc vagy még nem történt feldolgozás.</p>
+{% endif %}

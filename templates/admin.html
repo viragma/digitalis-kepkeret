@@ -1,0 +1,39 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin – Arckezelés{% endblock %}
+
+{% block content %}
+  <ul class="nav nav-tabs" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="arcok-tab" data-bs-toggle="tab" data-bs-target="#arcok" type="button" role="tab">Arcok</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="beallitasok-tab" data-bs-toggle="tab" data-bs-target="#beallitasok" type="button" role="tab">Beállítások</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="statisztika-tab" data-bs-toggle="tab" data-bs-target="#statisztika" type="button" role="tab">Statisztika</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="szulinapok-tab" data-bs-toggle="tab" data-bs-target="#szulinapok" type="button" role="tab">Születésnapok</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="adminTabsContent">
+    <div class="tab-pane fade show active" id="arcok" role="tabpanel">
+      {% include "includes/tab_faces.html" %}
+    </div>
+    <div class="tab-pane fade" id="beallitasok" role="tabpanel">
+      {% include "includes/tab_settings.html" %}
+    </div>
+    <div class="tab-pane fade" id="statisztika" role="tabpanel">
+      {% include "includes/tab_stats.html" %}
+    </div>
+    <div class="tab-pane fade" id="szulinapok" role="tabpanel">
+      {% include "includes/tab_birthdays.html" %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='admin.js') }}"></script>
+{% endblock %}

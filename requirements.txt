@@ -1,0 +1,9 @@
+Flask
+Flask-SocketIO
+flask-cors
+python-dotenv
+face_recognition
+opencv-python
+Pillow
+tinydb
+watchdog

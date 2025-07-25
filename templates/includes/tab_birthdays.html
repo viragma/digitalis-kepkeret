@@ -1,0 +1,28 @@
+<div class="container mt-3">
+  <h3>Születésnapok kezelése</h3>
+  {% if persons %}
+    <form id="birthdayForm" method="post" action="{{ url_for('admin.save_persons_route') }}">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Név</th>
+            <th>Születésnap (ÉÉÉÉ.HH.NN)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for name, person in persons.items() %}
+            <tr>
+              <td>{{ name }}</td>
+              <td>
+                <input type="text" name="birthdays[{{ name }}]" value="{{ person.get('birthday', '') }}" class="form-control" placeholder="1990.01.01">
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <button type="submit" class="btn btn-success">Mentés</button>
+    </form>
+  {% else %}
+    <p>Nincs személy adat.</p>
+  {% endif %}
+</div>

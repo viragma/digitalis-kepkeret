@@ -1,0 +1,9 @@
+<form method="POST" action="{{ url_for('admin.save_config_route') }}">
+  {% for key, value in config.items() %}
+    <div class="mb-3">
+      <label class="form-label">{{ key }}</label>
+      <input type="text" name="{{ key }}" value="{{ value }}" class="form-control">
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary">Mentés</button>
+</form>
