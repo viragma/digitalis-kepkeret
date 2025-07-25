@@ -84,8 +84,7 @@ async function loadUnknownFaces() {
         
         batchActionsPanel.style.display = 'block';
 
-        // Dropdown menük feltöltése
-        batchNameSelect.innerHTML = '<option selected disabled>Válassz egy nevet...</option>'; // Alaphelyzetbe állítás
+        batchNameSelect.innerHTML = '<option selected disabled>Válassz egy nevet...</option>';
         personNames.forEach(name => {
             const option = document.createElement('option');
             option.value = name;
@@ -93,8 +92,7 @@ async function loadUnknownFaces() {
             batchNameSelect.appendChild(option);
         });
 
-        // Arckártyák létrehozása
-        container.innerHTML = ''; // Konténer kiürítése
+        container.innerHTML = '';
         unknownFaces.forEach(face => {
             const cardClone = template.content.cloneNode(true);
             const cardElement = cardClone.querySelector('.face-card');
@@ -162,12 +160,35 @@ function setupBatchActions() {
             return;
         }
 
-        const savePromises = Array.from(selectedCards).map(card => {
-            return saveFaceName(card.dataset.facePath, selectedName, card);
-        });
-        
-        await Promise.all(savePromises);
-        showToast(`${selectedCards.length} arc sikeresen mentve!`);
+        const updates = Array.from(selectedCards).map(card => ({
+            face_path: card.dataset.facePath,
+            new_name: selectedName
+        }));
+
+        try {
+            const response = await fetch('/api/update_faces_batch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updates),
+            });
+
+            if (!response.ok) throw new Error('A szerver hibát adott.');
+            
+            const result = await response.json();
+            if (result.status === 'success') {
+                showToast(result.message);
+                selectedCards.forEach(card => {
+                    card.parentElement.style.transition = 'opacity 0.5s ease';
+                    card.parentElement.style.opacity = '0';
+                    setTimeout(() => card.parentElement.remove(), 500);
+                });
+            } else {
+                showToast(result.message, 'danger');
+            }
+        } catch (error) {
+            console.error('Hiba a tömeges mentés során:', error);
+            showToast('Hálózati hiba történt a mentés során.', 'danger');
+        }
     });
 }
 
