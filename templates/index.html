@@ -1,33 +1,16 @@
-<!DOCTYPE html>
-<html lang="hu">
-<head>
-  <meta charset="UTF-8">
-  <title>Photo Frame</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/static/style.css">
-</head>
-<body>
+{% extends "base.html" %}
 
-  <!-- Háttérrétegek -->
-  <div id="background1" class="background"></div>
-  <div id="background2" class="background"></div>
-
-  <!-- Fő képek -->
-  <img id="image1" class="slideshow" />
-  <img id="image2" class="slideshow" />
-
-  <!-- Extra effektek -->
-  <div id="overlay"></div>
-  <div id="vignette"></div>
-
-  <!-- Óra és dátum -->
-  <div id="clock"></div>
-  <div id="date"></div>
-
-  <!-- Születésnapi banner -->
-  <div id="birthday-banner"></div>
-
-  <!-- JS -->
-  <script src="/static/script.js"></script>
-</body>
-</html>
+{% block content %}
+<div class="slideshow-container">
+    <div class="image-wrapper">
+        <div id="current-image" class="image"></div>
+        <div id="next-image" class="image"></div>
+    </div>
+    <div class="vignette"></div>
+    <div class="overlay">
+        <div id="clock" class="clock"></div>
+        <div id="info-container" class="info-container"></div>
+         <div id="birthday-container" class="birthday-container"></div>
+    </div>
+</div>
+{% endblock %}
