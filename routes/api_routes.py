@@ -1,107 +1,49 @@
-from flask import Blueprint, jsonify, request, current_app
-import os
-import json
+# routes/api_routes.py - JAVÍTOTT VERZIÓ
 
-from services.stats import generate_stats
-from services.face_backup import backup_faces_json
-from services.db import get_all_config, set_config
-from services.reencoder import reencode_known_faces
+from flask import request, jsonify
+from app import app  # Feltételezzük, hogy a fő app objektum itt érhető el
 
-api_bp = Blueprint('api', __name__, url_prefix='/api')
+# --- VÁLTOZÁS ---
+from services import data_manager
 
-# --- Fájlok elérési útjai ---
-IMAGE_FOLDER = 'static/images'
-FACES_JSON = 'data/faces.json'
-CONFIG_FILE = 'data/config.json'
-IMAGE_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.webp')
+@app.route('/api/faces', methods=['GET'])
+def get_all_faces():
+    """ Visszaadja az összes arc adatait JSON formátumban. """
+    faces_data = data_manager.get_faces()
+    return jsonify(faces_data)
 
 
-# --- Képek listázása ---
-@api_bp.route('/images')
-def get_images():
-    try:
-        files = sorted([
-            f for f in os.listdir(IMAGE_FOLDER)
-            if f.lower().endswith(IMAGE_EXTENSIONS)
-        ])
-        return jsonify({"images": files})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+@app.route('/api/update_face_name', methods=['POST'])
+def update_face_name():
+    """
+    Frissíti egy adott archoz tartozó nevet.
+    A frontendtől egy JSON objektumot vár, ami tartalmazza
+    a 'face_path'-t és a 'new_name'-et.
+    """
+    data = request.get_json()
+    face_path = data.get('face_path')
+    new_name = data.get('new_name')
 
+    if not face_path or new_name is None:
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok: face_path vagy new_name'}), 400
 
-# --- Konfiguráció olvasása ---
-@api_bp.route('/config', methods=['GET'])
-def get_config():
-    try:
-        with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
-            return jsonify(json.load(f))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # --- VÁLTOZÁS ---
+    # A data_manager segítségével olvassuk be és írjuk felül az adatokat
+    faces_data = data_manager.get_faces()
+    
+    face_found = False
+    for face in faces_data:
+        # A face_path alapján keressük meg a módosítandó arcot
+        if face.get('face_path') == face_path:
+            face['name'] = new_name
+            face_found = True
+            break
+    
+    if face_found:
+        # Biztonságos mentés a data_manager-rel
+        data_manager.save_faces(faces_data)
+        return jsonify({'status': 'success', 'message': f'Arc frissítve: {new_name}'})
+    else:
+        return jsonify({'status': 'error', 'message': 'A megadott arc nem található'}), 404
 
-
-# --- Konfiguráció frissítése ---
-@api_bp.route('/config', methods=['POST'])
-def update_config():
-    try:
-        data = request.get_json()
-        if not isinstance(data, dict):
-            return jsonify({"error": "Érvénytelen formátum"}), 400
-
-        with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
-
-        # később SocketIO értesítés itt (ha van)
-        return jsonify({"status": "updated"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# --- Arcok listázása ---
-@api_bp.route('/faces')
-def get_faces():
-    try:
-        with open(FACES_JSON, 'r', encoding='utf-8') as f:
-            return jsonify(json.load(f))
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# --- Arc címkézése ---
-@api_bp.route('/label', methods=['POST'])
-def label_face_api():
-    try:
-        data = request.get_json()
-        file = data['file']
-        index = int(data['index'])
-        name = data['name']
-
-        with open(FACES_JSON, 'r', encoding='utf-8') as f:
-            faces_data = json.load(f)
-
-        if file not in faces_data or index >= len(faces_data[file]):
-            return jsonify({"error": "Érvénytelen fájl vagy index"}), 400
-
-        # Biztonsági mentés előtte
-        backup_faces_json()
-
-        # Frissítés
-        faces_data[file][index]['name'] = name
-
-        with open(FACES_JSON, 'w', encoding='utf-8') as f:
-            json.dump(faces_data, f, indent=2, ensure_ascii=False)
-
-        # később ide kerülhet websocket trigger is
-        return jsonify({"status": "ok"})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-# --- Újratanítás indítása ---
-@api_bp.route('/retrain', methods=['POST'])
-def retrain_faces():
-    try:
-        result = reencode_all_faces()
-        return jsonify({"status": "ok", "summary": result})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+# Ide jöhetnek a jövőben a további API végpontok...
