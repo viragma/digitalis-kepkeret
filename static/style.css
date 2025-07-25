@@ -10,12 +10,26 @@ html, body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
+/* ÚJ: A háttérkép stílusa */
+.background-image {
+    position: fixed;
+    top: -20px; /* Nagyobb, hogy az elmosott szél ne látszódjon */
+    left: -20px;
+    width: calc(100% + 40px);
+    height: calc(100% + 40px);
+    background-size: cover;
+    background-position: center center;
+    transition: background-image 1.5s ease-in-out; /* Finom váltás a háttérképek között is */
+    z-index: 0;
+}
+
 .slideshow-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1; /* A háttérkép fölé helyezzük */
 }
 
 .image-wrapper {
@@ -28,14 +42,13 @@ html, body {
     position: absolute;
     width: 100%;
     height: 100%;
-    /* --- VÁLTOZÁS --- */
-    background-size: contain; /* cover helyett contain, hogy a teljes kép látszódjon */
+    background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
     opacity: 0;
-    transition: opacity 1.5s ease-in-out;
-    /* --- VÁLTOZÁS --- */
-    transform: scale(1.0); /* Az alapértelmezett nagyítást levesszük */
+    /* VÁLTOZÁS: Az időtartamot a JS fogja beállítani */
+    transition: opacity ease-in-out;
+    transform: scale(1.0);
 }
 
 .image.visible {
@@ -50,38 +63,29 @@ html, body {
     animation-fill-mode: forwards;
 }
 
-/* --- VÁLTOZÁS --- */
 @keyframes kenburns {
-    0% {
-        transform: scale(1.0); /* Kisebb nagyításról indul */
-    }
-    100% {
-        transform: scale(1.2); /* Kisebb mértékben nagyít, így nem lóg ki */
-    }
+    0% { transform: scale(1.0); }
+    100% { transform: scale(1.2); }
 }
 
-.vignette {
+.vignette, .overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    box-shadow: inset 0 0 150px rgba(0,0,0,0.8);
-    z-index: 1;
+    z-index: 1; /* A kép fölé helyezzük őket */
 }
-
+.vignette { box-shadow: inset 0 0 150px rgba(0,0,0,0.8); }
 .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
     background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.5) 100%);
-    z-index: 2;
     color: white;
     text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
 
+.clock, .info-container, .birthday-container {
+    z-index: 2; /* Mindig legfelül legyenek */
+}
 .clock {
     position: absolute;
     top: 30px;
@@ -90,23 +94,6 @@ html, body {
     font-weight: 300;
     line-height: 1.2;
 }
-
-.clock .date {
-    font-size: 0.5em;
-    font-weight: 400;
-}
-
-.info-container {
-    position: absolute;
-    bottom: 30px;
-    left: 30px;
-    font-size: 1.5rem;
-}
-
-.birthday-container {
-    position: absolute;
-    bottom: 30px;
-    right: 30px;
-    text-align: right;
-    font-size: 1.8rem;
-}
+.clock .date { font-size: 0.5em; font-weight: 400; }
+.info-container { position: absolute; bottom: 30px; left: 30px; font-size: 1.5rem; }
+.birthday-container { position: absolute; bottom: 30px; right: 30px; text-align: right; font-size: 1.8rem; }
