@@ -65,7 +65,7 @@ function showBirthdayGreeting() {
         <span>Ma lettél <b>${person.age}</b> éves!</span>
     </div>`;
     container.style.display = 'block';
-    setTimeout(() => { container.style.display = 'none'; }, 7000); // 7 mp-ig látszik
+    //setTimeout(() => { container.style.display = 'none'; }, 7000); // 7 mp-ig látszik
 }
 
 function startSlideshow() {

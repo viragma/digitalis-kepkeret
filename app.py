@@ -8,6 +8,7 @@ import json
 from routes.main_routes import main_bp
 from routes.admin_routes import admin_bp
 from routes.api_routes import api_bp
+from routes.admin_api import admin_api
 # A többi route fájlt is ide kell majd importálni, miután átalakítottuk őket
 
 def create_app():
@@ -27,6 +28,7 @@ def create_app():
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_bp)
+    app.register_blueprint(admin_api)
 
     return app
 

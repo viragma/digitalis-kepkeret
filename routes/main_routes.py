@@ -23,29 +23,55 @@ def get_image_list():
     slideshow_config = config.get('slideshow', {})
     image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
     birthday_story_mode = slideshow_config.get('birthday_story_mode', False)
+    # ÚJ: highlight filter betöltése
+    try:
+        with open("data/highlight_filter.json", "r", encoding="utf-8") as f:
+            highlight = json.load(f)
+    except Exception:
+        highlight = {"names": [], "custom_text": ""}
+
     try:
         abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
         all_files = os.listdir(abs_image_folder_path)
         image_files = [f for f in all_files if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        # Történet mód: csak a születésnapos személy(ek) képei
+
+        faces = data_manager.get_faces()
+
+        # 1. Ha highlight filter aktív → csak azokat mutassa
+        if highlight["names"]:
+            selected_names = [name.strip() for name in highlight["names"] if name]
+            image_files = [face['image'] for face in faces
+                           if 'image' in face
+                           and face.get('name') and face.get('name').strip() in selected_names]
+            image_files = list(set(image_files))
+            if slideshow_config.get('randomize_playlist', True):
+                random.shuffle(image_files)
+            return jsonify({
+                "images": image_files,
+                "overlay_text": highlight.get("custom_text", "")
+            })
+
+        # 2. Ha birthday_story_mode aktív → csak szülinapos(oka)t mutassa
         birthday_persons = []
         if birthday_story_mode:
             birthday_persons = data_manager.get_birthday_persons()
         if birthday_persons:
-            # faces.json alapján csak azokat a képeket, ahol az ünnepelt szerepel
-            faces = data_manager.get_faces()
             bp_names = [bp[0] for bp in birthday_persons]
-            image_files = [face['image_file'] for face in faces if 'image_file' in face and face.get('name') in bp_names]
-            # csak egyszer szerepeljen egy kép
+            image_files = [face['image'] for face in faces
+                           if 'image' in face
+                           and face.get('name') in bp_names]
             image_files = list(set(image_files))
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(image_files)
         else:
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(image_files)
-        return jsonify(image_files)
+        return jsonify({
+            "images": image_files,
+            "overlay_text": ""
+        })
     except FileNotFoundError:
-        return jsonify([])
+        return jsonify({"images": [], "overlay_text": ""})
     
 @main_bp.route('/birthday_info')
 def get_birthday_info():
