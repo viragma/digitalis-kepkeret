@@ -3,27 +3,21 @@
 
     <div id="batch-actions-panel" class="card mb-4" style="display: none;">
         <div class="card-body">
-            <h5 class="card-title">Kijelölt arcok kezelése</h5>
-            <div class="input-group">
+            <h5 class="card-title">Tömeges műveletek</h5>
+            <div class="input-group mb-2">
                 <select id="batch-name-select" class="form-select">
                     <option selected disabled>Válassz egy nevet...</option>
                 </select>
                 <button id="batch-save-button" class="btn btn-primary">Kijelöltek mentése</button>
             </div>
-            <div class="form-check mt-2">
-                <input class="form-check-input" type="checkbox" id="select-all-checkbox">
-                <label class="form-check-label" for="select-all-checkbox">
-                    Összes kijelölése
-                </label>
+            <div>
+                <button id="select-all-button" class="btn btn-sm btn-outline-secondary">Összes kijelölése</button>
+                <button id="deselect-all-button" class="btn btn-sm btn-outline-secondary">Kijelölés törlése</button>
             </div>
         </div>
     </div>
 
-    <div id="loading-spinner" class="text-center mt-5">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Töltés...</span>
-        </div>
-    </div>
+    <div id="loading-spinner" class="text-center mt-5"> ... </div>
     <div id="unknown-faces-container" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
         </div>
     <p id="no-unknown-faces" class="text-center text-muted mt-5" style="display: none;">Nincs több ismeretlen arc! 🎉</p>
@@ -31,16 +25,15 @@
 
 <template id="face-card-template">
     <div class="col">
-        <div class="card h-100">
-            <input type="checkbox" class="form-check-input card-checkbox">
+        <div class="card h-100 face-card" style="cursor: pointer;">
             <img src="" class="card-img-top face-image" alt="Ismeretlen arc">
-            <div class="card-body p-2">
+            <div class="card-body p-2 text-center">
                 <small>Egyedi mentés:</small>
-                <select class="form-select form-select-sm name-select">
-                    </select>
-            </div>
-            <div class="card-footer p-2">
-                <button class="btn btn-outline-secondary btn-sm w-100 save-button">Mentés</button>
+                <div class="input-group">
+                    <select class="form-select form-select-sm name-select">
+                        </select>
+                    <button class="btn btn-outline-secondary btn-sm save-button">Ment</button>
+                </div>
             </div>
         </div>
     </div>

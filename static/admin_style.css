@@ -36,65 +36,57 @@ body {
     margin-right: 8px;
 }
 
-/* --- Fő tartalmi rész --- */
 main {
     padding-left: calc(var(--sidebar-width) + 24px);
     padding-right: 24px;
 }
-
-
-/* --- Tömeges Műveletek Panel --- */
 #batch-actions-panel {
-    background-color: rgba(255, 255, 255, 0.05); /* Enyhén áttetsző háttér */
+    background-color: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
-
 
 /* --- Arckártyák stílusa --- */
-#unknown-faces-container .card {
+.face-card {
     background-color: #343a40;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-    position: relative; /* Pozicionálási kontextus a jelölőnégyzethez */
-    overflow: hidden; /* Lekerekített sarkok a képen is érvényesüljenek */
+    border: 2px solid transparent; /* Hely a kijelölés jelzésének */
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
-#unknown-faces-container .card:hover {
+.face-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 }
 
-.card-img-top {
-    aspect-ratio: 1 / 1; /* Biztosítja, hogy a képek négyzetesek legyenek */
-    object-fit: cover; /* Levágja a képet, hogy kitöltse a helyet torzítás nélkül */
+/* ÚJ: A kijelölt kártya stílusa */
+.face-card.selected {
+    border-color: #0d6efd;
+    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
+}
+.face-card.selected::after {
+    content: '✔';
+    position: absolute;
+    top: 5px;
+    right: 8px;
+    color: white;
+    background-color: #0d6efd;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
 }
 
-/* Jelölőnégyzet stílusa a kártyán */
-.card-checkbox {
-    position: absolute;
-    top: 8px;
-    left: 8px;
-    z-index: 10;
-    /* Nagyobb és jobban látható jelölőnégyzet */
-    transform: scale(1.5); 
-    accent-color: #0d6efd;
+/* ... (a fájl többi része változatlan) ... */
+.card-img-top {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 .card-body, .card-footer {
     background-color: #2b3035;
-}
-
-.card-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* Betöltő és üres állapot üzenetek */
-#loading-spinner .spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
-
-#no-unknown-faces {
-    font-size: 1.2rem;
-    color: #6c757d !important;
 }
