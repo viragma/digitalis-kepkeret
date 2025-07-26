@@ -11,7 +11,6 @@ from services import data_manager
 main_bp = Blueprint('main_bp', __name__)
 
 def get_image_metadata(image_path):
-    """ Kiolvassa egy kép készítésének dátumát az EXIF adatokból. """
     try:
         with Image.open(image_path) as img:
             exif_data = img._getexif()
@@ -70,18 +69,16 @@ def get_image_list():
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
-            # Véletlenszerű sorrend a listákon belül
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(birthday_playlist)
                 random.shuffle(other_playlist)
             
-            # Összefésüljük a listákat, minden 2. kép a szülinaposé lesz, amíg van
             while birthday_playlist or other_playlist:
                 if birthday_playlist:
                     final_playlist.append(birthday_playlist.pop(0))
                 if other_playlist:
                     final_playlist.append(other_playlist.pop(0))
-                if other_playlist: # Hozzáadunk még egy "normál" képet, hogy kb. 2:1 arány legyen
+                if other_playlist:
                     final_playlist.append(other_playlist.pop(0))
         else:
             final_playlist = detailed_image_list

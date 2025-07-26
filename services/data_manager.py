@@ -30,34 +30,24 @@ def _save_json(file_path, data):
             os.remove(temp_file_path)
 
 def get_config():
-    """Visszaadja a konfigurációs beállításokat."""
     return _load_json(CONFIG_FILE)
 
 def save_config(config_data):
-    """Elmenti a konfigurációs beállításokat."""
     _save_json(CONFIG_FILE, config_data)
 
 def get_persons():
-    """Visszaadja az összes ismert személyt."""
     return _load_json(PERSONS_FILE)
 
 def save_persons(persons_data):
-    """Elmenti a személyek listáját."""
     _save_json(PERSONS_FILE, persons_data)
 
 def get_faces():
-    """Visszaadja az összes felismert arc adatát."""
     return _load_json(FACES_FILE)
 
 def save_faces(faces_data):
-    """Elmenti az arcok listáját."""
     _save_json(FACES_FILE, faces_data)
 
 def get_todays_birthday_person():
-    """
-    Megkeresi, hogy van-e ma születésnapos.
-    Ha igen, visszaadja a nevét, egyébként None-t.
-    """
     persons = get_persons()
     today = datetime.now()
     
