@@ -3,12 +3,12 @@
 from flask import Blueprint, render_template, jsonify
 import os
 import random
-import math
 from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS
 from services import data_manager
 
+# Létrehozzuk a blueprintet URL előtag NÉLKÜL
 main_bp = Blueprint('main_bp', __name__)
 
 def get_image_metadata(image_path):
@@ -64,7 +64,6 @@ def get_image_list():
         boost_ratio = slideshow_config.get('birthday_boost_ratio', 0)
 
         if birthday_person and boost_ratio > 0:
-            print(f"--- Szülinapos Mód Aktív: {birthday_person} ({boost_ratio}%) ---")
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
@@ -76,13 +75,11 @@ def get_image_list():
                 boost_percentage = boost_ratio
                 other_percentage = 100 - boost_ratio
                 if boost_percentage == 0 or other_percentage == 0:
-                    common_divisor = 1 # Avoid division by zero
+                    common_divisor = 1
                 else:
                     common_divisor = math.gcd(boost_percentage, other_percentage)
-                
                 bday_steps = boost_percentage // common_divisor
                 other_steps = other_percentage // common_divisor
-                
                 while birthday_playlist or other_playlist:
                     for _ in range(bday_steps):
                         if birthday_playlist: final_playlist.append(birthday_playlist.pop(0))
