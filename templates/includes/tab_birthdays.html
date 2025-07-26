@@ -1,24 +1,60 @@
 <div class="container mt-4">
-    <h3 class="mb-3">Születésnapok kezelése</h3>
-    <form id="birthdayForm" method="post" action="{{ url_for('admin_bp.save_persons_route') }}">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Név</th>
-                    <th>Születésnap (ÉÉÉÉ.HH.NN formátumban)</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for name, birthday in persons.items() %}
-                <tr>
-                    <td>{{ name }}</td>
-                    <td>
-                        <input type="text" name="birthday_{{ name }}" value="{{ birthday }}" class="form-control" placeholder="pl. 1990.01.01">
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit" class="btn btn-primary">Születésnapok mentése</button>
-    </form>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>Személyek és Születésnapok</h3>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPersonModal">
+            <i class="bi bi-person-plus-fill"></i> Új Személy
+        </button>
+    </div>
+    <ul class="list-group" id="birthday-list">
+        {% for name, data in persons.items() | sort %}
+        <li class="list-group-item d-flex justify-content-between align-items-center" data-person-name="{{ name }}">
+            <div class="d-flex align-items-center">
+                <img src="{{ ('/' + data.profile_image) if data.profile_image else 'https://via.placeholder.com/40/444444/FFFFFF?text=' + name[0] }}" 
+                     alt="{{ name }}" class="rounded-circle me-3" width="40" height="40" style="object-fit: cover;">
+                <div>
+                    <span class="fw-bold">{{ name }}</span>
+                    {% if data.age is not none %}
+                        <small class="text-muted"> - {{ data.age }} éves</small>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <span class="birthday-text me-2">{{ data.get('birthday', 'Nincs megadva') }}</span>
+                <input type="date" class="form-control me-2 d-none birthday-input" value="{{ data.birthday | replace('.', '-') if data.birthday else '' }}">
+                
+                <button type="button" class="btn btn-sm btn-outline-secondary me-2 edit-birthday-btn">✏️</button>
+                <button type="button" class="btn btn-sm btn-success me-2 d-none save-birthday-btn">✔️</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary me-2 d-none cancel-birthday-btn">❌</button>
+                <a href="{{ url_for('admin_bp.delete_person', name=name) }}" class="btn btn-sm btn-outline-danger delete-person-btn" title="Törlés">🗑️</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<div class="modal fade" id="addPersonModal" tabindex="-1" aria-labelledby="addPersonModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="post" action="{{ url_for('admin_bp.add_person') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPersonModalLabel">Új Személy Hozzáadása</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="new-person-name" class="form-label">Név</label>
+                        <input type="text" class="form-control" id="new-person-name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="new-person-birthday" class="form-label">Születésnap</label>
+                        <input type="date" class="form-control" id="new-person-birthday" name="birthday">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Mégse</button>
+                    <button type="submit" class="btn btn-success">Hozzáadás</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

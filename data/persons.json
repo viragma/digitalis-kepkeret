@@ -1,6 +1,6 @@
 {
     "Anya": {
-        "birthday": "1985.07.26",
+        "birthday": "1994.10.13",
         "profile_image": "static/faces/img_0092_face_5.jpg"
     },
     "Larkó": {
@@ -8,7 +8,7 @@
         "profile_image": "static/faces/img_0103_face_0.jpg"
     },
     "Máté": {
-        "birthday": "1994.10.13",
+        "birthday": "",
         "profile_image": "static/faces/img_0076_face_1.jpg"
     },
     "Bogi": {
@@ -56,7 +56,7 @@
         "profile_image": "static/faces/img_0152_face_0.jpg"
     },
     "Apa": {
-        "birthday": "",
+        "birthday": "2025.07.08",
         "profile_image": "static/faces/img_0088_face_0.jpg"
     },
     "Oliver": {

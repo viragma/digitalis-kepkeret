@@ -28,3 +28,18 @@ function showToast(message, category = 'success') {
         newToastEl.remove();
     });
 }
+document.addEventListener('DOMContentLoaded', () => {
+    const birthdayTab = document.getElementById('v-pills-birthdays-tab');
+    if (birthdayTab) {
+        // Figyeljük, mikor lesz a fül aktív
+        birthdayTab.addEventListener('shown.bs.tab', () => {
+            document.querySelectorAll('.delete-person-btn').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    if (!confirm('Biztosan törlöd ezt a személyt? Ezzel az összes adatát (születésnap, profilkép) véglegesen eltávolítod.')) {
+                        event.preventDefault(); // Megállítja a törlést, ha a felhasználó a "Mégse"-re kattint
+                    }
+                });
+            });
+        });
+    }
+});

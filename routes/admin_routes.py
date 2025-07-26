@@ -2,15 +2,26 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager
+from datetime import datetime
 
-# A blueprintnek van egy '/admin' előtagja
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
+
+def calculate_age(birthday_str):
+    """ Kiszámolja a kort a YYYY.MM.DD formátumú stringből. """
+    if not birthday_str: 
+        return None
+    try:
+        birth_date = datetime.strptime(birthday_str.strip(), '%Y.%m.%d')
+        today = datetime.today()
+        # Kiszámolja a kort, figyelembe véve, hogy az idei születésnap elmúlt-e már
+        return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
+    except ValueError:
+        return None
 
 @admin_bp.route('/')
 def admin_index():
     if not session.get('logged_in'): 
         return redirect(url_for('admin_bp.login'))
-    # Ha be vagyunk lépve, a dashboardra irányítunk
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/dashboard')
@@ -18,9 +29,13 @@ def dashboard_page():
     if not session.get('logged_in'): 
         return redirect(url_for('admin_bp.login'))
     
-    # A dashboard rendereli az 'admin.html'-t, ami a füleket tartalmazza
     persons_data = data_manager.get_persons()
     config_data = data_manager.get_config()
+
+    # Kiegészítjük a személyek adatait a program által kiszámolt korral
+    for name, data in persons_data.items():
+        data['age'] = calculate_age(data.get('birthday'))
+
     return render_template('admin.html', persons=persons_data, config=config_data)
 
 @admin_bp.route('/known_faces')
@@ -32,6 +47,7 @@ def known_faces_page():
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        # Ezt a jelszót a configból kellene olvasni
         if request.form['password'] == 'admin': 
             session['logged_in'] = True
             return redirect(url_for('admin_bp.dashboard_page'))
@@ -58,11 +74,13 @@ def save_config_route():
     slideshow_config['image_filter'] = request.form.get('image_filter', 'contrast(1.05) saturate(1.1)')
     slideshow_config['zoom_enabled'] = 'zoom_enabled' in request.form
     slideshow_config['enable_clock'] = 'enable_clock' in request.form
-    slideshow_config['birthday_boost'] = 'birthday_boost' in request.form
+    slideshow_config['birthday_boost_ratio'] = int(request.form.get('birthday_boost_ratio', 75))
     slideshow_config['randomize_playlist'] = 'randomize_playlist' in request.form
     slideshow_config['clock_size'] = request.form.get('clock_size', '2.5rem')
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     
+    slideshow_config.pop('birthday_boost', None)
+
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
     
@@ -74,13 +92,15 @@ def add_person():
     if not session.get('logged_in'): 
         return redirect(url_for('admin_bp.login'))
     
-    name = request.form['name']
-    birthday = request.form['birthday']
+    name = request.form.get('name')
+    birthday_from_form = request.form.get('birthday', '')
+    
+    # Átalakítjuk a dátumot a tárolási formátumra (YYYY.MM.DD)
+    birthday_to_store = birthday_from_form.replace('-', '.') if birthday_from_form else ""
     
     persons_data = data_manager.get_persons()
-    
     if name and name not in persons_data:
-        persons_data[name] = {"birthday": birthday, "profile_image": None}
+        persons_data[name] = {"birthday": birthday_to_store, "profile_image": None}
         data_manager.save_persons(persons_data)
         flash(f'{name} sikeresen hozzáadva.', 'success')
             
@@ -98,20 +118,4 @@ def delete_person(name):
         data_manager.save_persons(persons_data)
         flash(f'{name} sikeresen törölve.', 'warning')
             
-    return redirect(url_for('admin_bp.dashboard_page'))
-
-@admin_bp.route('/save_persons', methods=['POST'])
-def save_persons_route():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
-    
-    persons_data = data_manager.get_persons()
-    for key, value in request.form.items():
-        if key.startswith('birthday_'):
-            person_name = key.replace('birthday_', '')
-            if person_name in persons_data:
-                persons_data[person_name]['birthday'] = value
-            
-    data_manager.save_persons(persons_data)
-    flash('Születésnapok sikeresen mentve!', 'success')
     return redirect(url_for('admin_bp.dashboard_page'))
