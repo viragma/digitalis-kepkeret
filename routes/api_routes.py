@@ -1,10 +1,40 @@
 # routes/api_routes.py
-
 from flask import Blueprint, request, jsonify
 from services import data_manager
 from datetime import datetime
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
+
+@api_bp.route('/persons/gallery_data', methods=['GET'])
+def get_persons_gallery_data():
+    persons = data_manager.get_persons()
+    gallery_data = [{"name": name, "data": data} for name, data in persons.items()]
+    return jsonify(gallery_data)
+
+@api_bp.route('/faces/by_person/<name>', methods=['GET'])
+def get_faces_by_person(name):
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 30, type=int)
+    offset = (page - 1) * limit
+    all_faces = data_manager.get_faces()
+    person_faces = [face for face in all_faces if face.get('name') == name]
+    paginated_faces = person_faces[offset : offset + limit]
+    return jsonify({"faces": paginated_faces, "total": len(person_faces)})
+
+@api_bp.route('/persons/set_profile_image', methods=['POST'])
+def set_profile_image():
+    data = request.get_json()
+    person_name = data.get('name')
+    face_path = data.get('face_path')
+    if not person_name or not face_path:
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok'}), 400
+    persons_data = data_manager.get_persons()
+    if person_name in persons_data:
+        persons_data[person_name]['profile_image'] = face_path
+        data_manager.save_persons(persons_data)
+        return jsonify({'status': 'success', 'message': 'Profilkép beállítva!'})
+    return jsonify({'status': 'error', 'message': 'Személy nem található'}), 404
+# ... a többi meglévő API végpont (birthday_info, faces/unknown, stb.) változatlan ...
 
 @api_bp.route('/birthday_info', methods=['GET'])
 def get_birthday_info():

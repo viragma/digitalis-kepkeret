@@ -1,20 +1,74 @@
 {
-    "Anya": "1985-07-26",
-    "Larkó": "",
-    "Máté": "1994-10-13",
-    "Bogi": "",
-    "Norisz": "",
-    "Benett": "",
-    "Laci": "",
-    "Lackó": "",
-    "Gyula": "",
-    "Ivett": "",
-    "Viki": "",
-    "Lehel": "",
-    "Bia": "",
-    "Luca": "",
-    "Apa": "",
-    "Oliver": "",
-    "Zora": "",
-    "Zoé": ""
+    "Anya": {
+        "birthday": "1985.07.26",
+        "profile_image": null
+    },
+    "Larkó": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Máté": {
+        "birthday": "1994.10.13",
+        "profile_image": null
+    },
+    "Bogi": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Norisz": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Benett": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Laci": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Lackó": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Gyula": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Ivett": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Viki": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Lehel": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Bia": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Luca": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Apa": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Oliver": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Zora": {
+        "birthday": "",
+        "profile_image": null
+    },
+    "Zoé": {
+        "birthday": "",
+        "profile_image": null
+    }
 }

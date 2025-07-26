@@ -17,7 +17,6 @@
         "enable_vignette": true,
         "enable_clock": true,
         "clock_size": "2.5rem",
-        "birthday_boost": true,
         "randomize_playlist": true,
         "birthday_message": "Boldog Születésnapot!",
         "focus_on": "",
@@ -25,6 +24,7 @@
         "family_mode": false,
         "debug_log": false,
         "tolerance": 0.4,
-        "manual_mode": false
+        "manual_mode": false,
+        "birthday_boost_ratio": 100
     }
 }

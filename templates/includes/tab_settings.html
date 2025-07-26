@@ -35,12 +35,18 @@
                         <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
                         <hr>
                         <div class="mb-3 row">
+                            <label for="birthday_boost_ratio" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
+                            <div class="col-sm-8">
+                                <div class="d-flex align-items-center">
+                                    <input type="range" class="form-range" id="birthday_boost_ratio" name="birthday_boost_ratio" min="0" max="100" step="5" value="{{ config.slideshow.get('birthday_boost_ratio', 75) }}" oninput="this.nextElementSibling.value = this.value + '%'">
+                                    <output class="ms-2 fw-bold">{{ config.slideshow.get('birthday_boost_ratio', 75) }}%</output>
+                                </div>
+                                <div class="form-text">Milyen arányban jelenjenek meg a szülinapos képei. 0% = nincs kiemelés, 100% = csak az ő képei.</div>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
                             <label for="randomize_playlist" class="col-sm-4 col-form-label">Véletlenszerű sorrend</label>
                             <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}></div></div>
-                        </div>
-                         <div class="mb-3 row">
-                            <label for="birthday_boost" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
-                            <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="birthday_boost" name="birthday_boost" {% if config.slideshow.get('birthday_boost', true) %}checked{% endif %}></div></div>
                         </div>
                         <div class="mb-3 row">
                             <label for="enable_clock" class="col-sm-4 col-form-label">Óra megjelenítése</label>

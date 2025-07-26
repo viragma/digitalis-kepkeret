@@ -38,18 +38,14 @@ def save_faces(faces_data): _save_json(FACES_FILE, faces_data)
 def get_todays_birthday_person():
     persons = get_persons()
     today = datetime.now()
-    
-    for name, birthday_str in persons.items():
+    for name, data in persons.items():
+        birthday_str = data.get("birthday")
         if not birthday_str: continue
-        
         cleaned_birthday_str = birthday_str.replace('.', '').replace('-', '').replace(' ', '')
         try:
             birthday = datetime.strptime(cleaned_birthday_str, '%Y%m%d')
             if birthday.month == today.month and birthday.day == today.day:
-                # --- JAVÍTÁS ---
-                # A nevet "normalizálva" adjuk vissza
                 return name.strip().title()
         except ValueError:
             continue
-            
     return None

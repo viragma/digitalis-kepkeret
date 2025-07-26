@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, jsonify
 import os
 import random
+import math
 from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS
@@ -44,59 +45,54 @@ def get_image_list():
         
         all_faces = data_manager.get_faces()
         faces_by_image = {}
-        
-        print("\n--- Diagnosztika: Arcok keresése a faces.json-ban ---")
         for face in all_faces:
-            image_file = face.get('image_file')
-            face_name = face.get('name')
-            
-            if image_file and face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
-                if image_file not in faces_by_image:
-                    faces_by_image[image_file] = set()
-                
-                # Normalizáljuk a nevet: szóközök el, nagy kezdőbetű
-                normalized_name = face_name.strip().title()
-                faces_by_image[image_file].add(normalized_name)
-                
-                # Ha a keresett névről van szó, extra logot írunk ki
-                if "anya" in normalized_name.lower():
-                     print(f"-> TALÁLAT A faces.json-ban! Kép: '{image_file}', Név: '{normalized_name}'")
+            if face.get('image_file'):
+                if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
+                face_name = face.get('name')
+                if face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
+                    faces_by_image[face['image_file']].add(face_name.strip().title())
 
         detailed_image_list = []
         for filename in image_filenames:
             image_path = os.path.join(abs_image_folder_path, filename)
             detailed_image_list.append({
-                "file": filename,
-                "people": sorted(list(faces_by_image.get(filename, []))),
-                "date": get_image_metadata(image_path)
+                "file": filename, "people": sorted(list(faces_by_image.get(filename, []))), "date": get_image_metadata(image_path)
             })
 
         final_playlist = []
-        birthday_person = None
-        if slideshow_config.get('birthday_boost', True):
-            birthday_person = data_manager.get_todays_birthday_person()
+        birthday_person = data_manager.get_todays_birthday_person()
+        boost_ratio = slideshow_config.get('birthday_boost_ratio', 0)
 
-        if birthday_person:
-            print(f"--- Szülinapos Mód Aktív: '{birthday_person}' ---")
-            
+        if birthday_person and boost_ratio > 0:
+            print(f"--- Szülinapos Mód Aktív: {birthday_person} ({boost_ratio}%) ---")
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
-            print(f"Szülinapos képeinek száma: {len(birthday_playlist)}")
-            print(f"Többi kép száma: {len(other_playlist)}")
-
-            if slideshow_config.get('randomize_playlist', True):
-                random.shuffle(birthday_playlist)
-                random.shuffle(other_playlist)
-            
-            while birthday_playlist or other_playlist:
-                if birthday_playlist: final_playlist.append(birthday_playlist.pop(0))
-                if other_playlist: final_playlist.append(other_playlist.pop(0))
-                if other_playlist: final_playlist.append(other_playlist.pop(0))
+            if not birthday_playlist:
+                final_playlist = other_playlist
+            elif boost_ratio == 100:
+                final_playlist = birthday_playlist
+            else:
+                boost_percentage = boost_ratio
+                other_percentage = 100 - boost_ratio
+                if boost_percentage == 0 or other_percentage == 0:
+                    common_divisor = 1 # Avoid division by zero
+                else:
+                    common_divisor = math.gcd(boost_percentage, other_percentage)
+                
+                bday_steps = boost_percentage // common_divisor
+                other_steps = other_percentage // common_divisor
+                
+                while birthday_playlist or other_playlist:
+                    for _ in range(bday_steps):
+                        if birthday_playlist: final_playlist.append(birthday_playlist.pop(0))
+                    for _ in range(other_steps):
+                        if other_playlist: final_playlist.append(other_playlist.pop(0))
         else:
             final_playlist = detailed_image_list
-            if slideshow_config.get('randomize_playlist', True):
-                random.shuffle(final_playlist)
+
+        if slideshow_config.get('randomize_playlist', True):
+            random.shuffle(final_playlist)
         
         return jsonify(final_playlist)
 
