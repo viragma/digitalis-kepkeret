@@ -118,7 +118,7 @@
             390
         ],
         "face_path": "static/faces/img_0144_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0144.jpg",
@@ -140,7 +140,7 @@
             1023
         ],
         "face_path": "static/faces/img_0092_face_0.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0092.jpg",
@@ -360,7 +360,7 @@
             204
         ],
         "face_path": "static/faces/img_0131_face_0.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0131.jpg",
@@ -916,7 +916,7 @@
             626
         ],
         "face_path": "static/faces/img_0085_face_1.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0047.jpg",

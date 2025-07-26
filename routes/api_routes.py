@@ -11,13 +11,11 @@ api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 def get_persons_gallery_data():
     persons = data_manager.get_persons()
     all_faces = data_manager.get_faces()
-    
     face_counts = {}
     for face in all_faces:
         name = face.get('name')
         if name and name != 'Ismeretlen':
             face_counts[name] = face_counts.get(name, 0) + 1
-
     gallery_data = []
     for name, data in persons.items():
         gallery_data.append({
@@ -27,61 +25,35 @@ def get_persons_gallery_data():
         })
     return jsonify(gallery_data)
 
-@api_bp.route('/persons/reassign_batch', methods=['POST'])
-def reassign_persons_batch():
+@api_bp.route('/faces/reassign_batch', methods=['POST'])
+def reassign_faces_batch():
+    """ Több arcot átnevez egy cél személyre. """
     data = request.get_json()
-    source_names = data.get('source_names', [])
+    face_paths = data.get('face_paths', [])
     target_name = data.get('target_name')
+    if not face_paths or not target_name:
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
 
-    if not source_names or not target_name:
-        return jsonify({'status': 'error', 'message': 'Hiányzó forrás- vagy célnevek.'}), 400
-
-    persons_data = data_manager.get_persons()
     all_faces = data_manager.get_faces()
-
     for face in all_faces:
-        if face.get('name') in source_names:
+        if face.get('face_path') in face_paths:
             face['name'] = target_name
-    
-    for name in source_names:
-        if name in persons_data:
-            del persons_data[name]
-            person_dir = os.path.join('data', 'known_faces', name)
-            if os.path.isdir(person_dir):
-                shutil.rmtree(person_dir)
-    
-    data_manager.save_persons(persons_data)
     data_manager.save_faces(all_faces)
+    return jsonify({'status': 'success', 'message': f'{len(face_paths)} arc sikeresen átnevezve erre: {target_name}'})
 
-    return jsonify({'status': 'success', 'message': f'{len(source_names)} személy sikeresen átnevezve erre: {target_name}'})
-
-
-@api_bp.route('/persons/delete_batch', methods=['POST'])
-def delete_persons_batch():
-    names_to_delete = request.get_json().get('names', [])
-    if not names_to_delete:
-        return jsonify({'status': 'error', 'message': 'Nincs kiválasztott személy.'}), 400
-
-    persons_data = data_manager.get_persons()
+@api_bp.route('/faces/delete_batch', methods=['POST'])
+def delete_faces_batch():
+    """ Több arcot töröl egyszerre. """
+    face_paths = request.get_json().get('face_paths', [])
+    if not face_paths:
+        return jsonify({'status': 'error', 'message': 'Nincs kiválasztott arc.'}), 400
+    
     all_faces = data_manager.get_faces()
+    updated_faces = [face for face in all_faces if face.get('face_path') not in face_paths]
     
-    deleted_count = 0
-    for name in names_to_delete:
-        if name in persons_data:
-            del persons_data[name]
-            deleted_count += 1
-            person_dir = os.path.join('data', 'known_faces', name)
-            if os.path.isdir(person_dir):
-                shutil.rmtree(person_dir)
+    data_manager.save_faces(updated_faces)
     
-    for face in all_faces:
-        if face.get('name') in names_to_delete:
-            face['name'] = 'Ismeretlen'
-            
-    data_manager.save_persons(persons_data)
-    data_manager.save_faces(all_faces)
-
-    return jsonify({'status': 'success', 'message': f'{deleted_count} személy sikeresen törölve.'})
+    return jsonify({'status': 'success', 'message': f'{len(face_paths)} arc sikeresen törölve.'})
 
 @api_bp.route('/birthday_info', methods=['GET'])
 def get_birthday_info():

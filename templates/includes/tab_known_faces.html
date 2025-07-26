@@ -1,16 +1,4 @@
 <div class="container-fluid mt-4">
-    <div id="person-actions-bar" class="d-none alert alert-secondary align-items-center mb-3">
-        <div class="flex-grow-1">
-            <span id="selection-counter" class="fw-bold"></span>
-        </div>
-        <div class="input-group w-50 me-3">
-            <label class="input-group-text" for="batch-reassign-select">Átnevezés erre:</label>
-            <select class="form-select" id="batch-reassign-select"></select>
-            <button id="batch-reassign-btn" class="btn btn-warning">Átnevez</button>
-        </div>
-        <button id="batch-delete-btn" class="btn btn-danger"><i class="bi bi-trash"></i> Törlés</button>
-    </div>
-
     <div id="person-selector-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4"></div>
     
     <div id="person-gallery-section" class="d-none">
@@ -18,6 +6,17 @@
             <h3 id="gallery-title"></h3>
             <button id="back-to-grid-btn" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Vissza a személyekhez</button>
         </div>
+
+        <div id="face-actions-bar" class="d-none alert alert-secondary align-items-center mb-3">
+            <div class="flex-grow-1"><span id="face-selection-counter" class="fw-bold"></span></div>
+            <div class="input-group w-50 me-3">
+                <label class="input-group-text" for="batch-reassign-select">Átnevezés erre:</label>
+                <select class="form-select" id="batch-reassign-select"></select>
+                <button id="batch-reassign-btn" class="btn btn-warning">Átnevez</button>
+            </div>
+            <button id="batch-delete-btn" class="btn btn-danger"><i class="bi bi-trash"></i> Törlés</button>
+        </div>
+
         <div id="gallery-container" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3"></div>
         <div class="text-center">
             <button id="load-more-btn" class="btn btn-outline-primary mt-4 d-none">Továbbiak betöltése</button>
@@ -26,34 +25,9 @@
 </div>
 
 <template id="person-card-template">
-    <div class="col">
-        <div class="card text-center person-card" style="cursor: pointer;">
-            <img src="/static/images/placeholder.png" class="card-img-top profile-image" alt="Profilkép">
-            <div class="card-body p-2">
-                <h6 class="card-title person-name mb-0"></h6>
-                <small class="text-muted photo-count"></small>
-            </div>
-        </div>
-    </div>
+    <div class="col"><div class="card text-center person-card" style="cursor: pointer;"><img src="/static/images/placeholder.png" class="card-img-top profile-image" alt="Profilkép"><div class="card-body p-2"><h6 class="card-title person-name mb-0"></h6><small class="text-muted photo-count"></small></div></div></div>
 </template>
 
 <template id="face-gallery-card-template">
-    <div class="col">
-        <div class="card face-gallery-card bg-dark text-white">
-            <img src="" class="card-img-top">
-            <div class="card-img-overlay d-flex flex-column p-0">
-                <div class="reassign-menu p-2 d-none">
-                    <div class="input-group">
-                        <select class="form-select form-select-sm reassign-select"></select>
-                        <button class="btn btn-success btn-sm reassign-save-btn">OK</button>
-                    </div>
-                </div>
-                <div class="p-1 text-end action-buttons mt-auto">
-                    <button class="btn btn-sm btn-light reassign-btn" title="Javítás">✏️</button>
-                    <button class="btn btn-sm btn-danger delete-btn" title="Törlés">🗑️</button>
-                    <button class="btn btn-sm set-profile-btn" title="Beállítás profilképnek">⭐</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div class="col"><div class="card face-gallery-card bg-dark text-white" style="cursor: pointer;"><img src="" class="card-img-top"><div class="card-img-overlay d-flex flex-column p-0"><div class="mt-auto p-1 text-end action-buttons"><button class="btn btn-sm set-profile-btn" title="Beállítás profilképnek">⭐</button></div></div></div></div>
 </template>

@@ -26,7 +26,7 @@ async function loadPersonsGrid() {
 
     const response = await fetch('/api/persons/gallery_data');
     const persons = await response.json();
-    allPersonNames = persons.map(p => p.name);
+    allPersonNames = persons.map(p => p.name).sort();
     grid.innerHTML = '';
 
     persons.forEach(person => {
@@ -43,89 +43,13 @@ async function loadPersonsGrid() {
             img.src = `https://via.placeholder.com/150/444444/FFFFFF?text=${encodeURIComponent(person.name.charAt(0))}`;
         }
         
-        card.addEventListener('click', (e) => {
-            if (e.ctrlKey || e.metaKey) {
-                card.classList.toggle('selected');
-                updateActionsBar();
-            } else {
-                showPersonGallery(person.name);
-            }
-        });
+        card.addEventListener('click', () => showPersonGallery(person.name));
         grid.appendChild(cardClone);
     });
-    
-    document.getElementById('batch-delete-btn').addEventListener('click', batchDeletePersons);
-    document.getElementById('batch-reassign-btn').addEventListener('click', batchReassignPersons);
-}
-
-function updateActionsBar() {
-    const selectedCards = document.querySelectorAll('.person-card.selected');
-    const bar = document.getElementById('person-actions-bar');
-    const counter = document.getElementById('selection-counter');
-    const reassignSelect = document.getElementById('batch-reassign-select');
-    
-    if (selectedCards.length > 0) {
-        counter.textContent = `${selectedCards.length} személy kijelölve`;
-        bar.classList.remove('d-none');
-
-        const selectedNames = Array.from(selectedCards).map(c => c.dataset.personName);
-        reassignSelect.innerHTML = '<option selected disabled>Válassz...</option>';
-        allPersonNames.forEach(name => {
-            if (!selectedNames.includes(name)) {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                reassignSelect.appendChild(option);
-            }
-        });
-    } else {
-        bar.classList.add('d-none');
-    }
-}
-
-async function batchDeletePersons() {
-    const selectedCards = document.querySelectorAll('.person-card.selected');
-    const namesToDelete = Array.from(selectedCards).map(card => card.dataset.personName);
-    if (namesToDelete.length === 0) return;
-    if (!confirm(`Biztosan törlöd a következő ${namesToDelete.length} személyt és minden hozzájuk rendelt arcot?\n\n${namesToDelete.join(', ')}`)) return;
-
-    const response = await fetch('/api/persons/delete_batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ names: namesToDelete }),
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-        showToast(result.message);
-        loadPersonsGrid();
-        updateActionsBar();
-    } else { showToast(result.message, 'danger'); }
-}
-
-async function batchReassignPersons() {
-    const selectedCards = document.querySelectorAll('.person-card.selected');
-    const sourceNames = Array.from(selectedCards).map(card => card.dataset.personName);
-    const targetName = document.getElementById('batch-reassign-select').value;
-
-    if (sourceNames.length === 0 || !targetName || targetName === 'Válassz...') return;
-    if (!confirm(`Biztosan átnevezed a következő ${sourceNames.length} személyt erre: ${targetName}?`)) return;
-
-    const response = await fetch('/api/persons/reassign_batch', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ source_names: sourceNames, target_name: targetName }),
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-        showToast(result.message);
-        loadPersonsGrid();
-        updateActionsBar();
-    } else { showToast(result.message, 'danger'); }
 }
 
 function showPersonGallery(name) {
     document.getElementById('person-selector-grid').classList.add('d-none');
-    document.getElementById('person-actions-bar').classList.add('d-none');
     document.getElementById('person-gallery-section').classList.remove('d-none');
     document.getElementById('gallery-title').textContent = `${name} arcképei`;
     
@@ -137,11 +61,13 @@ function showPersonGallery(name) {
     loadMoreBtn.onclick = () => loadFacesForPerson(false);
     
     loadFacesForPerson(true);
+    setupFaceGalleryActions();
 }
 
 function showPersonGrid() {
     document.getElementById('person-selector-grid').classList.remove('d-none');
     document.getElementById('person-gallery-section').classList.add('d-none');
+    document.getElementById('face-actions-bar').classList.add('d-none');
 }
 
 async function loadFacesForPerson(isFirstLoad = false) {
@@ -160,30 +86,18 @@ async function loadFacesForPerson(isFirstLoad = false) {
 
         data.faces.forEach(face => {
             const cardClone = template.content.cloneNode(true);
-            const cardContainer = cardClone.querySelector('.col');
-            const img = cardContainer.querySelector('.card-img-top');
-            const setProfileBtn = cardContainer.querySelector('.set-profile-btn');
-            const reassignBtn = cardContainer.querySelector('.reassign-btn');
-            const deleteBtn = cardContainer.querySelector('.delete-btn');
-            const reassignMenu = cardContainer.querySelector('.reassign-menu');
-            const reassignSelect = cardContainer.querySelector('.reassign-select');
-            const reassignSaveBtn = cardContainer.querySelector('.reassign-save-btn');
-
-            img.src = `/${face.face_path}`;
+            const cardElement = cardClone.querySelector('.face-gallery-card');
+            cardElement.dataset.facePath = face.face_path;
+            cardElement.querySelector('.card-img-top').src = `/${face.face_path}`;
             
-            allPersonNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                if (name === currentPerson) option.selected = true;
-                reassignSelect.appendChild(option);
+            cardElement.addEventListener('click', (e) => {
+                if (!e.target.closest('button')) {
+                    cardElement.classList.toggle('selected');
+                    updateFaceActionsBar();
+                }
             });
 
-            setProfileBtn.addEventListener('click', () => setAsProfileImage(currentPerson, face.face_path));
-            deleteBtn.addEventListener('click', () => deleteFace(face.face_path, cardContainer));
-            reassignBtn.addEventListener('click', () => reassignMenu.classList.toggle('d-none'));
-            reassignSaveBtn.addEventListener('click', () => reassignFace(face.face_path, reassignSelect.value, cardContainer));
-
+            cardElement.querySelector('.set-profile-btn').addEventListener('click', () => setAsProfileImage(currentPerson, face.face_path));
             container.appendChild(cardClone);
         });
 
@@ -192,6 +106,69 @@ async function loadFacesForPerson(isFirstLoad = false) {
     } catch (error) {
         console.error(`Hiba a(z) ${currentPerson} arcképeinek betöltésekor:`, error);
     }
+}
+
+function setupFaceGalleryActions() {
+    const reassignSelect = document.getElementById('batch-reassign-select');
+    reassignSelect.innerHTML = '<option selected disabled>Válassz...</option>';
+    allPersonNames.forEach(name => {
+        if (name !== currentPerson) {
+            const option = document.createElement('option');
+            option.value = name;
+            option.textContent = name;
+            reassignSelect.appendChild(option);
+        }
+    });
+
+    document.getElementById('batch-delete-btn').addEventListener('click', batchDeleteFaces);
+    document.getElementById('batch-reassign-btn').addEventListener('click', batchReassignFaces);
+}
+
+function updateFaceActionsBar() {
+    const selected = document.querySelectorAll('.face-gallery-card.selected');
+    const bar = document.getElementById('face-actions-bar');
+    const counter = document.getElementById('face-selection-counter');
+    bar.classList.toggle('d-none', selected.length === 0);
+    if (selected.length > 0) {
+        counter.textContent = `${selected.length} arc kijelölve`;
+    }
+}
+
+async function batchDeleteFaces() {
+    const selectedCards = document.querySelectorAll('.face-gallery-card.selected');
+    const facePaths = Array.from(selectedCards).map(card => card.dataset.facePath);
+    if (facePaths.length === 0 || !confirm(`Biztosan törlöd a kijelölt ${facePaths.length} arcot?`)) return;
+
+    const response = await fetch('/api/faces/delete_batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ face_paths: facePaths }),
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+        showToast(result.message);
+        selectedCards.forEach(card => card.parentElement.remove());
+        updateFaceActionsBar();
+    } else { showToast(result.message, 'danger'); }
+}
+
+async function batchReassignFaces() {
+    const selectedCards = document.querySelectorAll('.face-gallery-card.selected');
+    const facePaths = Array.from(selectedCards).map(card => card.dataset.facePath);
+    const targetName = document.getElementById('batch-reassign-select').value;
+    if (facePaths.length === 0 || !targetName || targetName === 'Válassz...') return;
+
+    const response = await fetch('/api/faces/reassign_batch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ face_paths: facePaths, target_name: targetName }),
+    });
+    const result = await response.json();
+    if (result.status === 'success') {
+        showToast(result.message);
+        selectedCards.forEach(card => card.parentElement.remove());
+        updateFaceActionsBar();
+    } else { showToast(result.message, 'danger'); }
 }
 
 async function setAsProfileImage(personName, facePath) {
@@ -208,33 +185,5 @@ async function setAsProfileImage(personName, facePath) {
                 card.querySelector('.profile-image').src = `/${facePath}`;
             }
         });
-    } else { showToast(result.message, 'danger'); }
-}
-
-async function reassignFace(facePath, newName, cardContainer) {
-    const response = await fetch('/api/update_face_name', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ face_path: facePath, new_name: newName }),
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-        showToast(`Arc sikeresen áthelyezve ide: ${newName}`);
-        cardContainer.remove();
-    } else { showToast(result.message, 'danger'); }
-}
-
-async function deleteFace(facePath, cardContainer) {
-    if (!confirm('Biztosan törlöd ezt az arcképet? Ez a művelet nem vonható vissza.')) return;
-    
-    const response = await fetch('/api/faces/delete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ face_path: facePath }),
-    });
-    const result = await response.json();
-    if (result.status === 'success') {
-        showToast(result.message);
-        cardContainer.remove();
     } else { showToast(result.message, 'danger'); }
 }
