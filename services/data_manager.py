@@ -1,17 +1,15 @@
-# services/data_manager.py - BŐVÍTVE
+# services/data_manager.py
 
 import json
 import os
 import shutil
 from datetime import datetime
 
-# --- VÁLTOZÁS ---
-# A gyökérkönyvtárat meghatározzuk, hogy bárhonnan fusson a kód
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 PERSONS_FILE = os.path.join(DATA_DIR, 'persons.json')
 FACES_FILE = os.path.join(DATA_DIR, 'faces.json')
-CONFIG_FILE = os.path.join(DATA_DIR, 'config.json') # Új konstans
+CONFIG_FILE = os.path.join(DATA_DIR, 'config.json')
 
 def _load_json(file_path):
     try:
@@ -21,7 +19,6 @@ def _load_json(file_path):
         return {} if 'persons' in file_path or 'config' in file_path else []
 
 def _save_json(file_path, data):
-    # ... (ez a függvény változatlan)
     temp_file_path = file_path + ".tmp"
     try:
         with open(temp_file_path, 'w', encoding='utf-8') as f:
@@ -32,43 +29,48 @@ def _save_json(file_path, data):
         if os.path.exists(temp_file_path):
             os.remove(temp_file_path)
 
-# --- ÚJ FUNKCIÓ ---
 def get_config():
     """Visszaadja a konfigurációs beállításokat."""
     return _load_json(CONFIG_FILE)
-
-# --- Személyek kezelése (Persons) ---
-def get_persons():
-    return _load_json(PERSONS_FILE)
-
-def save_persons(persons_data):
-    _save_json(PERSONS_FILE, persons_data)
-
-# --- Arcok kezelése (Faces) ---
-def get_faces():
-    return _load_json(FACES_FILE)
-
-def save_faces(faces_data):
-    _save_json(FACES_FILE, faces_data)
-
-    # services/data_manager.py - A FÁJL VÉGÉRE
 
 def save_config(config_data):
     """Elmenti a konfigurációs beállításokat."""
     _save_json(CONFIG_FILE, config_data)
 
+def get_persons():
+    """Visszaadja az összes ismert személyt."""
+    return _load_json(PERSONS_FILE)
 
-def get_birthday_persons():
+def save_persons(persons_data):
+    """Elmenti a személyek listáját."""
+    _save_json(PERSONS_FILE, persons_data)
+
+def get_faces():
+    """Visszaadja az összes felismert arc adatát."""
+    return _load_json(FACES_FILE)
+
+def save_faces(faces_data):
+    """Elmenti az arcok listáját."""
+    _save_json(FACES_FILE, faces_data)
+
+def get_todays_birthday_person():
+    """
+    Megkeresi, hogy van-e ma születésnapos.
+    Ha igen, visszaadja a nevét, egyébként None-t.
+    """
     persons = get_persons()
-    today = datetime.today()
-    birthday_names = []
-    for name, birthdate in persons.items():
-        if not birthdate:
+    today = datetime.now()
+    
+    for name, birthday_str in persons.items():
+        if not birthday_str: 
             continue
+        
+        cleaned_birthday_str = birthday_str.replace('.', '').replace('-', '').replace(' ', '')
         try:
-            bdate = datetime.strptime(birthdate, "%Y-%m-%d")
-            if bdate.month == today.month and bdate.day == today.day:
-                birthday_names.append((name, bdate.year))
-        except Exception:
+            birthday = datetime.strptime(cleaned_birthday_str, '%Y%m%d')
+            if birthday.month == today.month and birthday.day == today.day:
+                return name
+        except ValueError:
             continue
-    return birthday_names
+            
+    return None

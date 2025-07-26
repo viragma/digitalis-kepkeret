@@ -1,82 +1,94 @@
-# routes/main_routes.py - VÉGLEGES JAVÍTÁS
+# routes/main_routes.py
 
-from flask import Blueprint, render_template, jsonify, request
-from datetime import datetime
+from flask import Blueprint, render_template, jsonify
 import os
 import random
+from datetime import datetime
+from PIL import Image
+from PIL.ExifTags import TAGS
 from services import data_manager
 
 main_bp = Blueprint('main_bp', __name__)
+
+def get_image_metadata(image_path):
+    """ Kiolvassa egy kép készítésének dátumát az EXIF adatokból. """
+    try:
+        with Image.open(image_path) as img:
+            exif_data = img._getexif()
+            if exif_data:
+                for tag, value in exif_data.items():
+                    tag_name = TAGS.get(tag, tag)
+                    if tag_name == 'DateTimeOriginal':
+                        return datetime.strptime(value, '%Y:%m:%d %H:%M:%S').strftime('%Y. %B')
+    except Exception as e:
+        print(f"Hiba az EXIF olvasásakor ({os.path.basename(image_path)}): {e}")
+    return None
 
 @main_bp.route('/')
 def index():
     return render_template('index.html')
 
 @main_bp.route('/config')
-def get_config():
-    config = data_manager.get_config()
-    return jsonify(config.get("slideshow", {}))
+def get_slideshow_config():
+    config_data = data_manager.get_config()
+    return jsonify(config_data.get('slideshow', {}))
 
 @main_bp.route('/imagelist')
 def get_image_list():
-    faces = data_manager.get_faces()
     config = data_manager.get_config()
-    slideshow_config = config.get("slideshow", {})
+    slideshow_config = config.get('slideshow', {})
+    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
+    
+    try:
+        abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
+        image_filenames = [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        
+        all_faces = data_manager.get_faces()
+        faces_by_image = {}
+        for face in all_faces:
+            if face.get('image_file'):
+                if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
+                if face.get('name') and face['name'] not in ['Ismeretlen', 'arc_nélkül']:
+                    faces_by_image[face['image_file']].add(face['name'])
 
-    selected_names = slideshow_config.get("persons", [])
-    birthday_story_mode = slideshow_config.get("birthday_mode", False)
+        detailed_image_list = []
+        for filename in image_filenames:
+            image_path = os.path.join(abs_image_folder_path, filename)
+            detailed_image_list.append({
+                "file": filename,
+                "people": sorted(list(faces_by_image.get(filename, []))),
+                "date": get_image_metadata(image_path)
+            })
 
-    image_files = []
+        final_playlist = []
+        birthday_person = None
+        if slideshow_config.get('birthday_boost', True):
+            birthday_person = data_manager.get_todays_birthday_person()
 
-    # 1. Ha van kiválasztott személy(ek) ÉS nincs szülinapos mód
-    if selected_names and not birthday_story_mode:
-        image_files = [face['image'] for face in faces
-                       if 'image' in face
-                       and face.get('name') and face.get('name').strip() in selected_names]
-        image_files = list(set(image_files))
-        if slideshow_config.get('randomize_playlist', True):
-            random.shuffle(image_files)
-        return jsonify(image_files)
-
-    # 2. Ha birthday_mode aktív: csak mai szülinaposok képei
-    if birthday_story_mode:
-        birthday_persons = data_manager.get_birthday_persons()
-        if birthday_persons:
-            bp_names = [bp[0] for bp in birthday_persons]
-            image_files = [face['image'] for face in faces
-                           if 'image' in face
-                           and face.get('name') in bp_names]
-            image_files = list(set(image_files))
+        if birthday_person:
+            print(f"Szülinapos kiemelése: {birthday_person}")
+            birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
+            other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
+            
+            # Véletlenszerű sorrend a listákon belül
             if slideshow_config.get('randomize_playlist', True):
-                random.shuffle(image_files)
-            return jsonify(image_files)
+                random.shuffle(birthday_playlist)
+                random.shuffle(other_playlist)
+            
+            # Összefésüljük a listákat, minden 2. kép a szülinaposé lesz, amíg van
+            while birthday_playlist or other_playlist:
+                if birthday_playlist:
+                    final_playlist.append(birthday_playlist.pop(0))
+                if other_playlist:
+                    final_playlist.append(other_playlist.pop(0))
+                if other_playlist: # Hozzáadunk még egy "normál" képet, hogy kb. 2:1 arány legyen
+                    final_playlist.append(other_playlist.pop(0))
         else:
-            # NINCS ma szülinapos: fallback → összes kép
-            image_files = [face['image'] for face in faces if 'image' in face]
-            image_files = list(set(image_files))
+            final_playlist = detailed_image_list
             if slideshow_config.get('randomize_playlist', True):
-                random.shuffle(image_files)
-            return jsonify(image_files)
+                random.shuffle(final_playlist)
+        
+        return jsonify(final_playlist)
 
-    # 3. Egyik sem: összes kép
-    image_files = [face['image'] for face in faces if 'image' in face]
-    image_files = list(set(image_files))
-    if slideshow_config.get('randomize_playlist', True):
-        random.shuffle(image_files)
-    return jsonify(image_files)
-
-@main_bp.route('/birthday_info')
-def get_birthday_info():
-    birthday_persons = data_manager.get_birthday_persons()
-    today = datetime.today()
-    result = []
-    for name, year in birthday_persons:
-        age = today.year - year if year else ""
-        result.append({"name": name, "age": age})
-    return jsonify(result)
-
-@main_bp.route('/api/persons.json')
-def get_persons():
-    import json
-    with open('data/persons.json', encoding='utf-8') as f:
-        return jsonify(json.load(f))
+    except FileNotFoundError:
+        return jsonify([])

@@ -1,6 +1,6 @@
 # routes/api_routes.py
 
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify
 from services import data_manager
 from datetime import datetime
 
@@ -8,36 +8,24 @@ api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
 @api_bp.route('/birthday_info', methods=['GET'])
 def get_birthday_info():
-    """ Ellenőrzi, hogy van-e ma születésnapos, és visszaadja az adatait. """
     config = data_manager.get_config()
     slideshow_config = config.get('slideshow', {})
     
-    # --- JAVÍTÁS ---
-    # Először ellenőrizzük, hogy a funkció egyáltalán be van-e kapcsolva.
     if not slideshow_config.get('birthday_boost', False):
-        return jsonify({}) # Ha nincs bekapcsolva, üres válasszal térünk vissza.
+        return jsonify({})
 
-    persons = data_manager.get_persons()
-    today = datetime.now()
+    birthday_person_name = data_manager.get_todays_birthday_person()
     
-    for name, birthday_str in persons.items():
-        if not birthday_str: 
-            continue
-        
-        cleaned_birthday_str = birthday_str.replace('.', '').replace('-', '').replace(' ', '')
+    if birthday_person_name:
+        persons = data_manager.get_persons()
+        birthday_str = persons.get(birthday_person_name)
         try:
-            birthday = datetime.strptime(cleaned_birthday_str, '%Y%m%d')
-            if birthday.month == today.month and birthday.day == today.day:
-                age = today.year - birthday.year
-                message = slideshow_config.get('birthday_message', 'Boldog Születésnapot!')
-                return jsonify({
-                    "name": name,
-                    "age": age,
-                    "message": message
-                })
-        except ValueError as e:
-            print(f"Hibás dátumformátum a '{name}' személynél: {birthday_str} -> {e}")
-            continue
+            birthday = datetime.strptime(birthday_str.replace('.', '').strip(), '%Y%m%d')
+            age = datetime.now().year - birthday.year
+            message = slideshow_config.get('birthday_message', 'Boldog Születésnapot!')
+            return jsonify({"name": birthday_person_name, "age": age, "message": message})
+        except (ValueError, TypeError):
+             return jsonify({})
             
     return jsonify({})
 

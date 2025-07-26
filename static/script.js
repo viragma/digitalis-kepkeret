@@ -5,33 +5,26 @@ let imageList = [];
 let currentIndex = 0;
 let isPaused = false;
 
-// DOM elemek
-const currentBackgroundDiv = document.getElementById('current-background');
-const nextBackgroundDiv = document.getElementById('next-background');
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
-const errorDiv = document.getElementById('slideshow-error'); // ÚJ! (tedd be a html-be is!)
+const infoContainer = document.getElementById('info-container');
+const birthdayContainer = document.getElementById('birthday-container');
+const currentBackgroundDiv = document.getElementById('current-background');
+const nextBackgroundDiv = document.getElementById('next-background');
 
-// Konfig és képlista betöltése
 async function fetchConfigAndImages() {
     try {
-        const [configRes, imageListRes] = await Promise.all([
-            fetch('/config'),
-            fetch('/imagelist')
-        ]);
+        const [configRes, imageListRes] = await Promise.all([ fetch('/config'), fetch('/imagelist') ]);
         config = await configRes.json();
         imageList = await imageListRes.json();
-        if (!Array.isArray(imageList)) imageList = [];
         
         const transitionSpeed = (config.transition_speed || 1500) / 1000;
-        // Áttűnés sebesség mind a 4 rétegen
         currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
         nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
         currentBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
         nextBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
 
-        // Óra
         if (clockDiv) {
             if (config.enable_clock) {
                 clockDiv.style.display = 'block';
@@ -40,56 +33,15 @@ async function fetchConfigAndImages() {
                 clockDiv.style.display = 'none';
             }
         }
-
-        // HIBA: ha nincs kép
-        if (imageList.length === 0) {
-            if (errorDiv) {
-                errorDiv.style.display = 'block';
-                errorDiv.innerHTML = "Nincs megjeleníthető kép a kiválasztott szűrőkkel!";
-            }
-            return;
-        } else if (errorDiv) {
-            errorDiv.style.display = 'none';
-        }
-
         startSlideshow();
-    } catch (error) {
-        if (errorDiv) {
-            errorDiv.style.display = 'block';
-            errorDiv.innerHTML = "Hiba a konfiguráció vagy képlista betöltésekor!";
-        }
-        console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error);
-    }
-}
-let birthdayInfo = null;
-
-async function fetchBirthdayInfo() {
-    try {
-        const resp = await fetch('/birthday_info');
-        birthdayInfo = await resp.json();
-    } catch (e) {
-        birthdayInfo = [];
-    }
+    } catch (error) { console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error); }
 }
 
-function showBirthdayGreeting() {
-    if (!config.greeting_enabled || !birthdayInfo || birthdayInfo.length === 0) return;
-    const container = document.getElementById('birthday-container');
-    if (!container) return;
-    const person = birthdayInfo[0]; // ha több van, csak az elsőt használjuk most
-    container.innerHTML = `<div class="greeting animated">
-        <span>Boldog születésnapot, <b>${person.name}</b>!</span><br>
-        <span>Ma lettél <b>${person.age}</b> éves!</span>
-    </div>`;
-    container.style.display = 'block';
-}
-
-// Vetítés
 function startSlideshow() {
-    if (!Array.isArray(imageList) || imageList.length === 0) return;
-    currentIndex = -1;
-    // Első kép betöltése háttérként és előtérként is, áttűnés nélkül
-    const initialImageUrl = `/static/images/${imageList[0]}`;
+    if (imageList.length === 0) return;
+    currentIndex = 0;
+    const initialImageObject = imageList[0];
+    const initialImageUrl = `/static/images/${initialImageObject.file}`;
     currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
@@ -100,25 +52,26 @@ function startSlideshow() {
 }
 
 function showNextImage() {
-    if (isPaused) {
-        setTimeout(showNextImage, 1000);
-        return;
-    }
-    if (!Array.isArray(imageList) || imageList.length === 0) return;
+    if (isPaused) { setTimeout(showNextImage, 1000); return; }
 
     currentIndex = (currentIndex + 1) % imageList.length;
-    const imageUrl = `/static/images/${imageList[currentIndex]}`;
+    const imageObject = imageList[currentIndex];
+    const imageUrl = `/static/images/${imageObject.file}`;
     
     const img = new Image();
     img.src = imageUrl;
     img.onload = () => {
-        // 1. Új kép betöltése a "következő" rétegekbe
+        let infoText = '';
+        if (imageObject.people && imageObject.people.length > 0) infoText += imageObject.people.join(' & ');
+        if (imageObject.date) infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date);
+        infoContainer.textContent = infoText;
+        infoContainer.classList.add('visible');
+        
         nextBackgroundDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
         nextImageDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextImageDiv.style.filter = config.image_filter || 'none';
 
-        // Ken Burns effekt
         nextImageDiv.classList.remove('ken-burns');
         if (config.zoom_enabled) {
             nextImageDiv.style.animationDuration = (config.zoom_duration || 30000) + 'ms';
@@ -130,21 +83,32 @@ function showNextImage() {
             nextImageDiv.style.transform = `scale(1.0)`;
         }
 
-        // 2. Rétegek váltása
         currentImageDiv.classList.remove('visible');
         nextImageDiv.classList.add('visible');
         currentBackgroundDiv.classList.remove('visible');
         nextBackgroundDiv.classList.add('visible');
         
-        // 3. Háttércsere
         setTimeout(() => {
             currentImageDiv.style.backgroundImage = nextImageDiv.style.backgroundImage;
             currentBackgroundDiv.style.backgroundImage = nextBackgroundDiv.style.backgroundImage;
         }, config.transition_speed || 1500);
         
-        // 4. Következő váltás időzítése
+        setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
         setTimeout(showNextImage, config.interval || 10000);
     };
+}
+
+async function checkBirthdays() {
+    try {
+        const response = await fetch('/api/birthday_info');
+        const birthdayData = await response.json();
+        if (birthdayData && birthdayData.name) {
+            birthdayContainer.innerHTML = `${birthdayData.message}<br><span class="birthday-name">${birthdayData.name} (${birthdayData.age})</span>`;
+            birthdayContainer.classList.add('visible');
+        } else {
+            birthdayContainer.classList.remove('visible');
+        }
+    } catch (error) { console.error("Hiba a születésnapok lekérdezésekor:", error); }
 }
 
 function updateClock() {
@@ -156,10 +120,9 @@ function updateClock() {
     }
 }
 
-// Slideshow indításakor:
-document.addEventListener('DOMContentLoaded', async () => {
-    await fetchConfigAndImages();
-    await fetchBirthdayInfo();
-    showBirthdayGreeting();
+document.addEventListener('DOMContentLoaded', () => {
+    fetchConfigAndImages();
     setInterval(updateClock, 1000);
+    checkBirthdays(); 
+    setInterval(checkBirthdays, 3600000);
 });
