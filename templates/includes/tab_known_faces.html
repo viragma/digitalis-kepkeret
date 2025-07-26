@@ -1,6 +1,17 @@
 <div class="container-fluid mt-4">
-    <div id="person-selector-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4">
+    <div id="person-actions-bar" class="d-none alert alert-secondary align-items-center mb-3">
+        <div class="flex-grow-1">
+            <span id="selection-counter" class="fw-bold"></span>
         </div>
+        <div class="input-group w-50 me-3">
+            <label class="input-group-text" for="batch-reassign-select">Átnevezés erre:</label>
+            <select class="form-select" id="batch-reassign-select"></select>
+            <button id="batch-reassign-btn" class="btn btn-warning">Átnevez</button>
+        </div>
+        <button id="batch-delete-btn" class="btn btn-danger"><i class="bi bi-trash"></i> Törlés</button>
+    </div>
+
+    <div id="person-selector-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3 mb-4"></div>
     
     <div id="person-gallery-section" class="d-none">
         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -15,7 +26,15 @@
 </div>
 
 <template id="person-card-template">
-    <div class="col"><div class="card text-center person-card" style="cursor: pointer;"><img src="/static/images/placeholder.png" class="card-img-top profile-image" alt="Profilkép"><div class="card-body p-2"><h6 class="card-title person-name mb-0"></h6></div></div></div>
+    <div class="col">
+        <div class="card text-center person-card" style="cursor: pointer;">
+            <img src="/static/images/placeholder.png" class="card-img-top profile-image" alt="Profilkép">
+            <div class="card-body p-2">
+                <h6 class="card-title person-name mb-0"></h6>
+                <small class="text-muted photo-count"></small>
+            </div>
+        </div>
+    </div>
 </template>
 
 <template id="face-gallery-card-template">
@@ -29,7 +48,7 @@
                         <button class="btn btn-success btn-sm reassign-save-btn">OK</button>
                     </div>
                 </div>
-                <div class="p-1 text-end action-buttons">
+                <div class="p-1 text-end action-buttons mt-auto">
                     <button class="btn btn-sm btn-light reassign-btn" title="Javítás">✏️</button>
                     <button class="btn btn-sm btn-danger delete-btn" title="Törlés">🗑️</button>
                     <button class="btn btn-sm set-profile-btn" title="Beállítás profilképnek">⭐</button>

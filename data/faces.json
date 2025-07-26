@@ -19,7 +19,7 @@
             76
         ],
         "face_path": "static/faces/img_0126_face_0.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0126.jpg",
@@ -251,17 +251,6 @@
         ],
         "face_path": "static/faces/img_0078_face_0.jpg",
         "name": "Larkó"
-    },
-    {
-        "image_file": "img_0078.jpg",
-        "face_location": [
-            510,
-            613,
-            562,
-            561
-        ],
-        "face_path": "static/faces/img_0078_face_1.jpg",
-        "name": "Zoé"
     },
     {
         "image_file": "img_0080.jpg",
@@ -501,17 +490,6 @@
         ],
         "face_path": "static/faces/img_0044_face_1.jpg",
         "name": "Ismeretlen"
-    },
-    {
-        "image_file": "img_0044.jpg",
-        "face_location": [
-            270,
-            958,
-            425,
-            803
-        ],
-        "face_path": "static/faces/img_0044_face_2.jpg",
-        "name": "Zoé"
     },
     {
         "image_file": "img_0044.jpg",
@@ -851,17 +829,6 @@
         ],
         "face_path": "static/faces/img_0151_face_0.jpg",
         "name": "Anya"
-    },
-    {
-        "image_file": "img_0151.jpg",
-        "face_location": [
-            130,
-            349,
-            166,
-            313
-        ],
-        "face_path": "static/faces/img_0151_face_1.jpg",
-        "name": "Zoé"
     },
     {
         "image_file": "img_0108.jpg",

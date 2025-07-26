@@ -1,31 +1,31 @@
 {
     "Anya": {
         "birthday": "1985.07.26",
-        "profile_image": "static/faces/img_0146_face_2.jpg"
+        "profile_image": "static/faces/img_0092_face_5.jpg"
     },
     "Larkó": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0103_face_0.jpg"
     },
     "Máté": {
         "birthday": "1994.10.13",
-        "profile_image": null
+        "profile_image": "static/faces/img_0076_face_1.jpg"
     },
     "Bogi": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0106_face_0.jpg"
     },
     "Norisz": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0036_face_0.jpg"
     },
     "Benett": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0042_face_1.jpg"
     },
     "Laci": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0104_face_2.jpg"
     },
     "Lackó": {
         "birthday": "",
@@ -37,11 +37,11 @@
     },
     "Ivett": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0095_face_0.jpg"
     },
     "Viki": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0092_face_1.jpg"
     },
     "Lehel": {
         "birthday": "",
@@ -49,15 +49,15 @@
     },
     "Bia": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0154_face_0.jpg"
     },
     "Luca": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0152_face_0.jpg"
     },
     "Apa": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0088_face_0.jpg"
     },
     "Oliver": {
         "birthday": "",
