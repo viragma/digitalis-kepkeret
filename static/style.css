@@ -1,160 +1,47 @@
-/* static/admin_style.css */
-:root {
-    --sidebar-width: 280px;
+/* static/style.css */
+html, body {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden; background-color: #000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
-
-body {
-    font-size: .875rem;
-    background-color: #212529;
+.background-layer {
+    position: fixed; top: -20px; left: -20px;
+    width: calc(100% + 40px); height: calc(100% + 40px);
+    background-size: cover; background-position: center center;
+    opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 0;
 }
-
-/* --- Alap elrendezés --- */
-.sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 100;
-    padding: 48px 0 0;
-    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-    width: var(--sidebar-width);
+.background-layer.visible, .image.visible { opacity: 1; }
+.slideshow-container {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 1;
 }
-
-.nav-link {
-    color: #c4c4c4;
-    margin: 0.25rem 1rem;
-    border-radius: .25rem;
+.image-wrapper, .image { position: absolute; width: 100%; height: 100%; }
+.image {
+    background-size: contain; background-position: center center; background-repeat: no-repeat;
+    opacity: 0; transition: opacity 1.5s ease-in-out; transform: scale(1.0);
 }
-
-.nav-link:hover, .nav-link.active {
-    color: #fff;
-    background-color: #0d6efd;
+.image.ken-burns {
+    animation-name: kenburns; animation-timing-function: linear;
+    animation-iteration-count: 1; animation-direction: normal; animation-fill-mode: forwards;
 }
-
-.nav-link .bi {
-    margin-right: 8px;
+@keyframes kenburns {
+    0% { transform: scale(1.0); }
+    100% { transform: scale(1.2); }
 }
-
-main {
-    padding-left: calc(var(--sidebar-width) + 24px);
-    padding-right: 24px;
+.vignette, .overlay {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 1;
 }
-
-/* --- Ismeretlen Arcok fül --- */
-#batch-actions-panel {
-    background-color: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.vignette { box-shadow: inset 0 0 150px rgba(0,0,0,0.8); }
+.overlay {
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.5) 100%);
+    color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8);
 }
-
-.face-card {
-    background-color: #343a40;
-    border: 2px solid transparent;
-    transition: all 0.2s ease-in-out;
-    position: relative;
-    overflow: hidden;
-}
-
-.face-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
-}
-
-.face-card.selected {
-    border-color: #0d6efd;
-    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
-}
-
-.face-card.selected::after {
-    content: '✔';
-    position: absolute;
-    top: 5px;
-    right: 8px;
-    color: white;
-    background-color: #0d6efd;
-    border-radius: 50%;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.card-img-top {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-}
-
-.card-body, .card-footer {
-    background-color: #2b3035;
-}
-
-.card-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-#loading-spinner .spinner-border {
-    width: 3rem;
-    height: 3rem;
-}
-
-#no-unknown-faces {
-    font-size: 1.2rem;
-    color: #6c757d !important;
-}
-
-/* --- Ismert Arcok Galéria fül --- */
-.person-card {
-    transition: all 0.2s ease-in-out;
-    border: 2px solid transparent; /* Hely a keretnek */
-}
-
-.person-card:hover {
-    transform: translateY(-5px);
-    border-color: #555;
-}
-
-.person-card.selected {
-    border-color: #0d6efd;
-    box-shadow: 0 0 15px rgba(13, 110, 253, 0.5);
-    transform: scale(1.05);
-}
-
-.person-card .profile-image {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    background-color: #444;
-}
-
-.face-gallery-card {
-    border: 2px solid transparent; /* Hely a keretnek */
-    transition: all 0.2s ease-in-out;
-}
-
-.face-gallery-card.selected {
-    border-color: #0d6efd;
-    transform: scale(1.05);
-}
-
-.face-gallery-card .card-img-overlay {
-    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 50%);
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
-}
-
-.face-gallery-card:hover .card-img-overlay {
-    opacity: 1;
-}
-
-.set-profile-btn {
-    color: gold;
-    font-size: 1.2rem;
-    text-shadow: 0 0 5px black;
-}
-
-#person-actions-bar, #face-actions-bar {
-    position: sticky;
-    top: 60px;
-    z-index: 1020;
-}
+.clock, .info-container, .birthday-container { z-index: 2; position: absolute; }
+.clock { top: 30px; left: 30px; font-size: 2.5rem; font-weight: 300; line-height: 1.2; }
+.clock .date { font-size: 0.5em; font-weight: 400; }
+.info-container { bottom: 30px; left: 30px; font-size: 1.5rem; }
+.birthday-container { bottom: 30px; right: 30px; text-align: right; font-size: 1.8rem; }
+.info-container, .birthday-container { opacity: 0; transition: opacity 0.5s ease-in-out; }
+.info-container.visible, .birthday-container.visible {  opacity: 1; }
+.birthday-name { font-size: 0.8em; font-weight: bold; }
