@@ -1,4 +1,5 @@
-# routes/main_routes.py
+# routes/main_routes.py - DIAGNOSZTIKAI VERZIÓ
+
 from flask import Blueprint, render_template, jsonify
 import os
 import random
@@ -33,6 +34,7 @@ def get_slideshow_config():
 
 @main_bp.route('/imagelist')
 def get_image_list():
+    print("\n--- /imagelist VÉGPONT MEGHÍVVA ---")
     config = data_manager.get_config()
     slideshow_config = config.get('slideshow', {})
     image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
@@ -43,15 +45,20 @@ def get_image_list():
         
         all_faces = data_manager.get_faces()
         faces_by_image = {}
+        print("\n--- Arcok feldolgozása a faces.json-ból ---")
         for face in all_faces:
             if face.get('image_file'):
                 if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
                 
                 face_name = face.get('name')
                 if face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
-                    # --- JAVÍTÁS ---
-                    # A nevet itt is "normalizáljuk" (szóközök el, nagy kezdőbetű)
-                    faces_by_image[face['image_file']].add(face_name.strip().title())
+                    # Normalizáljuk a nevet: szóközök el, nagy kezdőbetű
+                    normalized_name = face_name.strip().title()
+                    faces_by_image[face['image_file']].add(normalized_name)
+                    # Kiírjuk, hogy mit találtunk
+                    if "anya" in normalized_name.lower():
+                         print(f"-> Kép: {face.get('image_file')}, Talált név (eredeti): '{face_name}', Normalizált: '{normalized_name}'")
+
 
         detailed_image_list = []
         for filename in image_filenames:
@@ -68,10 +75,22 @@ def get_image_list():
             birthday_person = data_manager.get_todays_birthday_person()
 
         if birthday_person:
-            print(f"--- Szülinapos Mód Aktív: {birthday_person} ---")
-            birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
-            other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
+            print(f"\n--- Szülinapos Mód Aktív ---")
+            print(f"Keresett név: '{birthday_person}' (Típus: {type(birthday_person)})")
             
+            birthday_playlist = []
+            other_playlist = []
+
+            print("\n--- Képlista szűrése a szülinaposra ---")
+            for img in detailed_image_list:
+                # Kiírjuk, hogy mit mivel hasonlítunk össze
+                print(f"Kép: {img['file']}, Szereplők: {img['people']}. Összehasonlítás: '{birthday_person}' benne van? {birthday_person in img['people']}")
+                if birthday_person in img['people']:
+                    birthday_playlist.append(img)
+                else:
+                    other_playlist.append(img)
+            
+            print(f"\nEredmény:")
             print(f"Szülinapos képeinek száma: {len(birthday_playlist)}")
             print(f"Többi kép száma: {len(other_playlist)}")
 
@@ -80,17 +99,15 @@ def get_image_list():
                 random.shuffle(other_playlist)
             
             while birthday_playlist or other_playlist:
-                if birthday_playlist:
-                    final_playlist.append(birthday_playlist.pop(0))
-                if other_playlist:
-                    final_playlist.append(other_playlist.pop(0))
-                if other_playlist:
-                    final_playlist.append(other_playlist.pop(0))
+                if birthday_playlist: final_playlist.append(birthday_playlist.pop(0))
+                if other_playlist: final_playlist.append(other_playlist.pop(0))
+                if other_playlist: final_playlist.append(other_playlist.pop(0))
         else:
             final_playlist = detailed_image_list
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(final_playlist)
         
+        print("\n--- /imagelist VÉGPONT VÉGE ---")
         return jsonify(final_playlist)
 
     except FileNotFoundError:
