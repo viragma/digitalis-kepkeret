@@ -1,4 +1,4 @@
-# routes/main_routes.py - DIAGNOSZTIKAI VERZIÓ
+# routes/main_routes.py
 
 from flask import Blueprint, render_template, jsonify
 import os
@@ -34,7 +34,6 @@ def get_slideshow_config():
 
 @main_bp.route('/imagelist')
 def get_image_list():
-    print("\n--- /imagelist VÉGPONT MEGHÍVVA ---")
     config = data_manager.get_config()
     slideshow_config = config.get('slideshow', {})
     image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
@@ -45,20 +44,23 @@ def get_image_list():
         
         all_faces = data_manager.get_faces()
         faces_by_image = {}
-        print("\n--- Arcok feldolgozása a faces.json-ból ---")
+        
+        print("\n--- Diagnosztika: Arcok keresése a faces.json-ban ---")
         for face in all_faces:
-            if face.get('image_file'):
-                if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
+            image_file = face.get('image_file')
+            face_name = face.get('name')
+            
+            if image_file and face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
+                if image_file not in faces_by_image:
+                    faces_by_image[image_file] = set()
                 
-                face_name = face.get('name')
-                if face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
-                    # Normalizáljuk a nevet: szóközök el, nagy kezdőbetű
-                    normalized_name = face_name.strip().title()
-                    faces_by_image[face['image_file']].add(normalized_name)
-                    # Kiírjuk, hogy mit találtunk
-                    if "anya" in normalized_name.lower():
-                         print(f"-> Kép: {face.get('image_file')}, Talált név (eredeti): '{face_name}', Normalizált: '{normalized_name}'")
-
+                # Normalizáljuk a nevet: szóközök el, nagy kezdőbetű
+                normalized_name = face_name.strip().title()
+                faces_by_image[image_file].add(normalized_name)
+                
+                # Ha a keresett névről van szó, extra logot írunk ki
+                if "anya" in normalized_name.lower():
+                     print(f"-> TALÁLAT A faces.json-ban! Kép: '{image_file}', Név: '{normalized_name}'")
 
         detailed_image_list = []
         for filename in image_filenames:
@@ -75,22 +77,11 @@ def get_image_list():
             birthday_person = data_manager.get_todays_birthday_person()
 
         if birthday_person:
-            print(f"\n--- Szülinapos Mód Aktív ---")
-            print(f"Keresett név: '{birthday_person}' (Típus: {type(birthday_person)})")
+            print(f"--- Szülinapos Mód Aktív: '{birthday_person}' ---")
             
-            birthday_playlist = []
-            other_playlist = []
-
-            print("\n--- Képlista szűrése a szülinaposra ---")
-            for img in detailed_image_list:
-                # Kiírjuk, hogy mit mivel hasonlítunk össze
-                print(f"Kép: {img['file']}, Szereplők: {img['people']}. Összehasonlítás: '{birthday_person}' benne van? {birthday_person in img['people']}")
-                if birthday_person in img['people']:
-                    birthday_playlist.append(img)
-                else:
-                    other_playlist.append(img)
+            birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
+            other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
-            print(f"\nEredmény:")
             print(f"Szülinapos képeinek száma: {len(birthday_playlist)}")
             print(f"Többi kép száma: {len(other_playlist)}")
 
@@ -107,7 +98,6 @@ def get_image_list():
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(final_playlist)
         
-        print("\n--- /imagelist VÉGPONT VÉGE ---")
         return jsonify(final_playlist)
 
     except FileNotFoundError:
