@@ -5,6 +5,7 @@ let imageList = [];
 let currentIndex = 0;
 let isPaused = false;
 
+// DOM elemek
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -12,10 +13,10 @@ const infoContainer = document.getElementById('info-container');
 const birthdayContainer = document.getElementById('birthday-container');
 const currentBackgroundDiv = document.getElementById('current-background');
 const nextBackgroundDiv = document.getElementById('next-background');
+const upcomingBirthdaysContainer = document.getElementById('upcoming-birthdays-container');
 
 async function initializeApp() {
     try {
-        // A konfigurációt és a képlistaát egyszerre kérjük le
         const [configRes, imageListRes] = await Promise.all([
             fetch('/config'),
             fetch('/imagelist')
@@ -23,10 +24,9 @@ async function initializeApp() {
         config = await configRes.json();
         imageList = await imageListRes.json();
         
-        // A szülinap ellenőrzést is itt végezzük el, a vetítés indítása előtt
         await checkBirthdays();
+        await updateUpcomingBirthdays();
 
-        // Stílusok beállítása a config alapján
         const transitionSpeed = (config.transition_speed || 1500) / 1000;
         currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
         nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
@@ -41,10 +41,7 @@ async function initializeApp() {
                 clockDiv.style.display = 'none';
             }
         }
-        
-        // Csak akkor indítjuk a vetítést, ha minden adatunk megvan
         startSlideshow();
-
     } catch (error) { 
         console.error("Hiba az alkalmazás inicializálása során:", error); 
     }
@@ -62,6 +59,14 @@ function startSlideshow() {
     currentImageDiv.classList.add('visible');
     currentBackgroundDiv.classList.add('visible');
     
+    // Az első képhez tartozó infókat is megjelenítjük
+    let infoText = '';
+    if (initialImageObject.people && initialImageObject.people.length > 0) infoText += initialImageObject.people.join(' & ');
+    if (initialImageObject.date) infoText += (infoText ? ` - ${initialImageObject.date}` : initialImageObject.date);
+    infoContainer.textContent = infoText;
+    infoContainer.classList.add('visible');
+    setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
+
     setTimeout(showNextImage, config.interval || 10000);
 }
 
@@ -125,6 +130,30 @@ async function checkBirthdays() {
     } catch (error) { console.error("Hiba a születésnapok lekérdezésekor:", error); }
 }
 
+async function updateUpcomingBirthdays() {
+    if (!config.show_upcoming_birthdays) {
+        if (upcomingBirthdaysContainer) upcomingBirthdaysContainer.innerHTML = '';
+        return;
+    }
+    try {
+        const response = await fetch('/api/upcoming_birthdays');
+        const upcoming = await response.json();
+        if (upcoming.length > 0) {
+            let html = '<h5>Közelgő Szülinapok</h5><ul>';
+            upcoming.forEach(person => {
+                let dayText = person.days_left === 0 ? 'Ma!' : (person.days_left === 1 ? 'Holnap!' : `${person.days_left} nap múlva`);
+                html += `<li>🎂 ${person.name} - ${dayText}</li>`;
+            });
+            html += '</ul>';
+            upcomingBirthdaysContainer.innerHTML = html;
+        } else {
+            upcomingBirthdaysContainer.innerHTML = '';
+        }
+    } catch (error) {
+        console.error("Hiba a közelgő születésnapok lekérdezésekor:", error);
+    }
+}
+
 function updateClock() {
     if (config.enable_clock && clockDiv) {
         const now = new Date();
@@ -135,8 +164,8 @@ function updateClock() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeApp(); // A régi fetchConfigAndImages helyett ezt hívjuk
+    initializeApp();
     setInterval(updateClock, 1000);
-    // A checkBirthdays-t óránként frissítjük, de az elsőt már az initializeApp elintézi
-    setInterval(checkBirthdays, 3600000);
+    setInterval(checkBirthdays, 3600000); 
+    setInterval(updateUpcomingBirthdays, 6 * 3600000); 
 });

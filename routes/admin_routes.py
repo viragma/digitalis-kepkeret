@@ -7,13 +7,10 @@ from datetime import datetime
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
 def calculate_age(birthday_str):
-    """ Kiszámolja a kort a YYYY.MM.DD formátumú stringből. """
-    if not birthday_str: 
-        return None
+    if not birthday_str: return None
     try:
         birth_date = datetime.strptime(birthday_str.strip(), '%Y.%m.%d')
         today = datetime.today()
-        # Kiszámolja a kort, figyelembe véve, hogy az idei születésnap elmúlt-e már
         return today.year - birth_date.year - ((today.month, today.day) < (birth_date.month, birth_date.day))
     except ValueError:
         return None
@@ -31,8 +28,6 @@ def dashboard_page():
     
     persons_data = data_manager.get_persons()
     config_data = data_manager.get_config()
-
-    # Kiegészítjük a személyek adatait a program által kiszámolt korral
     for name, data in persons_data.items():
         data['age'] = calculate_age(data.get('birthday'))
 
@@ -78,9 +73,9 @@ def save_config_route():
     slideshow_config['randomize_playlist'] = 'randomize_playlist' in request.form
     slideshow_config['clock_size'] = request.form.get('clock_size', '2.5rem')
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
+    slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
+    slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
     
-    slideshow_config.pop('birthday_boost', None)
-
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
     
@@ -95,7 +90,6 @@ def add_person():
     name = request.form.get('name')
     birthday_from_form = request.form.get('birthday', '')
     
-    # Átalakítjuk a dátumot a tárolási formátumra (YYYY.MM.DD)
     birthday_to_store = birthday_from_form.replace('-', '.') if birthday_from_form else ""
     
     persons_data = data_manager.get_persons()

@@ -3,38 +3,54 @@ import os
 import shutil
 from flask import Blueprint, request, jsonify
 from services import data_manager
-from datetime import datetime
+from datetime import datetime, date, timedelta
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
-@api_bp.route('/person/update_birthday', methods=['POST'])
-def update_person_birthday():
-    """ Egyetlen személy születésnapját frissíti. """
-    data = request.get_json()
-    name = data.get('name')
-    birthday_str = data.get('birthday', '') # YYYY-MM-DD formátum
+@api_bp.route('/upcoming_birthdays', methods=['GET'])
+def get_upcoming_birthdays():
+    """ Visszaadja a következő X napban esedékes születésnapok listáját. """
+    config = data_manager.get_config()
+    slideshow_config = config.get('slideshow', {})
     
-    if not name:
-        return jsonify({'status': 'error', 'message': 'Hiányzó név.'}), 400
+    if not slideshow_config.get('show_upcoming_birthdays', True):
+        return jsonify([])
 
-    persons_data = data_manager.get_persons()
-    if name in persons_data:
-        # Átalakítjuk a dátumot a tárolási formátumra (YYYY.MM.DD)
-        persons_data[name]['birthday'] = birthday_str.replace('-', '.') if birthday_str else ""
-        data_manager.save_persons(persons_data)
-        return jsonify({'status': 'success', 'message': f'{name} születésnapja frissítve.'})
+    limit_days = slideshow_config.get('upcoming_days_limit', 30)
+    persons = data_manager.get_persons()
+    today = date.today()
+    upcoming = []
+
+    for name, data in persons.items():
+        birthday_str = data.get("birthday")
+        if not birthday_str: continue
+        
+        try:
+            birth_date = datetime.strptime(birthday_str.strip(), '%Y.%m.%d').date()
+            next_birthday = birth_date.replace(year=today.year)
+            if next_birthday < today:
+                next_birthday = next_birthday.replace(year=today.year + 1)
+            
+            days_left = (next_birthday - today).days
+            
+            if 0 <= days_left <= limit_days:
+                upcoming.append({"name": name, "days_left": days_left})
+
+        except (ValueError, TypeError):
+            continue
     
-    return jsonify({'status': 'error', 'message': 'Személy nem található'}), 404
+    upcoming.sort(key=lambda x: x['days_left'])
+    return jsonify(upcoming)
 
 @api_bp.route('/persons/gallery_data', methods=['GET'])
 def get_persons_gallery_data():
     persons = data_manager.get_persons()
     all_faces = data_manager.get_faces()
-    face_counts = {}
+    face_counts = {name: 0 for name in persons.keys()}
     for face in all_faces:
         name = face.get('name')
-        if name and name != 'Ismeretlen':
-            face_counts[name] = face_counts.get(name, 0) + 1
+        if name and name in face_counts:
+            face_counts[name] += 1
     gallery_data = [{"name": name, "data": data, "face_count": face_counts.get(name, 0)} for name, data in persons.items()]
     return jsonify(gallery_data)
 
@@ -77,7 +93,7 @@ def delete_persons_batch():
 def get_birthday_info():
     config = data_manager.get_config()
     slideshow_config = config.get('slideshow', {})
-    if not slideshow_config.get('birthday_boost', False): return jsonify({})
+    if not slideshow_config.get('birthday_boost_ratio', 0) > 0: return jsonify({})
     birthday_person_name = data_manager.get_todays_birthday_person()
     if birthday_person_name:
         persons = data_manager.get_persons()
@@ -151,3 +167,27 @@ def delete_face():
         data_manager.save_faces(updated_faces)
         return jsonify({'status': 'success', 'message': 'Arc sikeresen törölve.'})
     return jsonify({'status': 'error', 'message': 'A törlendő arc nem található'}), 404
+
+@api_bp.route('/faces/reassign_batch', methods=['POST'])
+def reassign_faces_batch():
+    data = request.get_json()
+    face_paths = data.get('face_paths', [])
+    target_name = data.get('target_name')
+    if not face_paths or not target_name:
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
+    all_faces = data_manager.get_faces()
+    for face in all_faces:
+        if face.get('face_path') in face_paths:
+            face['name'] = target_name
+    data_manager.save_faces(all_faces)
+    return jsonify({'status': 'success', 'message': f'{len(face_paths)} arc sikeresen átnevezve erre: {target_name}'})
+
+@api_bp.route('/faces/delete_batch', methods=['POST'])
+def delete_faces_batch():
+    face_paths = request.get_json().get('face_paths', [])
+    if not face_paths:
+        return jsonify({'status': 'error', 'message': 'Nincs kiválasztott arc.'}), 400
+    all_faces = data_manager.get_faces()
+    updated_faces = [face for face in all_faces if face.get('face_path') not in face_paths]
+    data_manager.save_faces(updated_faces)
+    return jsonify({'status': 'success', 'message': f'{len(face_paths)} arc sikeresen törölve.'})
