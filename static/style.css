@@ -43,5 +43,5 @@ html, body {
 .info-container { bottom: 30px; left: 30px; font-size: 1.5rem; }
 .birthday-container { bottom: 30px; right: 30px; text-align: right; font-size: 1.8rem; }
 .info-container, .birthday-container { opacity: 0; transition: opacity 0.5s ease-in-out; }
-.info-container.visible, .birthday-container.visible { opacity: 1; }
+.info-container.visible, .birthday-container.visible {  opacity: 1; }
 .birthday-name { font-size: 0.8em; font-weight: bold; }

@@ -5,6 +5,7 @@ let imageList = [];
 let currentIndex = 0;
 let isPaused = false;
 
+// DOM elemek
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -15,7 +16,10 @@ const nextBackgroundDiv = document.getElementById('next-background');
 
 async function fetchConfigAndImages() {
     try {
-        const [configRes, imageListRes] = await Promise.all([ fetch('/config'), fetch('/imagelist') ]);
+        const [configRes, imageListRes] = await Promise.all([
+            fetch('/config'),
+            fetch('/imagelist')
+        ]);
         config = await configRes.json();
         imageList = await imageListRes.json();
         
@@ -34,13 +38,16 @@ async function fetchConfigAndImages() {
             }
         }
         startSlideshow();
-    } catch (error) { console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error); }
+    } catch (error) { 
+        console.error("Hiba a konfiguráció vagy a képlista betöltésekor:", error); 
+    }
 }
 
 function startSlideshow() {
     if (imageList.length === 0) return;
     currentIndex = 0;
     const initialImageObject = imageList[0];
+    if (!initialImageObject) return; // Biztonsági ellenőrzés
     const initialImageUrl = `/static/images/${initialImageObject.file}`;
     currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
@@ -102,13 +109,19 @@ async function checkBirthdays() {
     try {
         const response = await fetch('/api/birthday_info');
         const birthdayData = await response.json();
+
+        // --- DIAGNOSZTIKA ---
+        console.log("Születésnapi adatok a szerverről:", birthdayData);
+
         if (birthdayData && birthdayData.name) {
             birthdayContainer.innerHTML = `${birthdayData.message}<br><span class="birthday-name">${birthdayData.name} (${birthdayData.age})</span>`;
             birthdayContainer.classList.add('visible');
         } else {
             birthdayContainer.classList.remove('visible');
         }
-    } catch (error) { console.error("Hiba a születésnapok lekérdezésekor:", error); }
+    } catch (error) { 
+        console.error("Hiba a születésnapok lekérdezésekor:", error); 
+    }
 }
 
 function updateClock() {
@@ -124,5 +137,5 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchConfigAndImages();
     setInterval(updateClock, 1000);
     checkBirthdays(); 
-    setInterval(checkBirthdays, 3600000);
+    setInterval(checkBirthdays, 3600000); // Óránként
 });

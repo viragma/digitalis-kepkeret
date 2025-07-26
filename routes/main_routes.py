@@ -1,5 +1,4 @@
 # routes/main_routes.py
-
 from flask import Blueprint, render_template, jsonify
 import os
 import random
@@ -48,11 +47,11 @@ def get_image_list():
             if face.get('image_file'):
                 if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
                 
-                # --- JAVÍTÁS ---
-                # A nevet "megtisztítjuk" (szóközök eltávolítása), mielőtt feldolgozzuk
                 face_name = face.get('name')
                 if face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
-                    faces_by_image[face['image_file']].add(face_name.strip())
+                    # --- JAVÍTÁS ---
+                    # A nevet itt is "normalizáljuk" (szóközök el, nagy kezdőbetű)
+                    faces_by_image[face['image_file']].add(face_name.strip().title())
 
         detailed_image_list = []
         for filename in image_filenames:
@@ -70,8 +69,6 @@ def get_image_list():
 
         if birthday_person:
             print(f"--- Szülinapos Mód Aktív: {birthday_person} ---")
-            # --- JAVÍTÁS ---
-            # Itt is a "megtisztított" neveket hasonlítjuk össze
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
