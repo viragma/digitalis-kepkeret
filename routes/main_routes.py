@@ -47,8 +47,12 @@ def get_image_list():
         for face in all_faces:
             if face.get('image_file'):
                 if face['image_file'] not in faces_by_image: faces_by_image[face['image_file']] = set()
-                if face.get('name') and face['name'] not in ['Ismeretlen', 'arc_nélkül']:
-                    faces_by_image[face['image_file']].add(face['name'])
+                
+                # --- JAVÍTÁS ---
+                # A nevet "megtisztítjuk" (szóközök eltávolítása), mielőtt feldolgozzuk
+                face_name = face.get('name')
+                if face_name and face_name.strip() not in ['Ismeretlen', 'arc_nélkül']:
+                    faces_by_image[face['image_file']].add(face_name.strip())
 
         detailed_image_list = []
         for filename in image_filenames:
@@ -65,10 +69,15 @@ def get_image_list():
             birthday_person = data_manager.get_todays_birthday_person()
 
         if birthday_person:
-            print(f"Szülinapos kiemelése: {birthday_person}")
+            print(f"--- Szülinapos Mód Aktív: {birthday_person} ---")
+            # --- JAVÍTÁS ---
+            # Itt is a "megtisztított" neveket hasonlítjuk össze
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             
+            print(f"Szülinapos képeinek száma: {len(birthday_playlist)}")
+            print(f"Többi kép száma: {len(other_playlist)}")
+
             if slideshow_config.get('randomize_playlist', True):
                 random.shuffle(birthday_playlist)
                 random.shuffle(other_playlist)
