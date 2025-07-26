@@ -5,6 +5,26 @@ from datetime import datetime
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
+@api_bp.route('/faces/delete', methods=['POST'])
+def delete_face():
+    """ Töröl egy arc bejegyzést a faces.json-ból a face_path alapján. """
+    data = request.get_json()
+    face_path_to_delete = data.get('face_path')
+
+    if not face_path_to_delete:
+        return jsonify({'status': 'error', 'message': 'Hiányzó face_path'}), 400
+
+    all_faces = data_manager.get_faces()
+    
+    # Létrehozunk egy új listát, amiben már nem szerepel a törlendő elem
+    updated_faces = [face for face in all_faces if face.get('face_path') != face_path_to_delete]
+    
+    if len(updated_faces) < len(all_faces):
+        data_manager.save_faces(updated_faces)
+        return jsonify({'status': 'success', 'message': 'Arc sikeresen törölve.'})
+    else:
+        return jsonify({'status': 'error', 'message': 'A törlendő arc nem található'}), 404
+
 @api_bp.route('/persons/gallery_data', methods=['GET'])
 def get_persons_gallery_data():
     persons = data_manager.get_persons()

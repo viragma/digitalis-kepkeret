@@ -19,5 +19,22 @@
 </template>
 
 <template id="face-gallery-card-template">
-    <div class="col"><div class="card face-gallery-card bg-dark text-white"><img src="" class="card-img-top"><div class="card-img-overlay d-flex flex-column p-0"><div class="mt-auto p-1 text-end"><button class="btn btn-sm set-profile-btn" title="Beállítás profilképnek">⭐</button></div></div></div></div>
+    <div class="col">
+        <div class="card face-gallery-card bg-dark text-white">
+            <img src="" class="card-img-top">
+            <div class="card-img-overlay d-flex flex-column p-0">
+                <div class="reassign-menu p-2 d-none">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm reassign-select"></select>
+                        <button class="btn btn-success btn-sm reassign-save-btn">OK</button>
+                    </div>
+                </div>
+                <div class="p-1 text-end action-buttons">
+                    <button class="btn btn-sm btn-light reassign-btn" title="Javítás">✏️</button>
+                    <button class="btn btn-sm btn-danger delete-btn" title="Törlés">🗑️</button>
+                    <button class="btn btn-sm set-profile-btn" title="Beállítás profilképnek">⭐</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
