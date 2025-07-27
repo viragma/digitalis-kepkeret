@@ -1,6 +1,8 @@
 {
     "UPLOAD_FOLDER": "static/images",
-    "ADMIN_PASSWORD": "admin",
+    "ADMIN_PASSWORD": "a_te_admin_jelszavad",
+    "WEATHER_API_KEY": "AZ_API_KULCSOD_HELYE",
+    "WEATHER_CITY": "Kecskemét,HU",
     "slideshow": {
         "interval": 10000,
         "zoom_enabled": true,
@@ -17,16 +19,19 @@
         "enable_vignette": true,
         "enable_clock": true,
         "clock_size": "2.5rem",
+        "birthday_boost_ratio": 75,
         "randomize_playlist": true,
-        "birthday_message": "Boldog Születésnapot!",
-        "focus_on": "",
-        "custom_message": "",
-        "family_mode": false,
-        "debug_log": false,
-        "tolerance": 0.4,
-        "manual_mode": false,
-        "birthday_boost_ratio": 100,
+        "birthday_message": "🎉 Boldog Születésnapot! 🎉",
         "show_upcoming_birthdays": true,
-        "upcoming_days_limit": 60
+        "upcoming_days_limit": 30
+    },
+    "themes": {
+        "enabled": true,
+        "birthday": {
+            "animation": "confetti"
+        },
+        "christmas": {
+            "animation": "snow"
+        }
     }
 }

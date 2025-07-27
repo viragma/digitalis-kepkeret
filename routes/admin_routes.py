@@ -74,7 +74,7 @@ def save_config_route():
     flash('Beállítások sikeresen mentve!', 'success')
     return redirect(url_for('admin_bp.dashboard_page'))
 
-@api_bp.route('/save_themes_config', methods=['POST'])
+@admin_bp.route('/save_themes_config', methods=['POST'])
 def save_themes_config_route():
     """ Elmenti a Témák fülön lévő beállításokat. """
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))

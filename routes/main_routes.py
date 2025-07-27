@@ -7,6 +7,7 @@ from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS
 from services import data_manager
+import math
 
 # Létrehozzuk a blueprintet URL előtag NÉLKÜL
 main_bp = Blueprint('main_bp', __name__)
