@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasNextPage = true;
     let allImages = [];
     let currentImageIndex = -1;
-    let allPersonNames = [];
+    let allPersonNames = []; // Ebben tároljuk a neveket, a legfelső szinten
 
-    // DOM elemek
+    // DOM Elemek
     const grid = document.getElementById('all-photos-grid');
     const loadMoreBtn = document.getElementById('load-more-photos-btn');
     const lightboxModalEl = document.getElementById('lightbox-modal');
@@ -23,9 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxNext = document.getElementById('lightbox-next');
     const addFaceBtn = document.getElementById('add-face-btn');
 
+    // Manuális rajzoláshoz
     let isDrawing = false;
     let startX, startY;
     const drawingBox = document.getElementById('drawing-box');
+
+    // --- FŐ FUNKCIÓK ---
 
     const init = async () => {
         if (isInitialized) return;
@@ -59,6 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialized = true;
     };
     
+    // Eseményfigyelők
     if (allPhotosTabButton.classList.contains('active')) init();
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
@@ -106,10 +110,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lightboxImage.complete) resolve();
             else lightboxImage.onload = resolve;
         });
-        drawFaceBoxes(faces, allPersonNames);
+        drawFaceBoxes(faces);
     }
     
-    function drawFaceBoxes(faces, personNameList) {
+    function drawFaceBoxes(faces) {
         const naturalWidth = lightboxImage.naturalWidth;
         const naturalHeight = lightboxImage.naturalHeight;
         const displayWidth = lightboxImage.clientWidth;
@@ -118,10 +122,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const heightRatio = displayHeight / naturalHeight;
         const template = document.getElementById('face-box-template');
 
-        if (Array.isArray(faces) && (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '')) {
+        if (!Array.isArray(faces)) return;
+
+        // Ha új arcot adunk hozzá, nem töröljük a meglévőket
+        if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
             lightboxFaceBoxContainer.innerHTML = '';
         }
-        if (!Array.isArray(faces)) return;
 
         faces.forEach(face => {
             if (!face.face_location) return;
@@ -142,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
             viewLabel.textContent = face.name || 'Ismeretlen';
             
             select.innerHTML = '<option value="Ismeretlen">Ismeretlen</option>';
-            personNameList.forEach(name => {
+            allPersonNames.forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
                 option.textContent = name;
@@ -244,14 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
             height: parseInt(drawingBox.style.height, 10)
         };
         if (rect.width > 20 && rect.height > 20) {
-            // JAVÍTÁS ITT: A 'showNewFaceMenu' most már megkapja a nevek listáját
-            showNewFaceMenu(rect, allPersonNames);
+            showNewFaceMenu(rect);
         }
         drawingBox.style.width = '0px';
         drawingBox.style.height = '0px';
     }
 
-    function showNewFaceMenu(rect, personNameList) {
+    function showNewFaceMenu(rect) {
         const existingMenu = document.getElementById('new-face-menu');
         if (existingMenu) existingMenu.remove();
         const menu = document.createElement('div');
@@ -261,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menu.style.top = `${rect.top + rect.height + 5}px`;
 
         let selectHTML = '<select class="form-select form-select-sm"><option selected disabled>Válassz...</option>';
-        personNameList.forEach(name => {
+        allPersonNames.forEach(name => {
             selectHTML += `<option value="${name}">${name}</option>`;
         });
         selectHTML += '</select>';
@@ -286,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             if (result.status === 'success') {
                 showToast(result.message);
-                drawFaceBoxes([result.new_face], allPersonNames);
+                drawFaceBoxes([result.new_face]);
             } else {
                 showToast(result.message, 'danger');
             }
