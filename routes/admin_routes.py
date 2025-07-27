@@ -1,9 +1,8 @@
 # routes/admin_routes.py
-
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from services import data_manager
+from services import data_manager, event_logger
 from datetime import datetime
-from extensions import socketio 
+from extensions import socketio
 
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
@@ -18,32 +17,26 @@ def calculate_age(birthday_str):
 
 @admin_bp.route('/')
 def admin_index():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/dashboard')
 def dashboard_page():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
-    
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     persons_data = data_manager.get_persons()
     config_data = data_manager.get_config()
     for name, data in persons_data.items():
         data['age'] = calculate_age(data.get('birthday'))
-
     return render_template('admin.html', persons=persons_data, config=config_data)
 
 @admin_bp.route('/known_faces')
 def known_faces_page():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     return render_template('known_faces.html')
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Ezt a jelszót a configból kellene olvasni
         if request.form['password'] == 'admin': 
             session['logged_in'] = True
             return redirect(url_for('admin_bp.dashboard_page'))
@@ -59,7 +52,6 @@ def logout():
 @admin_bp.route('/save_config', methods=['POST'])
 def save_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
-    
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
     
@@ -78,41 +70,50 @@ def save_config_route():
     
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
-    
-    flash('Beállítások sikeresen mentve! Frissítési parancs kiküldve.', 'success')
+    event_logger.log_event("Általános beállítások mentve.")
+    flash('Beállítások sikeresen mentve!', 'success')
+    return redirect(url_for('admin_bp.dashboard_page'))
 
-    socketio.emit('reload_clients', {'message': 'Config changed'})
-    print(">>> 'reload_clients' üzenet kiküldve a beállítások mentése után.")
+@api_bp.route('/save_themes_config', methods=['POST'])
+def save_themes_config_route():
+    """ Elmenti a Témák fülön lévő beállításokat. """
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     
-    return redirect(url_for('admin_bp.dashboard_page'))  
+    config_data = data_manager.get_config()
+    themes_config = config_data.get('themes', {})
+    
+    themes_config['enabled'] = 'themes_enabled' in request.form
+    themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
+    themes_config['christmas'] = {"animation": request.form.get('christmas_animation', 'none')}
+
+    config_data['themes'] = themes_config
+    data_manager.save_config(config_data)
+    
+    event_logger.log_event("Téma beállítások mentve.")
+    flash('Témák sikeresen mentve!', 'success')
+    return redirect(url_for('admin_bp.dashboard_page'))
+
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
-    
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     name = request.form.get('name')
     birthday_from_form = request.form.get('birthday', '')
-    
     birthday_to_store = birthday_from_form.replace('-', '.') if birthday_from_form else ""
-    
     persons_data = data_manager.get_persons()
     if name and name not in persons_data:
         persons_data[name] = {"birthday": birthday_to_store, "profile_image": None}
         data_manager.save_persons(persons_data)
+        event_logger.log_event(f"Új személy hozzáadva: {name}.")
         flash(f'{name} sikeresen hozzáadva.', 'success')
-            
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/delete_person/<name>')
 def delete_person(name):
-    if not session.get('logged_in'):
-        return redirect(url_for('admin_bp.login'))
-        
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     persons_data = data_manager.get_persons()
-
     if name in persons_data:
         del persons_data[name]
         data_manager.save_persons(persons_data)
+        event_logger.log_event(f"Személy törölve: {name}.")
         flash(f'{name} sikeresen törölve.', 'warning')
-            
     return redirect(url_for('admin_bp.dashboard_page'))

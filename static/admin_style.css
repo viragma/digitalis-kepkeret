@@ -300,3 +300,9 @@ main {
     aspect-ratio: 1 / 1;
     object-fit: cover;
 }
+
+/* Témák fül stílusa */
+.accordion.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
