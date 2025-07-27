@@ -1,33 +1,54 @@
 <div class="container-fluid mt-4">
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="row align-items-end g-3">
+                <div class="col-md-4">
+                    <label for="filter-person" class="form-label">Szűrés személyre</label>
+                    <select id="filter-person" class="form-select">
+                        <option value="all" selected>Mindenki</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Szűrés állapot szerint</label>
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="statusFilter" id="filter-all" value="all" autocomplete="off" checked>
+                        <label class="btn btn-outline-secondary" for="filter-all">Minden kép</label>
+                        <input type="radio" class="btn-check" name="statusFilter" id="filter-unknown" value="unknown_faces" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="filter-unknown">Ismeretlen arcot tartalmaz</label>
+                        <input type="radio" class="btn-check" name="statusFilter" id="filter-noface" value="no_faces" autocomplete="off">
+                        <label class="btn btn-outline-secondary" for="filter-noface">Nem tartalmaz arcot</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div id="all-photos-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-2"></div>
     <div class="text-center">
         <button id="load-more-photos-btn" class="btn btn-outline-primary mt-4 d-none">További képek betöltése</button>
     </div>
 </div>
-
 <div class="modal fade" id="lightbox-modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-transparent border-0">
             <div class="modal-body p-0 d-flex flex-column justify-content-center align-items-center">
-                
                 <div class="lightbox-controls p-3">
-                    <button id="add-face-btn" class="btn btn-success"><i class="bi bi-plus-square-dotted"></i> Új arc hozzáadása</button>
+                    <button id="add-face-btn" class="btn btn-success" disabled>
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        <span>Nevek töltése...</span>
+                    </button>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                
                 <div id="lightbox-content-wrapper" style="position: relative; cursor: default;">
                     <img src="" id="lightbox-image" class="img-fluid">
                     <div id="lightbox-face-boxes-container"></div>
                     <div id="drawing-box" class="drawing-box"></div>
                 </div>
-
                 <a class="lightbox-nav prev" id="lightbox-prev">&#10094;</a>
                 <a class="lightbox-nav next" id="lightbox-next">&#10095;</a>
             </div>
         </div>
     </div>
 </div>
-
 <template id="photo-card-template">
     <div class="col"><div class="photo-card"><img src="" class="img-fluid" loading="lazy"></div></div>
 </template>

@@ -9,33 +9,63 @@ from PIL import Image
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
+@api_bp.route('/all_images', methods=['GET'])
+def get_all_images():
+    page = request.args.get('page', 1, type=int)
+    limit = request.args.get('limit', 30, type=int)
+    filter_person = request.args.get('person', None)
+    filter_status = request.args.get('status', None)
+    offset = (page - 1) * limit
+
+    config = data_manager.get_config()
+    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
+    abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
+
+    try:
+        all_physical_files = sorted(
+            [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))],
+            reverse=True
+        )
+        
+        all_faces = data_manager.get_faces()
+        
+        filtered_filenames = set()
+        if filter_person and filter_person != 'all':
+            filtered_filenames = {face['image_file'] for face in all_faces if face.get('name') == filter_person}
+        
+        elif filter_status == 'no_faces':
+            # JAVÍTOTT LOGIKA:
+            # 1. Összegyűjtjük az összes képet, amin van VALÓDI név.
+            images_with_people = {face['image_file'] for face in all_faces if face.get('name') and face.get('name') not in ['Ismeretlen', 'arc_nélkül']}
+            # 2. Összegyűjtjük azokat, amik 'arc_nélkül'-ként vannak jelölve.
+            images_marked_no_face = {face['image_file'] for face in all_faces if face.get('name') == 'arc_nélkül'}
+            # 3. A végeredmény a kettő különbsége.
+            filtered_filenames = images_marked_no_face - images_with_people
+
+        elif filter_status == 'unknown_faces':
+            images_with_unknowns = {face['image_file'] for face in all_faces if face.get('name') == 'Ismeretlen'}
+            filtered_filenames = images_with_unknowns
+        else:
+            filtered_filenames = set(all_physical_files)
+
+        final_list = [f for f in all_physical_files if f in filtered_filenames]
+        paginated_files = final_list[offset : offset + limit]
+        
+        return jsonify({
+            "images": paginated_files,
+            "page": page,
+            "has_next": len(final_list) > offset + limit
+        })
+
+    except FileNotFoundError:
+        return jsonify({"images": [], "page": 1, "has_next": False})
+
+
 @api_bp.route('/image_details/<filename>', methods=['GET'])
 def get_image_details(filename):
     all_faces = data_manager.get_faces()
     image_faces = [face for face in all_faces if face.get('image_file') == filename]
     return jsonify(image_faces)
-
-@api_bp.route('/all_images', methods=['GET'])
-def get_all_images():
-    page = request.args.get('page', 1, type=int)
-    limit = request.args.get('limit', 30, type=int)
-    offset = (page - 1) * limit
-    config = data_manager.get_config()
-    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
-    abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
-    try:
-        all_files = sorted(
-            [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))],
-            reverse=True
-        )
-        paginated_files = all_files[offset : offset + limit]
-        return jsonify({
-            "images": paginated_files,
-            "page": page,
-            "has_next": len(all_files) > offset + limit
-        })
-    except FileNotFoundError:
-        return jsonify({"images": [], "page": 1, "has_next": False})
 
 @api_bp.route('/faces/add_manual', methods=['POST'])
 def add_manual_face():
@@ -43,26 +73,31 @@ def add_manual_face():
     filename, name, coords_percent = data.get('filename'), data.get('name'), data.get('coords')
     if not all([filename, name, coords_percent]):
         return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
+    
     config = data_manager.get_config()
     image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
     image_path = os.path.join(os.getcwd(), image_folder_name, filename)
+
     if not os.path.exists(image_path):
         return jsonify({'status': 'error', 'message': 'A képfájl nem található.'}), 404
+
     try:
         with Image.open(image_path) as img:
             img_width, img_height = img.size
-        left = int(coords_percent['left'] * img_width)
-        top = int(coords_percent['top'] * img_height)
-        width = int(coords_percent['width'] * img_width)
-        height = int(coords_percent['height'] * img_height)
-        right, bottom = left + width, top + height
-        face_location = [top, right, bottom, left]
-        face_image = img.crop((left, top, right, bottom))
-        face_count = len(data_manager.get_faces())
-        face_filename = f"manual_{os.path.splitext(filename)[0]}_{face_count}.jpg"
-        face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
-        face_filepath_abs = os.path.join(os.getcwd(), face_filepath_relative)
-        face_image.save(face_filepath_abs)
+            left = int(coords_percent['left'] * img_width)
+            top = int(coords_percent['top'] * img_height)
+            width = int(coords_percent['width'] * img_width)
+            height = int(coords_percent['height'] * img_height)
+            right, bottom = left + width, top + height
+            face_location = [top, right, bottom, left]
+
+            face_image = img.crop((left, top, right, bottom))
+            face_count = len(data_manager.get_faces())
+            face_filename = f"manual_{os.path.splitext(filename)[0]}_{face_count}.jpg"
+            face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
+            face_filepath_abs = os.path.join(os.getcwd(), face_filepath_relative)
+            face_image.save(face_filepath_abs)
+
         all_faces = data_manager.get_faces()
         new_face_data = {
             "image_file": filename, "face_location": face_location,
@@ -70,11 +105,13 @@ def add_manual_face():
         }
         all_faces.append(new_face_data)
         data_manager.save_faces(all_faces)
+        
         return jsonify({'status': 'success', 'message': 'Új arc sikeresen mentve.', 'new_face': new_face_data})
+
     except Exception as e:
         print(f"Hiba a manuális arc mentésekor: {e}")
         return jsonify({'status': 'error', 'message': 'Szerver oldali hiba történt.'}), 500
-
+        
 @api_bp.route('/person/update_birthday', methods=['POST'])
 def update_person_birthday():
     data = request.get_json()

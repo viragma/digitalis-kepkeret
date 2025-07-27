@@ -1021,7 +1021,7 @@
             194
         ],
         "face_path": "static/faces/img_0019_face_0.jpg",
-        "name": "Lehel"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0029.jpg",
@@ -2136,7 +2136,7 @@
             1129
         ],
         "face_path": "static/faces/img_0099_face_3.jpg",
-        "name": "Ivett"
+        "name": "Ismeretlen"
     },
     {
         "image_file": "img_0099.jpg",
@@ -3170,5 +3170,71 @@
         ],
         "face_path": "static/faces/img_0036_face_1.jpg",
         "name": "Ismeretlen"
+    },
+    {
+        "image_file": "img_0162.jpg",
+        "face_location": [
+            247,
+            673,
+            820,
+            132
+        ],
+        "face_path": "static/faces/manual_img_0162_310.jpg",
+        "name": "Zoé"
+    },
+    {
+        "image_file": "img_0161.jpg",
+        "face_location": [
+            43,
+            1215,
+            766,
+            256
+        ],
+        "face_path": "static/faces/manual_img_0161_311.jpg",
+        "name": "Zoé"
+    },
+    {
+        "image_file": "img_0160.jpg",
+        "face_location": [
+            506,
+            602,
+            656,
+            475
+        ],
+        "face_path": "static/faces/manual_img_0160_312.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "img_0137.jpg",
+        "face_location": [
+            284,
+            252,
+            605,
+            2
+        ],
+        "face_path": "static/faces/manual_img_0137_313.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "img_0114.jpg",
+        "face_location": [
+            130,
+            631,
+            541,
+            207
+        ],
+        "face_path": "static/faces/manual_img_0114_314.jpg",
+        "name": "Lehel"
+    },
+    {
+        "image_file": "img_0006.jpg",
+        "face_location": [
+            316,
+            445,
+            872,
+            9
+        ],
+        "face_path": "static/faces/manual_img_0006_315.jpg",
+        "name": "Zoé"
     }
 ]
