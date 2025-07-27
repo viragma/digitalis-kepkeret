@@ -9,8 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasNextPage = true;
     let allImages = [];
     let currentImageIndex = -1;
-    let allPersonNames = [];
-
+    
     // DOM Elemek
     const grid = document.getElementById('all-photos-grid');
     const loadMoreBtn = document.getElementById('load-more-photos-btn');
@@ -23,29 +22,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxNext = document.getElementById('lightbox-next');
     const addFaceBtn = document.getElementById('add-face-btn');
 
+    // Manuális rajzoláshoz
     let isDrawing = false;
     let startX, startY;
     const drawingBox = document.getElementById('drawing-box');
 
-    const init = async () => {
+    const init = () => {
         if (isInitialized) return;
         isInitialized = true;
         
-        try {
-            const personsRes = await fetch('/api/persons');
-            if (!personsRes.ok) throw new Error('Személyek API hiba');
-            allPersonNames = await personsRes.json();
-            
-            // Ha sikeres a betöltés, engedélyezzük a gombot
-            addFaceBtn.disabled = false;
-            addFaceBtn.innerHTML = '<i class="bi bi-plus-square-dotted"></i> Új arc hozzáadása';
-
-        } catch (error) {
-            console.error("Hiba a személyek nevének lekérdezésekor:", error);
-            addFaceBtn.innerHTML = 'Hiba a nevek betöltésekor';
-            addFaceBtn.classList.replace('btn-success', 'btn-danger');
-        }
-
         loadMoreBtn.addEventListener('click', () => loadImages(currentPage));
         lightboxPrev.addEventListener('click', showPrevImage);
         lightboxNext.addEventListener('click', showNextImage);
@@ -113,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lightboxImage.complete) resolve();
             else lightboxImage.onload = resolve;
         });
-        drawFaceBoxes(faces);
+        await drawFaceBoxes(faces);
     }
     
-    function drawFaceBoxes(faces) {
+    async function drawFaceBoxes(faces) {
         const naturalWidth = lightboxImage.naturalWidth;
         const naturalHeight = lightboxImage.naturalHeight;
         const displayWidth = lightboxImage.clientWidth;
@@ -124,6 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const widthRatio = displayWidth / naturalWidth;
         const heightRatio = displayHeight / naturalHeight;
         const template = document.getElementById('face-box-template');
+
+        // Frissen lekérdezzük a neveket, pont amikor kell
+        const personsRes = await fetch('/api/persons');
+        const personNameList = await personsRes.json();
 
         if (!Array.isArray(faces)) return;
         if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
@@ -149,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             viewLabel.textContent = face.name || 'Ismeretlen';
             
             select.innerHTML = '<option value="Ismeretlen">Ismeretlen</option>';
-            allPersonNames.forEach(name => {
+            personNameList.forEach(name => {
                 const option = document.createElement('option');
                 option.value = name;
                 option.textContent = name;
@@ -205,7 +194,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleDrawingMode() {
-        if (addFaceBtn.disabled) return;
         lightboxWrapper.classList.toggle('drawing-mode');
         if (lightboxWrapper.classList.contains('drawing-mode')) {
             addFaceBtn.classList.remove('btn-success');
@@ -258,9 +246,14 @@ document.addEventListener('DOMContentLoaded', () => {
         drawingBox.style.height = '0px';
     }
 
-    function showNewFaceMenu(rect) {
+    async function showNewFaceMenu(rect) {
         const existingMenu = document.getElementById('new-face-menu');
         if (existingMenu) existingMenu.remove();
+        
+        // Frissen lekérdezzük a neveket, pont amikor kell
+        const personsRes = await fetch('/api/persons');
+        const personNameList = await personsRes.json();
+        
         const menu = document.createElement('div');
         menu.id = 'new-face-menu';
         menu.className = 'new-face-menu';
@@ -268,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
         menu.style.top = `${rect.top + rect.height + 5}px`;
 
         let selectHTML = '<select class="form-select form-select-sm"><option selected disabled>Válassz...</option>';
-        allPersonNames.forEach(name => {
+        personNameList.forEach(name => {
             selectHTML += `<option value="${name}">${name}</option>`;
         });
         selectHTML += '</select>';
