@@ -1,6 +1,5 @@
 <div class="container-fluid mt-4">
-    <div id="all-photos-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-2">
-        </div>
+    <div id="all-photos-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-2"></div>
     <div class="text-center">
         <button id="load-more-photos-btn" class="btn btn-outline-primary mt-4 d-none">További képek betöltése</button>
     </div>
@@ -10,11 +9,16 @@
     <div class="modal-dialog modal-fullscreen">
         <div class="modal-content bg-transparent border-0">
             <div class="modal-body p-0 d-flex flex-column justify-content-center align-items-center">
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: 20px; right: 20px; z-index: 1056;"></button>
                 
-                <div id="lightbox-content-wrapper" style="position: relative;">
+                <div class="lightbox-controls p-3">
+                    <button id="add-face-btn" class="btn btn-success"><i class="bi bi-plus-square-dotted"></i> Új arc hozzáadása</button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div id="lightbox-content-wrapper" style="position: relative; cursor: default;">
                     <img src="" id="lightbox-image" class="img-fluid">
                     <div id="lightbox-face-boxes-container"></div>
+                    <div id="drawing-box" class="drawing-box"></div>
                 </div>
 
                 <a class="lightbox-nav prev" id="lightbox-prev">&#10094;</a>
@@ -25,9 +29,17 @@
 </div>
 
 <template id="photo-card-template">
-    <div class="col">
-        <div class="photo-card">
-            <img src="" class="img-fluid" loading="lazy">
+    <div class="col"><div class="photo-card"><img src="" class="img-fluid" loading="lazy"></div></div>
+</template>
+<template id="face-box-template">
+    <div class="face-box-interactive">
+        <div class="face-label-view"></div>
+        <div class="face-label-edit d-none">
+            <div class="input-group input-group-sm">
+                <select class="form-select form-select-sm face-edit-select"></select>
+                <button class="btn btn-success btn-sm face-save-btn">✔️</button>
+                <button class="btn btn-secondary btn-sm face-cancel-btn">❌</button>
+            </div>
         </div>
     </div>
 </template>
