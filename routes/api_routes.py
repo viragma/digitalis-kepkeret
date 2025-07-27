@@ -8,24 +8,28 @@ from extensions import socketio
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
+@api_bp.route('/image_details/<filename>', methods=['GET'])
+def get_image_details(filename):
+    """ Visszaadja egy képhez tartozó összes arc adatait. """
+    all_faces = data_manager.get_faces()
+    # Kigyűjtjük azokat az arcokat, amik a kért képhez tartoznak
+    image_faces = [face for face in all_faces if face.get('image_file') == filename]
+    return jsonify(image_faces)
+
 @api_bp.route('/all_images', methods=['GET'])
 def get_all_images():
-    """ Visszaadja az összes kép listáját, lapozható formában. """
     page = request.args.get('page', 1, type=int)
     limit = request.args.get('limit', 30, type=int)
     offset = (page - 1) * limit
-
     config = data_manager.get_config()
     image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
     abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
-
     try:
         all_files = sorted(
             [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))],
-            reverse=True # Legújabbak elöl
+            reverse=True
         )
         paginated_files = all_files[offset : offset + limit]
-        
         return jsonify({
             "images": paginated_files,
             "page": page,
@@ -34,8 +38,8 @@ def get_all_images():
     except FileNotFoundError:
         return jsonify({"images": [], "page": 1, "has_next": False})
 
-# ... Itt következik az összes többi, már meglévő API végpont ...
-
+# ... Itt következik az összes többi, már meglévő API végpont, ami nem változott ...
+# (person/update_birthday, upcoming_birthdays, persons/gallery_data, stb.)
 @api_bp.route('/person/update_birthday', methods=['POST'])
 def update_person_birthday():
     data = request.get_json()

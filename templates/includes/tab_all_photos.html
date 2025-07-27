@@ -12,7 +12,10 @@
             <div class="modal-body p-0 d-flex flex-column justify-content-center align-items-center">
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" style="position: absolute; top: 20px; right: 20px; z-index: 1056;"></button>
                 
-                <img src="" id="lightbox-image" class="img-fluid">
+                <div id="lightbox-content-wrapper" style="position: relative;">
+                    <img src="" id="lightbox-image" class="img-fluid">
+                    <div id="lightbox-face-boxes-container"></div>
+                </div>
 
                 <a class="lightbox-nav prev" id="lightbox-prev">&#10094;</a>
                 <a class="lightbox-nav next" id="lightbox-next">&#10095;</a>
@@ -20,7 +23,6 @@
         </div>
     </div>
 </div>
-
 
 <template id="photo-card-template">
     <div class="col">

@@ -12,11 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const grid = document.getElementById('all-photos-grid');
     const loadMoreBtn = document.getElementById('load-more-photos-btn');
-    const lightboxModal = new bootstrap.Modal(document.getElementById('lightbox-modal'));
+    const lightboxModalEl = document.getElementById('lightbox-modal');
+    const lightboxModal = new bootstrap.Modal(lightboxModalEl);
     const lightboxImage = document.getElementById('lightbox-image');
+    const lightboxFaceBoxContainer = document.getElementById('lightbox-face-boxes-container');
     const lightboxPrev = document.getElementById('lightbox-prev');
     const lightboxNext = document.getElementById('lightbox-next');
-
 
     const init = () => {
         if (isInitialized) return;
@@ -25,9 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         lightboxPrev.addEventListener('click', showPrevImage);
         lightboxNext.addEventListener('click', showNextImage);
 
-        // Billentyűzet-navigáció a lightboxban
         document.addEventListener('keydown', (e) => {
-            if (document.getElementById('lightbox-modal').classList.contains('show')) {
+            if (lightboxModalEl.classList.contains('show')) {
                 if (e.key === 'ArrowLeft') showPrevImage();
                 if (e.key === 'ArrowRight') showNextImage();
             }
@@ -37,18 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialized = true;
     };
     
-    if (allPhotosTabButton.classList.contains('active')) {
-        init();
-    }
+    if (allPhotosTabButton.classList.contains('active')) init();
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
     async function loadImages(page) {
-        if (!hasNextPage && page > 1) {
-            console.log("Nincs több kép.");
-            return;
-        }
-        
-        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Töltés...';
+        if (!hasNextPage && page > 1) return;
+        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Töltés...';
 
         try {
             const response = await fetch(`/api/all_images?page=${page}&limit=24`);
@@ -80,29 +74,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function openLightbox(index) {
+    async function openLightbox(index) {
         currentImageIndex = index;
-        updateLightboxImage();
+        await updateLightboxContent();
         lightboxModal.show();
     }
     
-    function updateLightboxImage() {
-        if (currentImageIndex >= 0 && currentImageIndex < allImages.length) {
-            lightboxImage.src = `/static/images/${allImages[currentImageIndex]}`;
-        }
+    async function updateLightboxContent() {
+        if (currentImageIndex < 0 || currentImageIndex >= allImages.length) return;
+
+        const filename = allImages[currentImageIndex];
+        lightboxImage.src = `/static/images/${filename}`;
+        
+        // Először töröljük a régi kereteket
+        lightboxFaceBoxContainer.innerHTML = '';
+
+        // Lekérjük az új arc adatokat
+        const response = await fetch(`/api/image_details/${filename}`);
+        const faces = await response.json();
+
+        // Várunk, amíg az új kép betöltődik, hogy tudjuk a méreteit
+        await new Promise(resolve => {
+            if (lightboxImage.complete) {
+                resolve();
+            } else {
+                lightboxImage.onload = resolve;
+            }
+        });
+
+        drawFaceBoxes(faces);
+    }
+    
+    function drawFaceBoxes(faces) {
+        const naturalWidth = lightboxImage.naturalWidth;
+        const naturalHeight = lightboxImage.naturalHeight;
+        const displayWidth = lightboxImage.clientWidth;
+        const displayHeight = lightboxImage.clientHeight;
+
+        const widthRatio = displayWidth / naturalWidth;
+        const heightRatio = displayHeight / naturalHeight;
+
+        faces.forEach(face => {
+            if (!face.face_location) return;
+            const [top, right, bottom, left] = face.face_location;
+
+            const box = document.createElement('div');
+            box.className = 'face-box';
+            box.style.top = `${top * heightRatio}px`;
+            box.style.left = `${left * widthRatio}px`;
+            box.style.width = `${(right - left) * widthRatio}px`;
+            box.style.height = `${(bottom - top) * heightRatio}px`;
+
+            const label = document.createElement('div');
+            label.className = 'face-label';
+            label.textContent = face.name || 'Ismeretlen';
+            box.appendChild(label);
+
+            lightboxFaceBoxContainer.appendChild(box);
+        });
     }
 
-    function showPrevImage() {
+    async function showPrevImage() {
         if (currentImageIndex > 0) {
             currentImageIndex--;
-            updateLightboxImage();
+            await updateLightboxContent();
         }
     }
 
-    function showNextImage() {
+    async function showNextImage() {
         if (currentImageIndex < allImages.length - 1) {
             currentImageIndex++;
-            updateLightboxImage();
+            await updateLightboxContent();
         }
     }
 });
