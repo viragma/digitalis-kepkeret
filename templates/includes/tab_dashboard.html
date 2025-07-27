@@ -1,0 +1,65 @@
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-images"></i> Összes kép</h5>
+                    <p id="stat-total-images" class="card-text display-4">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-people-fill"></i> Ismert személy</h5>
+                    <p id="stat-known-persons" class="card-text display-4">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-person-check-fill"></i> Felismert arc</h5>
+                    <p id="stat-recognized-faces" class="card-text display-4">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-person-fill-question"></i> Ismeretlen arc</h5>
+                    <p id="stat-unknown-faces" class="card-text display-4">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-lightning-charge-fill"></i> Gyors Műveletek</h5>
+                </div>
+                <div class="card-body">
+                    <p>Itt indíthatsz el karbantartási és feldolgozási feladatokat.</p>
+                    <button id="run-detection-btn" class="btn btn-lg btn-danger w-100">
+                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                        <i class="bi bi-search"></i> Új arcok keresése a képeken
+                    </button>
+                    <div class="form-text mt-2">
+                        Ez a művelet a háttérben fut, és eltarthat egy ideig. Új képek feltöltése után érdemes lefuttatni.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="bi bi-clock-history"></i> Legutóbb feltöltött képek</h5>
+                </div>
+                <div id="latest-images-container" class="card-body">
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
