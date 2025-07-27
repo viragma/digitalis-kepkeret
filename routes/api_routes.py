@@ -5,14 +5,13 @@ from flask import Blueprint, request, jsonify
 from services import data_manager
 from datetime import datetime, date, timedelta
 from extensions import socketio
+from PIL import Image
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
 @api_bp.route('/image_details/<filename>', methods=['GET'])
 def get_image_details(filename):
-    """ Visszaadja egy képhez tartozó összes arc adatait. """
     all_faces = data_manager.get_faces()
-    # Kigyűjtjük azokat az arcokat, amik a kért képhez tartoznak
     image_faces = [face for face in all_faces if face.get('image_file') == filename]
     return jsonify(image_faces)
 
@@ -38,13 +37,48 @@ def get_all_images():
     except FileNotFoundError:
         return jsonify({"images": [], "page": 1, "has_next": False})
 
-# ... Itt következik az összes többi, már meglévő API végpont, ami nem változott ...
-# (person/update_birthday, upcoming_birthdays, persons/gallery_data, stb.)
+@api_bp.route('/faces/add_manual', methods=['POST'])
+def add_manual_face():
+    data = request.get_json()
+    filename, name, coords_percent = data.get('filename'), data.get('name'), data.get('coords')
+    if not all([filename, name, coords_percent]):
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
+    config = data_manager.get_config()
+    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
+    image_path = os.path.join(os.getcwd(), image_folder_name, filename)
+    if not os.path.exists(image_path):
+        return jsonify({'status': 'error', 'message': 'A képfájl nem található.'}), 404
+    try:
+        with Image.open(image_path) as img:
+            img_width, img_height = img.size
+        left = int(coords_percent['left'] * img_width)
+        top = int(coords_percent['top'] * img_height)
+        width = int(coords_percent['width'] * img_width)
+        height = int(coords_percent['height'] * img_height)
+        right, bottom = left + width, top + height
+        face_location = [top, right, bottom, left]
+        face_image = img.crop((left, top, right, bottom))
+        face_count = len(data_manager.get_faces())
+        face_filename = f"manual_{os.path.splitext(filename)[0]}_{face_count}.jpg"
+        face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
+        face_filepath_abs = os.path.join(os.getcwd(), face_filepath_relative)
+        face_image.save(face_filepath_abs)
+        all_faces = data_manager.get_faces()
+        new_face_data = {
+            "image_file": filename, "face_location": face_location,
+            "face_path": face_filepath_relative, "name": name
+        }
+        all_faces.append(new_face_data)
+        data_manager.save_faces(all_faces)
+        return jsonify({'status': 'success', 'message': 'Új arc sikeresen mentve.', 'new_face': new_face_data})
+    except Exception as e:
+        print(f"Hiba a manuális arc mentésekor: {e}")
+        return jsonify({'status': 'error', 'message': 'Szerver oldali hiba történt.'}), 500
+
 @api_bp.route('/person/update_birthday', methods=['POST'])
 def update_person_birthday():
     data = request.get_json()
-    name = data.get('name')
-    birthday_str = data.get('birthday', '')
+    name, birthday_str = data.get('name'), data.get('birthday', '')
     if not name: return jsonify({'status': 'error', 'message': 'Hiányzó név.'}), 400
     persons_data = data_manager.get_persons()
     if name in persons_data:
@@ -219,61 +253,12 @@ def delete_faces_batch():
     updated_faces = [face for face in all_faces if face.get('face_path') not in face_paths]
     data_manager.save_faces(updated_faces)
     return jsonify({'status': 'success', 'message': f'{len(face_paths)} arc sikeresen törölve.'})
-@api_bp.route('/faces/add_manual', methods=['POST'])
-def add_manual_face():
-    """ Manuálisan hozzáad egy új arcot egy képhez. """
-    data = request.get_json()
-    filename = data.get('filename')
-    name = data.get('name')
-    # A koordináták %-os formában érkeznek a JS-től
-    coords_percent = data.get('coords') # [left, top, width, height]
 
-    if not all([filename, name, coords_percent]):
-        return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
-
-    config = data_manager.get_config()
-    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
-    image_path = os.path.join(os.getcwd(), image_folder_name, filename)
-
-    if not os.path.exists(image_path):
-        return jsonify({'status': 'error', 'message': 'A képfájl nem található.'}), 404
-
+@api_bp.route('/force_reload', methods=['POST'])
+def force_reload_clients():
     try:
-        with Image.open(image_path) as img:
-            img_width, img_height = img.size
-
-        # Átszámoljuk a %-os koordinátákat abszolút pixel értékekre
-        left = int(coords_percent['left'] * img_width)
-        top = int(coords_percent['top'] * img_height)
-        width = int(coords_percent['width'] * img_width)
-        height = int(coords_percent['height'] * img_height)
-        right = left + width
-        bottom = top + height
-        
-        face_location = [top, right, bottom, left]
-
-        # Létrehozzuk és elmentjük a kivágott arc képét
-        face_image = img.crop((left, top, right, bottom))
-        face_count = len(data_manager.get_faces()) # Egyedi azonosítóhoz
-        face_filename = f"manual_{os.path.splitext(filename)[0]}_{face_count}.jpg"
-        face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
-        face_filepath_abs = os.path.join(os.getcwd(), face_filepath_relative)
-        face_image.save(face_filepath_abs)
-
-        # Hozzáadjuk az új bejegyzést a faces.json-hoz
-        all_faces = data_manager.get_faces()
-        new_face_data = {
-            "image_file": filename,
-            "face_location": face_location,
-            "face_path": face_filepath_relative,
-            "name": name
-        }
-        all_faces.append(new_face_data)
-        data_manager.save_faces(all_faces)
-        
-        # Visszaküldjük a teljes arcadatot, hogy a JS azonnal meg tudja jeleníteni
-        return jsonify({'status': 'success', 'message': 'Új arc sikeresen mentve.', 'new_face': new_face_data})
-
+        socketio.emit('reload_clients', {'message': 'Manual refresh triggered'})
+        print(">>> Manuális 'reload_clients' üzenet kiküldve.")
+        return jsonify({'status': 'success', 'message': 'Frissítési parancs elküldve.'})
     except Exception as e:
-        print(f"Hiba a manuális arc mentésekor: {e}")
-        return jsonify({'status': 'error', 'message': 'Szerver oldali hiba történt.'}), 500
+        return jsonify({'status': 'error', 'message': str(e)}), 500

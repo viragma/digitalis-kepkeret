@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentImageIndex = -1;
     let allPersonNames = [];
 
-    // DOM elemek
     const grid = document.getElementById('all-photos-grid');
     const loadMoreBtn = document.getElementById('load-more-photos-btn');
     const lightboxModalEl = document.getElementById('lightbox-modal');
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxNext = document.getElementById('lightbox-next');
     const addFaceBtn = document.getElementById('add-face-btn');
 
-    // Manuális rajzoláshoz
     let isDrawing = false;
     let startX, startY;
     const drawingBox = document.getElementById('drawing-box');
@@ -59,40 +57,29 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialized = true;
     };
     
-    if (allPhotosTabButton.classList.contains('active')) {
-        init();
-    }
+    if (allPhotosTabButton.classList.contains('active')) init();
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
     async function loadImages(page) {
-        if (!hasNextPage && page > 1) {
-            return;
-        }
-        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Töltés...';
-
+        if (!hasNextPage && page > 1) return;
+        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Töltés...';
         try {
             const response = await fetch(`/api/all_images?page=${page}&limit=24`);
             const data = await response.json();
-
             const template = document.getElementById('photo-card-template');
-            
             data.images.forEach(imageFile => {
                 allImages.push(imageFile);
                 const clone = template.content.cloneNode(true);
                 const card = clone.querySelector('.photo-card');
                 const img = card.querySelector('img');
                 img.src = `/static/images/${imageFile}`;
-                
                 const index = allImages.length - 1;
                 card.addEventListener('click', () => openLightbox(index));
-                
                 grid.appendChild(clone);
             });
-
             currentPage++;
             hasNextPage = data.has_next;
             loadMoreBtn.classList.toggle('d-none', !hasNextPage);
-
         } catch (error) {
             console.error("Hiba a képek betöltésekor:", error);
         } finally {
@@ -108,23 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function updateLightboxContent() {
         if (currentImageIndex < 0 || currentImageIndex >= allImages.length) return;
-
         const filename = allImages[currentImageIndex];
         lightboxImage.src = `/static/images/${filename}`;
-        
         lightboxFaceBoxContainer.innerHTML = '';
-
         const response = await fetch(`/api/image_details/${filename}`);
         const faces = await response.json();
-
         await new Promise(resolve => {
-            if (lightboxImage.complete) {
-                resolve();
-            } else {
-                lightboxImage.onload = resolve;
-            }
+            if (lightboxImage.complete) resolve();
+            else lightboxImage.onload = resolve;
         });
-
         drawFaceBoxes(faces);
     }
     
@@ -135,11 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayHeight = lightboxImage.clientHeight;
         const widthRatio = displayWidth / naturalWidth;
         const heightRatio = displayHeight / naturalHeight;
-
         const template = document.getElementById('face-box-template');
         
-        // Ha ez a függvény új arcot kap, akkor nem töröljük a meglévőket
-        if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
+        // Ha új arcot adunk hozzá, nem töröljük a meglévőket
+        if (!Array.isArray(faces) || (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '')) {
             lightboxFaceBoxContainer.innerHTML = '';
         }
 
@@ -249,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentY = e.offsetY;
         const width = currentX - startX;
         const height = currentY - startY;
-        
         drawingBox.style.width = `${Math.abs(width)}px`;
         drawingBox.style.height = `${Math.abs(height)}px`;
         drawingBox.style.left = `${width > 0 ? startX : currentX}px`;
@@ -259,14 +236,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function endDrawing(e) {
         if (!isDrawing) return;
         isDrawing = false;
-        
         const rect = {
             left: parseInt(drawingBox.style.left, 10),
             top: parseInt(drawingBox.style.top, 10),
             width: parseInt(drawingBox.style.width, 10),
             height: parseInt(drawingBox.style.height, 10)
         };
-
         if (rect.width > 20 && rect.height > 20) {
             showNewFaceMenu(rect);
         }
@@ -277,7 +252,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNewFaceMenu(rect) {
         const existingMenu = document.getElementById('new-face-menu');
         if (existingMenu) existingMenu.remove();
-
         const menu = document.createElement('div');
         menu.id = 'new-face-menu';
         menu.className = 'new-face-menu';
@@ -291,28 +265,21 @@ document.addEventListener('DOMContentLoaded', () => {
         selectHTML += '</select>';
 
         menu.innerHTML = `<div class="input-group">${selectHTML}<button class="btn btn-sm btn-success">✔️</button></div>`;
-        
         lightboxFaceBoxContainer.appendChild(menu);
 
         menu.querySelector('button').addEventListener('click', async () => {
             const selectedName = menu.querySelector('select').value;
             if (selectedName === 'Válassz...') return;
-
             const coordsPercent = {
                 left: rect.left / lightboxImage.clientWidth,
                 top: rect.top / lightboxImage.clientHeight,
                 width: rect.width / lightboxImage.clientWidth,
                 height: rect.height / lightboxImage.clientHeight,
             };
-            
             const response = await fetch('/api/faces/add_manual', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    filename: allImages[currentImageIndex],
-                    name: selectedName,
-                    coords: coordsPercent
-                })
+                body: JSON.stringify({ filename: allImages[currentImageIndex], name: selectedName, coords: coordsPercent })
             });
             const result = await response.json();
             if (result.status === 'success') {
