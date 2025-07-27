@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let hasNextPage = true;
     let allImages = [];
     let currentImageIndex = -1;
-    let allPersonNames = []; // Ebben tároljuk a neveket, a legfelső szinten
+    let allPersonNames = [];
 
     // DOM Elemek
     const grid = document.getElementById('all-photos-grid');
@@ -23,22 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const lightboxNext = document.getElementById('lightbox-next');
     const addFaceBtn = document.getElementById('add-face-btn');
 
-    // Manuális rajzoláshoz
     let isDrawing = false;
     let startX, startY;
     const drawingBox = document.getElementById('drawing-box');
 
-    // --- FŐ FUNKCIÓK ---
-
     const init = async () => {
         if (isInitialized) return;
+        isInitialized = true;
         
         try {
             const personsRes = await fetch('/api/persons');
             if (!personsRes.ok) throw new Error('Személyek API hiba');
             allPersonNames = await personsRes.json();
+            
+            // Ha sikeres a betöltés, engedélyezzük a gombot
+            addFaceBtn.disabled = false;
+            addFaceBtn.innerHTML = '<i class="bi bi-plus-square-dotted"></i> Új arc hozzáadása';
+
         } catch (error) {
             console.error("Hiba a személyek nevének lekérdezésekor:", error);
+            addFaceBtn.innerHTML = 'Hiba a nevek betöltésekor';
+            addFaceBtn.classList.replace('btn-success', 'btn-danger');
         }
 
         loadMoreBtn.addEventListener('click', () => loadImages(currentPage));
@@ -59,10 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         loadImages(currentPage);
-        isInitialized = true;
     };
     
-    // Eseményfigyelők
     if (allPhotosTabButton.classList.contains('active')) init();
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
@@ -123,8 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const template = document.getElementById('face-box-template');
 
         if (!Array.isArray(faces)) return;
-
-        // Ha új arcot adunk hozzá, nem töröljük a meglévőket
         if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
             lightboxFaceBoxContainer.innerHTML = '';
         }
@@ -204,6 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleDrawingMode() {
+        if (addFaceBtn.disabled) return;
         lightboxWrapper.classList.toggle('drawing-mode');
         if (lightboxWrapper.classList.contains('drawing-mode')) {
             addFaceBtn.classList.remove('btn-success');
