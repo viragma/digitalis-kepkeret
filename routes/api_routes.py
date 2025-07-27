@@ -1,8 +1,7 @@
 # routes/api_routes.py
 import os
 import shutil
-import subprocess
-import sys
+import psutil
 from flask import Blueprint, request, jsonify
 from services import data_manager
 from datetime import datetime, date, timedelta
@@ -11,32 +10,61 @@ from PIL import Image
 
 api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
+def get_folder_size_mb(folder_path):
+    """ Segédfüggvény egy mappa méretének kiszámításához MB-ban. """
+    total_size = 0
+    try:
+        for dirpath, dirnames, filenames in os.walk(folder_path):
+            for f in filenames:
+                fp = os.path.join(dirpath, f)
+                if not os.path.islink(fp):
+                    total_size += os.path.getsize(fp)
+    except FileNotFoundError:
+        return 0
+    return round(total_size / (1024 * 1024), 1)
+
+
+@api_bp.route('/system_stats', methods=['GET'])
+def get_system_stats():
+    """ Visszaadja a valós időben frissülő rendszeradatokat. """
+    try:
+        config = data_manager.get_config()
+        images_folder_path = os.path.join(os.getcwd(), config.get('UPLOAD_FOLDER', 'static/images'))
+        faces_folder_path = os.path.join(os.getcwd(), 'static/faces')
+
+        total, used, free = shutil.disk_usage("/")
+        disk_percent = (used / total) * 100
+        memory = psutil.virtual_memory()
+        cpu_percent = psutil.cpu_percent(interval=None) # Non-blocking call
+
+        return jsonify({
+            "disk": { "percent": round(disk_percent, 1), "free_gb": round(free / (1024**3), 1) },
+            "memory": { "percent": memory.percent, "total_gb": round(memory.total / (1024**3), 1) },
+            "cpu": { "percent": cpu_percent },
+            "images_folder_size_mb": get_folder_size_mb(images_folder_path),
+            "faces_folder_size_mb": get_folder_size_mb(faces_folder_path)
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @api_bp.route('/dashboard_stats', methods=['GET'])
 def get_dashboard_stats():
-    """ Összegyűjti a statisztikákat a műszerfalhoz. """
+    """ Összegyűjti a statikus adatokat a műszerfalhoz (amik nem frissülnek másodpercenként). """
     try:
         config = data_manager.get_config()
         image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
         abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
         
-        # 1. Képek száma
         total_images = len([f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
-        
-        # 2. Személyek és arcok száma
         persons = data_manager.get_persons()
         all_faces = data_manager.get_faces()
-        
         known_persons = len(persons)
-        recognized_faces = 0
-        unknown_faces = 0
+        recognized_faces, unknown_faces = 0, 0
         for face in all_faces:
             name = face.get('name')
-            if name and name not in ['Ismeretlen', 'arc_nélkül']:
-                recognized_faces += 1
-            elif name == 'Ismeretlen':
-                unknown_faces += 1
+            if name and name not in ['Ismeretlen', 'arc_nélkül']: recognized_faces += 1
+            elif name == 'Ismeretlen': unknown_faces += 1
         
-        # 3. Legutóbbi 5 kép
         latest_images = sorted(
             [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))],
             key=lambda f: os.path.getmtime(os.path.join(abs_image_folder_path, f)),
@@ -53,25 +81,19 @@ def get_dashboard_stats():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# ... Itt következik az összes többi, már meglévő API végpont, ami nem változott ...
 @api_bp.route('/run_face_detection', methods=['POST'])
 def run_face_detection():
-    """ Elindítja a detect_faces.py scriptet a háttérben. """
     try:
         python_executable = os.path.join(os.getcwd(), 'venv', 'bin', 'python3')
         script_path = os.path.join(os.getcwd(), 'scripts', 'detect_faces.py')
-        
         if not os.path.exists(script_path):
             return jsonify({"status": "error", "message": "A detect_faces.py script nem található."}), 404
-
-        # A scriptet egy új, független folyamatként indítjuk, hogy a weboldal ne várjon rá
         subprocess.Popen([python_executable, script_path])
-        
         return jsonify({"status": "success", "message": "Arcfelismerés elindítva a háttérben."})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
-
-# ... Itt következik az összes többi, már meglévő API végpont, ami nem változott ...
 @api_bp.route('/all_images', methods=['GET'])
 def get_all_images():
     page = request.args.get('page', 1, type=int)
@@ -250,7 +272,7 @@ def get_persons_api():
 def update_face_name():
     data = request.get_json()
     face_path, new_name = data.get('face_path'), data.get('new_name')
-    if not face_path or new_name is None: return jsonify({'status': 'error', 'message': 'Hiányzó adatok'}), 400
+    if not face_path or new_name is None: return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
     faces_data = data_manager.get_faces()
     face_found = False
     for face in faces_data:

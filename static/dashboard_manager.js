@@ -5,8 +5,64 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!dashboardTabButton) return;
 
     let isInitialized = false;
+    let systemStatsInterval; // Változó az időzítő tárolására
 
-    const initDashboard = async () => {
+    // Ez a funkció frissíti a gyorsan változó rendszeradatokat
+    const updateSystemStats = async () => {
+        try {
+            const response = await fetch('/api/system_stats');
+            const stats = await response.json();
+
+            if (stats.error) {
+                console.error("Hiba a rendszeradatok lekérdezésekor:", stats.error);
+                return;
+            }
+
+            // Tárhely
+            const diskProgress = document.getElementById('stat-disk-progress');
+            diskProgress.style.width = `${stats.disk.percent}%`;
+            diskProgress.textContent = `${stats.disk.percent}%`;
+            document.getElementById('stat-disk-info').textContent = `${stats.disk.free_gb} GB szabad`;
+
+            // Memória
+            const memProgress = document.getElementById('stat-memory-progress');
+            memProgress.style.width = `${stats.memory.percent}%`;
+            memProgress.textContent = `${stats.memory.percent}%`;
+            document.getElementById('stat-memory-info').textContent = `${stats.memory.total_gb} GB összesen`;
+            
+            // CPU
+            const cpuProgress = document.getElementById('stat-cpu-progress');
+            cpuProgress.style.width = `${stats.cpu.percent}%`;
+            cpuProgress.textContent = `${stats.cpu.percent}%`;
+
+            // Mappa méretek
+            document.getElementById('stat-images-size').textContent = `${stats.images_folder_size_mb} MB`;
+            document.getElementById('stat-faces-size').textContent = `${stats.faces_folder_size_mb} MB`;
+
+        } catch (error) {
+            console.error("Hiba a rendszeradatok frissítésekor:", error);
+        }
+    };
+    
+    // Ez a funkció a lassan változó, statikus adatokat tölti be
+    const loadStaticDashboardData = async () => {
+        try {
+            const response = await fetch('/api/dashboard_stats');
+            const stats = await response.json();
+
+            // Felső statisztikai kártyák
+            document.getElementById('stat-total-images').textContent = stats.total_images;
+            document.getElementById('stat-known-persons').textContent = stats.known_persons;
+            document.getElementById('stat-recognized-faces').textContent = stats.recognized_faces;
+            document.getElementById('stat-unknown-faces').textContent = stats.unknown_faces;
+            
+        } catch (error) {
+            console.error("Hiba a műszerfal statisztikáinak betöltésekor:", error);
+        }
+    };
+
+
+    const initDashboard = () => {
         if (isInitialized) return;
         isInitialized = true;
         
@@ -43,62 +99,31 @@ document.addEventListener('DOMContentLoaded', () => {
                         spinner.classList.add('d-none');
                         icon.classList.remove('d-none');
                         runDetectionBtn.disabled = false;
-                    }, 5000); // 5 másodperc múlva újra engedélyezzük a gombot
+                    }, 5000);
                 }
             });
         }
 
-        // Statisztikák betöltése
-        try {
-            const response = await fetch('/api/dashboard_stats');
-            const stats = await response.json();
-
-            // Felső statisztikai kártyák
-            document.getElementById('stat-total-images').textContent = stats.total_images;
-            document.getElementById('stat-known-persons').textContent = stats.known_persons;
-            document.getElementById('stat-recognized-faces').textContent = stats.recognized_faces;
-            document.getElementById('stat-unknown-faces').textContent = stats.unknown_faces;
-
-            // Rendszerinformációs panel
-            if (stats.server_stats) {
-                // Tárhely
-                const diskProgress = document.getElementById('stat-disk-progress');
-                diskProgress.style.width = `${stats.server_stats.disk.percent}%`;
-                diskProgress.textContent = `${stats.server_stats.disk.percent}%`;
-                document.getElementById('stat-disk-info').textContent = `${stats.server_stats.disk.free_gb} GB szabad`;
-
-                // Memória
-                const memProgress = document.getElementById('stat-memory-progress');
-                memProgress.style.width = `${stats.server_stats.memory.percent}%`;
-                memProgress.textContent = `${stats.server_stats.memory.percent}%`;
-                document.getElementById('stat-memory-info').textContent = `${stats.server_stats.memory.total_gb} GB összesen`;
-                
-                // CPU
-                const cpuProgress = document.getElementById('stat-cpu-progress');
-                cpuProgress.style.width = `${stats.server_stats.cpu.percent}%`;
-                cpuProgress.textContent = `${stats.server_stats.cpu.percent}%`;
-            }
-
-            // Legutóbbi képek
-            const latestImagesContainer = document.getElementById('latest-images-container');
-            if (stats.latest_images && stats.latest_images.length > 0) {
-                let html = '<div class="row row-cols-5 g-2">'; // 5 oszlopos rács
-                stats.latest_images.forEach(filename => {
-                    html += `<div class="col"><img src="/static/images/${filename}" class="img-fluid rounded"></div>`;
-                });
-                html += '</div>';
-                latestImagesContainer.innerHTML = html;
-            } else {
-                latestImagesContainer.innerHTML = '<p class="text-muted">Nincsenek feltöltött képek.</p>';
-            }
-        } catch (error) {
-            console.error("Hiba a műszerfal statisztikáinak betöltésekor:", error);
-        }
+        // Adatok betöltése és időzítő indítása
+        loadStaticDashboardData();
+        updateSystemStats(); // Azonnali első futtatás
+        systemStatsInterval = setInterval(updateSystemStats, 2000); // 2 másodpercenkénti frissítés
     };
 
-    // Fülváltáskor és az oldal betöltésekor is lefut
+    // Fülváltás figyelése
     if (dashboardTabButton.classList.contains('active')) {
         initDashboard();
     }
     dashboardTabButton.addEventListener('shown.bs.tab', initDashboard);
+    
+    // Ha elhagyjuk a fület, leállítjuk a felesleges frissítést
+    document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
+        tab.addEventListener('hide.bs.tab', (event) => {
+            if (event.target.id === 'v-pills-dashboard-tab') {
+                clearInterval(systemStatsInterval);
+                isInitialized = false; // Engedélyezzük az újra-inicializálást
+                console.log("Műszerfal frissítése leállítva.");
+            }
+        });
+    });
 });
