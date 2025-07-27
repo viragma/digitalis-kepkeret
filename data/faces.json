@@ -3236,5 +3236,16 @@
         ],
         "face_path": "static/faces/manual_img_0006_315.jpg",
         "name": "Zoé"
+    },
+    {
+        "image_file": "img_0160.jpg",
+        "face_location": [
+            468,
+            479,
+            590,
+            376
+        ],
+        "face_path": "static/faces/manual_img_0160_316.jpg",
+        "name": "Zora"
     }
 ]

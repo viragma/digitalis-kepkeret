@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isInitialized = false;
     let systemStatsInterval; // Változó az időzítő tárolására
+    let eventLogInterval;
 
     // Ez a funkció frissíti a gyorsan változó rendszeradatokat
     const updateSystemStats = async () => {
@@ -15,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (stats.error) {
                 console.error("Hiba a rendszeradatok lekérdezésekor:", stats.error);
+                // Ha hiba van, leállítjuk a további kéréseket, hogy ne terheljük a szervert
+                if (systemStatsInterval) clearInterval(systemStatsInterval);
                 return;
             }
 
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error("Hiba a rendszeradatok frissítésekor:", error);
+            if (systemStatsInterval) clearInterval(systemStatsInterval);
         }
     };
     
@@ -60,6 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error("Hiba a műszerfal statisztikáinak betöltésekor:", error);
         }
     };
+    
+    // Az eseménynaplót frissítő funkció
+    const updateEventLog = async () => {
+        try {
+            const response = await fetch('/api/event_log');
+            const logs = await response.json();
+            const logContainer = document.getElementById('event-log-container');
+            
+            if (logs.length > 0) {
+                logContainer.innerHTML = logs.join('<br>');
+            } else {
+                logContainer.innerHTML = '<span class="text-muted">A napló üres.</span>';
+            }
+        } catch (error) {
+            console.error("Hiba az eseménynapló frissítésekor:", error);
+        }
+    };
 
 
     const initDashboard = () => {
@@ -68,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         console.log("Műszerfal inicializálása...");
 
-        // Eseményfigyelő a "Run Detection" gombra
         const runDetectionBtn = document.getElementById('run-detection-btn');
         if (runDetectionBtn) {
             runDetectionBtn.addEventListener('click', async () => {
@@ -104,13 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Adatok betöltése és időzítő indítása
+        // Adatok betöltése és időzítők indítása
         loadStaticDashboardData();
-        updateSystemStats(); // Azonnali első futtatás
-        systemStatsInterval = setInterval(updateSystemStats, 2000); // 2 másodpercenkénti frissítés
+        updateSystemStats();
+        updateEventLog();
+        systemStatsInterval = setInterval(updateSystemStats, 2000); // 2 másodpercenként
+        eventLogInterval = setInterval(updateEventLog, 10000); // 10 másodpercenként
+    };
+    
+    const stopDashboardUpdates = () => {
+        clearInterval(systemStatsInterval);
+        clearInterval(eventLogInterval);
+        isInitialized = false;
+        console.log("Műszerfal frissítése leállítva.");
     };
 
-    // Fülváltás figyelése
     if (dashboardTabButton.classList.contains('active')) {
         initDashboard();
     }
@@ -118,12 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Ha elhagyjuk a fület, leállítjuk a felesleges frissítést
     document.querySelectorAll('button[data-bs-toggle="pill"]').forEach(tab => {
-        tab.addEventListener('hide.bs.tab', (event) => {
-            if (event.target.id === 'v-pills-dashboard-tab') {
-                clearInterval(systemStatsInterval);
-                isInitialized = false; // Engedélyezzük az újra-inicializálást
-                console.log("Műszerfal frissítése leállítva.");
-            }
-        });
+        if (tab.id !== dashboardTabButton.id) {
+            tab.addEventListener('shown.bs.tab', stopDashboardUpdates);
+        }
     });
 });
