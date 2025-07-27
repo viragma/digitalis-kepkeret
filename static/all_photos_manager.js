@@ -58,21 +58,69 @@ document.addEventListener('DOMContentLoaded', () => {
     if (allPhotosTabButton.classList.contains('active')) init();
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
-    async function loadImages(page) { /* ... Változatlan ... */ }
-    async function openLightbox(index) { /* ... Változatlan ... */ }
-    async function updateLightboxContent() { /* ... Változatlan ... */ }
+    async function loadImages(page) {
+        if (!hasNextPage && page > 1) return;
+        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Töltés...';
+        try {
+            const response = await fetch(`/api/all_images?page=${page}&limit=24`);
+            const data = await response.json();
+            const template = document.getElementById('photo-card-template');
+            
+            data.images.forEach(imageFile => {
+                allImages.push(imageFile);
+                const clone = template.content.cloneNode(true);
+                const card = clone.querySelector('.photo-card');
+                const img = card.querySelector('img');
+                img.src = `/static/images/${imageFile}`;
+                const index = allImages.length - 1;
+                card.addEventListener('click', () => openLightbox(index));
+                grid.appendChild(clone);
+            });
+
+            currentPage++;
+            hasNextPage = data.has_next;
+            loadMoreBtn.classList.toggle('d-none', !hasNextPage);
+
+        } catch (error) {
+            console.error("Hiba a képek betöltésekor:", error);
+        } finally {
+            loadMoreBtn.innerHTML = 'További képek betöltése';
+        }
+    }
+
+    async function openLightbox(index) {
+        currentImageIndex = index;
+        await updateLightboxContent();
+        lightboxModal.show();
+    }
+    
+    async function updateLightboxContent() {
+        if (currentImageIndex < 0 || currentImageIndex >= allImages.length) return;
+        const filename = allImages[currentImageIndex];
+        lightboxImage.src = `/static/images/${filename}`;
+        lightboxFaceBoxContainer.innerHTML = '';
+        const response = await fetch(`/api/image_details/${filename}`);
+        const faces = await response.json();
+        await new Promise(resolve => {
+            if (lightboxImage.complete) resolve();
+            else lightboxImage.onload = resolve;
+        });
+        drawFaceBoxes(faces);
+    }
     
     function drawFaceBoxes(faces) {
         const naturalWidth = lightboxImage.naturalWidth;
         const naturalHeight = lightboxImage.naturalHeight;
         const displayWidth = lightboxImage.clientWidth;
         const displayHeight = lightboxImage.clientHeight;
-
         const widthRatio = displayWidth / naturalWidth;
         const heightRatio = displayHeight / naturalHeight;
-
         const template = document.getElementById('face-box-template');
-        lightboxFaceBoxContainer.innerHTML = ''; // Előző keretek törlése
+
+        // A lightboxFaceBoxContainer tartalmát csak egyszer töröljük a függvény elején
+        if (faces.length > 0) {
+             lightboxFaceBoxContainer.innerHTML = '';
+        }
 
         faces.forEach(face => {
             if (!face.face_location) return;
@@ -85,16 +133,69 @@ document.addEventListener('DOMContentLoaded', () => {
             box.style.width = `${(right - left) * widthRatio}px`;
             box.style.height = `${(bottom - top) * heightRatio}px`;
 
-            // ... A keret többi logikája (szerkesztés, mentés) változatlan ...
+            const viewLabel = box.querySelector('.face-label-view');
+            const editContainer = box.querySelector('.face-label-edit');
+            const select = box.querySelector('.face-edit-select');
+            const saveBtn = box.querySelector('.face-save-btn');
+            const cancelBtn = box.querySelector('.face-cancel-btn');
+
+            viewLabel.textContent = face.name || 'Ismeretlen';
             
+            select.innerHTML = '<option value="Ismeretlen">Ismeretlen</option>';
+            allPersonNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                if (name === face.name) option.selected = true;
+                select.appendChild(option);
+            });
+
+            box.addEventListener('click', () => {
+                viewLabel.classList.add('d-none');
+                editContainer.classList.remove('d-none');
+            });
+            cancelBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                viewLabel.classList.remove('d-none');
+                editContainer.classList.add('d-none');
+            });
+            saveBtn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const newName = select.value;
+                const response = await fetch('/api/update_face_name', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ face_path: face.face_path, new_name: newName }),
+                });
+                const result = await response.json();
+                if (result.status === 'success') {
+                    showToast(result.message);
+                    face.name = newName;
+                    viewLabel.textContent = newName;
+                } else {
+                    showToast(result.message, 'danger');
+                }
+                viewLabel.classList.remove('d-none');
+                editContainer.classList.add('d-none');
+            });
+
             lightboxFaceBoxContainer.appendChild(clone);
         });
     }
 
-    async function showPrevImage() { /* ... Változatlan ... */ }
-    async function showNextImage() { /* ... Változatlan ... */ }
+    async function showPrevImage() {
+        if (currentImageIndex > 0) {
+            currentImageIndex--;
+            await updateLightboxContent();
+        }
+    }
 
-    // --- ÚJ FUNKCIÓK A MANUÁLIS CÍMKÉZÉSHEZ ---
+    async function showNextImage() {
+        if (currentImageIndex < allImages.length - 1) {
+            currentImageIndex++;
+            await updateLightboxContent();
+        }
+    }
 
     function toggleDrawingMode() {
         lightboxWrapper.classList.toggle('drawing-mode');
@@ -145,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
             height: parseInt(drawingBox.style.height, 10)
         };
 
-        // Csak akkor kezeljük, ha a doboz nagyobb, mint egy minimális méret
         if (rect.width > 20 && rect.height > 20) {
             showNewFaceMenu(rect);
         }
@@ -154,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showNewFaceMenu(rect) {
-        // Eltávolítjuk a korábbi menüt, ha volt
         const existingMenu = document.getElementById('new-face-menu');
         if (existingMenu) existingMenu.remove();
 
@@ -170,12 +269,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         selectHTML += '</select>';
 
-        menu.innerHTML = `
-            <div class="input-group">
-                ${selectHTML}
-                <button class="btn btn-sm btn-success">✔️</button>
-            </div>
-        `;
+        menu.innerHTML = `<div class="input-group">${selectHTML}<button class="btn btn-sm btn-success">✔️</button></div>`;
         
         lightboxFaceBoxContainer.appendChild(menu);
 
@@ -202,12 +296,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
             if (result.status === 'success') {
                 showToast(result.message);
-                drawFaceBoxes([result.new_face]); // Csak az új keretet rajzoljuk hozzá
+                drawFaceBoxes([result.new_face]);
             } else {
                 showToast(result.message, 'danger');
             }
             menu.remove();
-            toggleDrawingMode(); // Kilépünk a rajzoló módból
+            toggleDrawingMode();
         });
     }
 });
