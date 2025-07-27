@@ -31,8 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const init = async () => {
         if (isInitialized) return;
         
-        const personsRes = await fetch('/api/persons');
-        allPersonNames = await personsRes.json();
+        try {
+            const personsRes = await fetch('/api/persons');
+            allPersonNames = await personsRes.json();
+        } catch (error) {
+            console.error("Hiba a személyek nevének lekérdezésekor:", error);
+        }
 
         loadMoreBtn.addEventListener('click', () => loadImages(currentPage));
         lightboxPrev.addEventListener('click', showPrevImage);
@@ -55,15 +59,21 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialized = true;
     };
     
-    if (allPhotosTabButton.classList.contains('active')) init();
+    if (allPhotosTabButton.classList.contains('active')) {
+        init();
+    }
     allPhotosTabButton.addEventListener('shown.bs.tab', init);
 
     async function loadImages(page) {
-        if (!hasNextPage && page > 1) return;
-        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Töltés...';
+        if (!hasNextPage && page > 1) {
+            return;
+        }
+        loadMoreBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Töltés...';
+
         try {
             const response = await fetch(`/api/all_images?page=${page}&limit=24`);
             const data = await response.json();
+
             const template = document.getElementById('photo-card-template');
             
             data.images.forEach(imageFile => {
@@ -72,8 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = clone.querySelector('.photo-card');
                 const img = card.querySelector('img');
                 img.src = `/static/images/${imageFile}`;
+                
                 const index = allImages.length - 1;
                 card.addEventListener('click', () => openLightbox(index));
+                
                 grid.appendChild(clone);
             });
 
@@ -96,15 +108,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function updateLightboxContent() {
         if (currentImageIndex < 0 || currentImageIndex >= allImages.length) return;
+
         const filename = allImages[currentImageIndex];
         lightboxImage.src = `/static/images/${filename}`;
+        
         lightboxFaceBoxContainer.innerHTML = '';
+
         const response = await fetch(`/api/image_details/${filename}`);
         const faces = await response.json();
+
         await new Promise(resolve => {
-            if (lightboxImage.complete) resolve();
-            else lightboxImage.onload = resolve;
+            if (lightboxImage.complete) {
+                resolve();
+            } else {
+                lightboxImage.onload = resolve;
+            }
         });
+
         drawFaceBoxes(faces);
     }
     
@@ -115,11 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayHeight = lightboxImage.clientHeight;
         const widthRatio = displayWidth / naturalWidth;
         const heightRatio = displayHeight / naturalHeight;
-        const template = document.getElementById('face-box-template');
 
-        // A lightboxFaceBoxContainer tartalmát csak egyszer töröljük a függvény elején
-        if (faces.length > 0) {
-             lightboxFaceBoxContainer.innerHTML = '';
+        const template = document.getElementById('face-box-template');
+        
+        // Ha ez a függvény új arcot kap, akkor nem töröljük a meglévőket
+        if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
+            lightboxFaceBoxContainer.innerHTML = '';
         }
 
         faces.forEach(face => {
