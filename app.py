@@ -3,18 +3,12 @@
 from flask import Flask
 import os
 import json
-
-# A blueprint objektumokat importáljuk
-from routes.main_routes import main_bp
-from routes.admin_routes import admin_bp
-from routes.api_routes import api_bp
-# A többi route fájlt is ide kell majd importálni, ha blueprintekké alakulnak
+from extensions import socketio # VÁLTOZÁS: Innen importálunk
 
 def create_app():
     app = Flask(__name__)
     app.secret_key = os.urandom(24)
 
-    # Konfiguráció betöltése
     config_path = os.path.join('data', 'config.json')
     try:
         with open(config_path, 'r') as f:
@@ -24,15 +18,18 @@ def create_app():
         app.config.update(ADMIN_PASSWORD="admin")
 
     # Blueprintek regisztrálása
-    # A main_bp-nek NINCS előtagja, így az övé lesz a főoldal ('/')
+    from routes.main_routes import main_bp
+    from routes.admin_routes import admin_bp
+    from routes.api_routes import api_bp
     app.register_blueprint(main_bp)
-    # Az admin_bp-nek '/admin' az előtagja, így az ő útvonalai /admin/... alatt lesznek
     app.register_blueprint(admin_bp)
     app.register_blueprint(api_bp)
 
+    # A SocketIO inicializálása az app-pal
+    socketio.init_app(app)
     return app
 
 app = create_app()
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5050)
+    socketio.run(app, debug=True, host='0.0.0.0', port=5050)

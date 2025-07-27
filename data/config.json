@@ -25,6 +25,8 @@
         "debug_log": false,
         "tolerance": 0.4,
         "manual_mode": false,
-        "birthday_boost_ratio": 100
+        "birthday_boost_ratio": 100,
+        "show_upcoming_birthdays": true,
+        "upcoming_days_limit": 60
     }
 }

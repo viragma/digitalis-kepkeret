@@ -1,14 +1,14 @@
 {
     "Anya": {
-        "birthday": "1994.10.13",
+        "birthday": "1967.07.27",
         "profile_image": "static/faces/img_0092_face_5.jpg"
     },
     "Larkó": {
-        "birthday": "",
+        "birthday": "2014.08.25",
         "profile_image": "static/faces/img_0103_face_0.jpg"
     },
     "Máté": {
-        "birthday": "",
+        "birthday": "1994.10.13",
         "profile_image": "static/faces/img_0076_face_1.jpg"
     },
     "Bogi": {
@@ -20,55 +20,55 @@
         "profile_image": "static/faces/img_0036_face_0.jpg"
     },
     "Benett": {
-        "birthday": "",
+        "birthday": "2013.07.30",
         "profile_image": "static/faces/img_0042_face_1.jpg"
     },
     "Laci": {
-        "birthday": "",
+        "birthday": "1991.03.14",
         "profile_image": "static/faces/img_0104_face_2.jpg"
     },
     "Lackó": {
-        "birthday": "",
-        "profile_image": null
+        "birthday": "2016.01.26",
+        "profile_image": "static/faces/img_0103_face_1.jpg"
     },
     "Gyula": {
-        "birthday": "",
-        "profile_image": null
+        "birthday": "1992.11.05",
+        "profile_image": "static/faces/img_0124_face_0.jpg"
     },
     "Ivett": {
         "birthday": "",
         "profile_image": "static/faces/img_0095_face_0.jpg"
     },
     "Viki": {
-        "birthday": "",
+        "birthday": "1995.01.22",
         "profile_image": "static/faces/img_0092_face_1.jpg"
     },
     "Lehel": {
-        "birthday": "",
-        "profile_image": null
+        "birthday": "2021.08.22",
+        "profile_image": "static/faces/img_0030_face_3.jpg"
     },
     "Bia": {
-        "birthday": "",
+        "birthday": "1991.01.18",
         "profile_image": "static/faces/img_0154_face_0.jpg"
     },
     "Luca": {
-        "birthday": "",
-        "profile_image": "static/faces/img_0152_face_0.jpg"
+        "birthday": "2003.10.18",
+        "profile_image": "static/faces/img_0100_face_0.jpg"
     },
     "Apa": {
-        "birthday": "2025.07.08",
+        "birthday": "2000.07.31",
         "profile_image": "static/faces/img_0088_face_0.jpg"
     },
     "Oliver": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0116_face_2.jpg"
     },
     "Zora": {
         "birthday": "",
-        "profile_image": null
+        "profile_image": "static/faces/img_0089_face_0.jpg"
     },
     "Zoé": {
-        "birthday": "",
-        "profile_image": null
+        "birthday": "2025.05.23",
+        "profile_image": "static/faces/img_0017_face_0.jpg"
     }
 }

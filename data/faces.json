@@ -8,7 +8,7 @@
             418
         ],
         "face_path": "static/faces/img_0018_face_0.jpg",
-        "name": "Benett"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0126.jpg",
@@ -52,7 +52,7 @@
             270
         ],
         "face_path": "static/faces/img_0107_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0107.jpg",
@@ -63,7 +63,7 @@
             722
         ],
         "face_path": "static/faces/img_0107_face_2.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0059.jpg",
@@ -129,7 +129,7 @@
             311
         ],
         "face_path": "static/faces/img_0144_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0092.jpg",
@@ -173,7 +173,7 @@
             818
         ],
         "face_path": "static/faces/img_0092_face_3.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0092.jpg",
@@ -206,7 +206,7 @@
             726
         ],
         "face_path": "static/faces/img_0092_face_6.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0092.jpg",
@@ -228,7 +228,7 @@
             909
         ],
         "face_path": "static/faces/img_0092_face_8.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0092.jpg",
@@ -239,7 +239,7 @@
             805
         ],
         "face_path": "static/faces/img_0092_face_9.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0078.jpg",
@@ -250,7 +250,7 @@
             450
         ],
         "face_path": "static/faces/img_0078_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0080.jpg",
@@ -283,7 +283,7 @@
             498
         ],
         "face_path": "static/faces/img_0080_face_2.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0080.jpg",
@@ -294,7 +294,7 @@
             262
         ],
         "face_path": "static/faces/img_0080_face_3.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0094.jpg",
@@ -305,7 +305,7 @@
             629
         ],
         "face_path": "static/faces/img_0094_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0094.jpg",
@@ -316,7 +316,7 @@
             494
         ],
         "face_path": "static/faces/img_0094_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0094.jpg",
@@ -327,7 +327,7 @@
             713
         ],
         "face_path": "static/faces/img_0094_face_2.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0094.jpg",
@@ -338,7 +338,7 @@
             378
         ],
         "face_path": "static/faces/img_0094_face_3.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0094.jpg",
@@ -363,17 +363,6 @@
         "name": "Luca"
     },
     {
-        "image_file": "img_0131.jpg",
-        "face_location": [
-            330,
-            173,
-            366,
-            137
-        ],
-        "face_path": "static/faces/img_0131_face_1.jpg",
-        "name": "Anya"
-    },
-    {
         "image_file": "img_0028.jpg",
         "name": "arc_nélkül"
     },
@@ -386,7 +375,7 @@
             340
         ],
         "face_path": "static/faces/img_0105_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0105.jpg",
@@ -408,7 +397,7 @@
             536
         ],
         "face_path": "static/faces/img_0091_face_0.jpg",
-        "name": "Bia"
+        "name": "Luca"
     },
     {
         "image_file": "img_0091.jpg",
@@ -419,7 +408,7 @@
             406
         ],
         "face_path": "static/faces/img_0091_face_1.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0091.jpg",
@@ -430,7 +419,7 @@
             237
         ],
         "face_path": "static/faces/img_0091_face_2.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0091.jpg",
@@ -441,7 +430,7 @@
             385
         ],
         "face_path": "static/faces/img_0091_face_3.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0160.jpg",
@@ -452,7 +441,7 @@
             163
         ],
         "face_path": "static/faces/img_0160_face_0.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0160.jpg",
@@ -500,7 +489,7 @@
             1103
         ],
         "face_path": "static/faces/img_0044_face_3.jpg",
-        "name": "Gyula"
+        "name": "Apa"
     },
     {
         "image_file": "img_0039.jpg",
@@ -511,7 +500,7 @@
             855
         ],
         "face_path": "static/faces/img_0039_face_0.jpg",
-        "name": "Anya"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0039.jpg",
@@ -533,7 +522,7 @@
             951
         ],
         "face_path": "static/faces/img_0039_face_2.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0039.jpg",
@@ -544,7 +533,7 @@
             1210
         ],
         "face_path": "static/faces/img_0039_face_3.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0039.jpg",
@@ -566,7 +555,7 @@
             363
         ],
         "face_path": "static/faces/img_0056_face_0.jpg",
-        "name": "Benett"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0125.jpg",
@@ -577,7 +566,7 @@
             98
         ],
         "face_path": "static/faces/img_0125_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0063.jpg",
@@ -596,7 +585,7 @@
             354
         ],
         "face_path": "static/faces/img_0061_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0072.jpg",
@@ -607,7 +596,7 @@
             322
         ],
         "face_path": "static/faces/img_0072_face_0.jpg",
-        "name": "Benett"
+        "name": "Máté"
     },
     {
         "image_file": "img_0159.jpg",
@@ -629,7 +618,7 @@
             399
         ],
         "face_path": "static/faces/img_0120_face_0.jpg",
-        "name": "Máté"
+        "name": "Benett"
     },
     {
         "image_file": "img_0060.jpg",
@@ -640,7 +629,7 @@
             458
         ],
         "face_path": "static/faces/img_0060_face_0.jpg",
-        "name": "Larkó"
+        "name": "Luca"
     },
     {
         "image_file": "img_0146.jpg",
@@ -651,7 +640,7 @@
             414
         ],
         "face_path": "static/faces/img_0146_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0146.jpg",
@@ -688,7 +677,7 @@
             425
         ],
         "face_path": "static/faces/img_0064_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0103.jpg",
@@ -710,7 +699,7 @@
             225
         ],
         "face_path": "static/faces/img_0103_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0004.jpg",
@@ -725,7 +714,7 @@
             225
         ],
         "face_path": "static/faces/img_0046_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0062.jpg",
@@ -736,7 +725,7 @@
             63
         ],
         "face_path": "static/faces/img_0062_face_0.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0062.jpg",
@@ -747,7 +736,7 @@
             409
         ],
         "face_path": "static/faces/img_0062_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0006.jpg",
@@ -791,7 +780,7 @@
             199
         ],
         "face_path": "static/faces/img_0111_face_0.jpg",
-        "name": "Anya"
+        "name": "Bia"
     },
     {
         "image_file": "img_0111.jpg",
@@ -802,7 +791,7 @@
             411
         ],
         "face_path": "static/faces/img_0111_face_1.jpg",
-        "name": "Larkó"
+        "name": "Luca"
     },
     {
         "image_file": "img_0136.jpg",
@@ -813,7 +802,7 @@
             315
         ],
         "face_path": "static/faces/img_0136_face_0.jpg",
-        "name": "Anya"
+        "name": "Bia"
     },
     {
         "image_file": "img_0009.jpg",
@@ -828,7 +817,7 @@
             200
         ],
         "face_path": "static/faces/img_0151_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0108.jpg",
@@ -850,7 +839,7 @@
             187
         ],
         "face_path": "static/faces/img_0108_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0108.jpg",
@@ -872,7 +861,7 @@
             196
         ],
         "face_path": "static/faces/img_0054_face_0.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0054.jpg",
@@ -883,7 +872,7 @@
             305
         ],
         "face_path": "static/faces/img_0054_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0054.jpg",
@@ -894,7 +883,7 @@
             423
         ],
         "face_path": "static/faces/img_0054_face_2.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0085.jpg",
@@ -946,7 +935,7 @@
             97
         ],
         "face_path": "static/faces/img_0086_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0153.jpg",
@@ -957,7 +946,7 @@
             294
         ],
         "face_path": "static/faces/img_0153_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0153.jpg",
@@ -994,7 +983,7 @@
             282
         ],
         "face_path": "static/faces/img_0058_face_1.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0011.jpg",
@@ -1013,7 +1002,7 @@
             247
         ],
         "face_path": "static/faces/img_0089_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0027.jpg",
@@ -1043,7 +1032,7 @@
             366
         ],
         "face_path": "static/faces/img_0029_face_0.jpg",
-        "name": "Anya"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0156.jpg",
@@ -1109,7 +1098,7 @@
             253
         ],
         "face_path": "static/faces/img_0143_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0143.jpg",
@@ -1120,7 +1109,7 @@
             425
         ],
         "face_path": "static/faces/img_0143_face_1.jpg",
-        "name": "Larkó"
+        "name": "Bia"
     },
     {
         "image_file": "img_0124.jpg",
@@ -1131,7 +1120,7 @@
             440
         ],
         "face_path": "static/faces/img_0124_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0124.jpg",
@@ -1142,7 +1131,7 @@
             282
         ],
         "face_path": "static/faces/img_0124_face_1.jpg",
-        "name": "Máté"
+        "name": "Benett"
     },
     {
         "image_file": "img_0115.jpg",
@@ -1153,7 +1142,7 @@
             270
         ],
         "face_path": "static/faces/img_0115_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0014.jpg",
@@ -1168,7 +1157,7 @@
             259
         ],
         "face_path": "static/faces/img_0084_face_0.jpg",
-        "name": "Norisz"
+        "name": "Benett"
     },
     {
         "image_file": "img_0084.jpg",
@@ -1205,7 +1194,7 @@
             142
         ],
         "face_path": "static/faces/img_0157_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0157.jpg",
@@ -1216,7 +1205,7 @@
             448
         ],
         "face_path": "static/faces/img_0157_face_2.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0104.jpg",
@@ -1238,7 +1227,7 @@
             467
         ],
         "face_path": "static/faces/img_0104_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0104.jpg",
@@ -1260,7 +1249,7 @@
             809
         ],
         "face_path": "static/faces/img_0104_face_3.jpg",
-        "name": "Anya"
+        "name": "Bia"
     },
     {
         "image_file": "img_0137.jpg",
@@ -1275,7 +1264,7 @@
             33
         ],
         "face_path": "static/faces/img_0149_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0149.jpg",
@@ -1297,7 +1286,7 @@
             167
         ],
         "face_path": "static/faces/img_0079_face_0.jpg",
-        "name": "Norisz"
+        "name": "Benett"
     },
     {
         "image_file": "img_0142.jpg",
@@ -1308,7 +1297,7 @@
             591
         ],
         "face_path": "static/faces/img_0142_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0142.jpg",
@@ -1341,7 +1330,7 @@
             283
         ],
         "face_path": "static/faces/img_0148_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0148.jpg",
@@ -1352,7 +1341,7 @@
             1047
         ],
         "face_path": "static/faces/img_0148_face_1.jpg",
-        "name": "Anya"
+        "name": "Bia"
     },
     {
         "image_file": "img_0148.jpg",
@@ -1385,7 +1374,7 @@
             339
         ],
         "face_path": "static/faces/img_0071_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0053.jpg",
@@ -1396,7 +1385,7 @@
             294
         ],
         "face_path": "static/faces/img_0053_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0053.jpg",
@@ -1407,7 +1396,7 @@
             484
         ],
         "face_path": "static/faces/img_0053_face_1.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0095.jpg",
@@ -1429,7 +1418,7 @@
             841
         ],
         "face_path": "static/faces/img_0095_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0123.jpg",
@@ -1451,7 +1440,7 @@
             827
         ],
         "face_path": "static/faces/img_0123_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0128.jpg",
@@ -1484,7 +1473,7 @@
             589
         ],
         "face_path": "static/faces/img_0129_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0129.jpg",
@@ -1525,7 +1514,7 @@
             265
         ],
         "face_path": "static/faces/img_0069_face_0.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0069.jpg",
@@ -1547,7 +1536,7 @@
             404
         ],
         "face_path": "static/faces/img_0069_face_2.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0082.jpg",
@@ -1558,7 +1547,7 @@
             842
         ],
         "face_path": "static/faces/img_0082_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0090.jpg",
@@ -1569,7 +1558,7 @@
             295
         ],
         "face_path": "static/faces/img_0090_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0090.jpg",
@@ -1580,7 +1569,7 @@
             440
         ],
         "face_path": "static/faces/img_0090_face_1.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0090.jpg",
@@ -1591,7 +1580,7 @@
             538
         ],
         "face_path": "static/faces/img_0090_face_2.jpg",
-        "name": "Larkó"
+        "name": "Luca"
     },
     {
         "image_file": "img_0090.jpg",
@@ -1602,7 +1591,7 @@
             381
         ],
         "face_path": "static/faces/img_0090_face_3.jpg",
-        "name": "Larkó"
+        "name": "Zora"
     },
     {
         "image_file": "img_0077.jpg",
@@ -1613,7 +1602,7 @@
             374
         ],
         "face_path": "static/faces/img_0077_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0042.jpg",
@@ -1624,7 +1613,7 @@
             239
         ],
         "face_path": "static/faces/img_0042_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0042.jpg",
@@ -1646,7 +1635,7 @@
             892
         ],
         "face_path": "static/faces/img_0116_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0116.jpg",
@@ -1657,7 +1646,7 @@
             726
         ],
         "face_path": "static/faces/img_0116_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0116.jpg",
@@ -1668,7 +1657,7 @@
             139
         ],
         "face_path": "static/faces/img_0116_face_2.jpg",
-        "name": "Benett"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0116.jpg",
@@ -1679,7 +1668,7 @@
             474
         ],
         "face_path": "static/faces/img_0116_face_3.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0116.jpg",
@@ -1701,7 +1690,7 @@
             1166
         ],
         "face_path": "static/faces/img_0116_face_5.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0007.jpg",
@@ -1712,7 +1701,7 @@
             134
         ],
         "face_path": "static/faces/img_0007_face_0.jpg",
-        "name": "Larkó"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0026.jpg",
@@ -1727,7 +1716,7 @@
             469
         ],
         "face_path": "static/faces/img_0100_face_0.jpg",
-        "name": "Anya"
+        "name": "Luca"
     },
     {
         "image_file": "img_0100.jpg",
@@ -1738,7 +1727,7 @@
             97
         ],
         "face_path": "static/faces/img_0100_face_1.jpg",
-        "name": "Larkó"
+        "name": "Norisz"
     },
     {
         "image_file": "img_0088.jpg",
@@ -1760,7 +1749,7 @@
             984
         ],
         "face_path": "static/faces/img_0088_face_1.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0088.jpg",
@@ -1771,7 +1760,7 @@
             235
         ],
         "face_path": "static/faces/img_0088_face_2.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0141.jpg",
@@ -1782,7 +1771,7 @@
             722
         ],
         "face_path": "static/faces/img_0141_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0141.jpg",
@@ -1793,7 +1782,7 @@
             544
         ],
         "face_path": "static/faces/img_0141_face_1.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0141.jpg",
@@ -1826,7 +1815,7 @@
             809
         ],
         "face_path": "static/faces/img_0141_face_4.jpg",
-        "name": "Anya"
+        "name": "Larkó"
     },
     {
         "image_file": "img_0141.jpg",
@@ -1863,7 +1852,7 @@
             637
         ],
         "face_path": "static/faces/img_0118_face_1.jpg",
-        "name": "Anya"
+        "name": "Bia"
     },
     {
         "image_file": "img_0135.jpg",
@@ -1874,7 +1863,7 @@
             97
         ],
         "face_path": "static/faces/img_0135_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0037.jpg",
@@ -1896,7 +1885,7 @@
             408
         ],
         "face_path": "static/faces/img_0037_face_1.jpg",
-        "name": "Larkó"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0070.jpg",
@@ -1907,7 +1896,7 @@
             134
         ],
         "face_path": "static/faces/img_0070_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0096.jpg",
@@ -1918,7 +1907,7 @@
             282
         ],
         "face_path": "static/faces/img_0096_face_0.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0035.jpg",
@@ -1944,7 +1933,7 @@
             285
         ],
         "face_path": "static/faces/img_0048_face_0.jpg",
-        "name": "Norisz"
+        "name": "Benett"
     },
     {
         "image_file": "img_0048.jpg",
@@ -1955,7 +1944,7 @@
             370
         ],
         "face_path": "static/faces/img_0048_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0073.jpg",
@@ -1966,7 +1955,7 @@
             319
         ],
         "face_path": "static/faces/img_0073_face_0.jpg",
-        "name": "Norisz"
+        "name": "Benett"
     },
     {
         "image_file": "img_0073.jpg",
@@ -1977,7 +1966,7 @@
             176
         ],
         "face_path": "static/faces/img_0073_face_1.jpg",
-        "name": "Benett"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0073.jpg",
@@ -1988,7 +1977,7 @@
             533
         ],
         "face_path": "static/faces/img_0073_face_2.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0122.jpg",
@@ -1999,7 +1988,7 @@
             440
         ],
         "face_path": "static/faces/img_0122_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0122.jpg",
@@ -2010,7 +1999,7 @@
             247
         ],
         "face_path": "static/faces/img_0122_face_1.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0015.jpg",
@@ -2040,7 +2029,7 @@
             132
         ],
         "face_path": "static/faces/img_0147_face_0.jpg",
-        "name": "Larkó"
+        "name": "Bia"
     },
     {
         "image_file": "img_0147.jpg",
@@ -2099,7 +2088,7 @@
             262
         ],
         "face_path": "static/faces/img_0117_face_1.jpg",
-        "name": "Gyula"
+        "name": "Apa"
     },
     {
         "image_file": "img_0031.jpg",
@@ -2114,7 +2103,7 @@
             838
         ],
         "face_path": "static/faces/img_0099_face_0.jpg",
-        "name": "Anya"
+        "name": "Apa"
     },
     {
         "image_file": "img_0099.jpg",
@@ -2180,7 +2169,7 @@
             139
         ],
         "face_path": "static/faces/img_0041_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0032.jpg",
@@ -2191,7 +2180,7 @@
             230
         ],
         "face_path": "static/faces/img_0032_face_0.jpg",
-        "name": "Larkó"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0040.jpg",
@@ -2213,7 +2202,7 @@
             860
         ],
         "face_path": "static/faces/img_0040_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0040.jpg",
@@ -2224,7 +2213,7 @@
             339
         ],
         "face_path": "static/faces/img_0040_face_2.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0034.jpg",
@@ -2239,7 +2228,7 @@
             194
         ],
         "face_path": "static/faces/img_0133_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0050.jpg",
@@ -2250,7 +2239,7 @@
             458
         ],
         "face_path": "static/faces/img_0050_face_0.jpg",
-        "name": "Anya"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0050.jpg",
@@ -2261,7 +2250,7 @@
             584
         ],
         "face_path": "static/faces/img_0050_face_1.jpg",
-        "name": "Anya"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0050.jpg",
@@ -2283,7 +2272,7 @@
             607
         ],
         "face_path": "static/faces/img_0050_face_3.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0050.jpg",
@@ -2294,7 +2283,7 @@
             819
         ],
         "face_path": "static/faces/img_0050_face_4.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0050.jpg",
@@ -2316,7 +2305,7 @@
             206
         ],
         "face_path": "static/faces/img_0001_face_0.jpg",
-        "name": "Viki"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0145.jpg",
@@ -2327,7 +2316,7 @@
             371
         ],
         "face_path": "static/faces/img_0145_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0139.jpg",
@@ -2360,7 +2349,7 @@
             867
         ],
         "face_path": "static/faces/img_0049_face_0.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0049.jpg",
@@ -2371,7 +2360,7 @@
             453
         ],
         "face_path": "static/faces/img_0049_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0049.jpg",
@@ -2382,7 +2371,7 @@
             861
         ],
         "face_path": "static/faces/img_0049_face_2.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0049.jpg",
@@ -2404,7 +2393,7 @@
             598
         ],
         "face_path": "static/faces/img_0049_face_4.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0052.jpg",
@@ -2430,7 +2419,7 @@
             312
         ],
         "face_path": "static/faces/img_0033_face_0.jpg",
-        "name": "Larkó"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0152.jpg",
@@ -2452,7 +2441,7 @@
             237
         ],
         "face_path": "static/faces/img_0152_face_1.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0152.jpg",
@@ -2474,7 +2463,7 @@
             137
         ],
         "face_path": "static/faces/img_0152_face_3.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0134.jpg",
@@ -2511,7 +2500,7 @@
             77
         ],
         "face_path": "static/faces/img_0098_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0013.jpg",
@@ -2526,7 +2515,7 @@
             290
         ],
         "face_path": "static/faces/img_0132_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0132.jpg",
@@ -2537,7 +2526,7 @@
             77
         ],
         "face_path": "static/faces/img_0132_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0074.jpg",
@@ -2548,7 +2537,7 @@
             597
         ],
         "face_path": "static/faces/img_0074_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0074.jpg",
@@ -2559,7 +2548,7 @@
             706
         ],
         "face_path": "static/faces/img_0074_face_1.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0051.jpg",
@@ -2581,7 +2570,7 @@
             373
         ],
         "face_path": "static/faces/img_0051_face_1.jpg",
-        "name": "Larkó"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0081.jpg",
@@ -2592,7 +2581,7 @@
             408
         ],
         "face_path": "static/faces/img_0081_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0119.jpg",
@@ -2647,7 +2636,7 @@
             502
         ],
         "face_path": "static/faces/img_0102_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0102.jpg",
@@ -2702,7 +2691,7 @@
             390
         ],
         "face_path": "static/faces/img_0140_face_1.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0068.jpg",
@@ -2713,7 +2702,7 @@
             223
         ],
         "face_path": "static/faces/img_0068_face_0.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0068.jpg",
@@ -2724,7 +2713,7 @@
             285
         ],
         "face_path": "static/faces/img_0068_face_1.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0068.jpg",
@@ -2746,7 +2735,7 @@
             377
         ],
         "face_path": "static/faces/img_0068_face_3.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0068.jpg",
@@ -2757,7 +2746,7 @@
             194
         ],
         "face_path": "static/faces/img_0068_face_4.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0076.jpg",
@@ -2790,7 +2779,7 @@
             999
         ],
         "face_path": "static/faces/img_0101_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0155.jpg",
@@ -2801,7 +2790,7 @@
             325
         ],
         "face_path": "static/faces/img_0155_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0057.jpg",
@@ -2816,7 +2805,7 @@
             201
         ],
         "face_path": "static/faces/img_0150_face_0.jpg",
-        "name": "Anya"
+        "name": "Bogi"
     },
     {
         "image_file": "img_0024.jpg",
@@ -2857,7 +2846,7 @@
             67
         ],
         "face_path": "static/faces/img_0030_face_1.jpg",
-        "name": "Larkó"
+        "name": "Zora"
     },
     {
         "image_file": "img_0030.jpg",
@@ -2868,7 +2857,7 @@
             801
         ],
         "face_path": "static/faces/img_0030_face_2.jpg",
-        "name": "Benett"
+        "name": "Luca"
     },
     {
         "image_file": "img_0030.jpg",
@@ -2879,7 +2868,7 @@
             761
         ],
         "face_path": "static/faces/img_0030_face_3.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0121.jpg",
@@ -2916,7 +2905,7 @@
             118
         ],
         "face_path": "static/faces/img_0055_face_0.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0055.jpg",
@@ -2927,7 +2916,7 @@
             408
         ],
         "face_path": "static/faces/img_0055_face_1.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0113.jpg",
@@ -2938,7 +2927,7 @@
             486
         ],
         "face_path": "static/faces/img_0113_face_0.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0113.jpg",
@@ -2949,7 +2938,7 @@
             245
         ],
         "face_path": "static/faces/img_0113_face_1.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0017.jpg",
@@ -2960,7 +2949,7 @@
             339
         ],
         "face_path": "static/faces/img_0017_face_0.jpg",
-        "name": "Benett"
+        "name": "Zoé"
     },
     {
         "image_file": "img_0109.jpg",
@@ -2971,7 +2960,7 @@
             702
         ],
         "face_path": "static/faces/img_0109_face_0.jpg",
-        "name": "Anya"
+        "name": "Larkó"
     },
     {
         "image_file": "img_0109.jpg",
@@ -2982,7 +2971,7 @@
             613
         ],
         "face_path": "static/faces/img_0109_face_1.jpg",
-        "name": "Larkó"
+        "name": "Lehel"
     },
     {
         "image_file": "img_0109.jpg",
@@ -2993,7 +2982,7 @@
             828
         ],
         "face_path": "static/faces/img_0109_face_2.jpg",
-        "name": "Larkó"
+        "name": "Zora"
     },
     {
         "image_file": "img_0109.jpg",
@@ -3004,7 +2993,7 @@
             376
         ],
         "face_path": "static/faces/img_0109_face_3.jpg",
-        "name": "Larkó"
+        "name": "Benett"
     },
     {
         "image_file": "img_0109.jpg",
@@ -3015,7 +3004,7 @@
             550
         ],
         "face_path": "static/faces/img_0109_face_4.jpg",
-        "name": "Larkó"
+        "name": "Lackó"
     },
     {
         "image_file": "img_0109.jpg",
@@ -3048,7 +3037,7 @@
             124
         ],
         "face_path": "static/faces/img_0045_face_0.jpg",
-        "name": "Máté"
+        "name": "Gyula"
     },
     {
         "image_file": "img_0065.jpg",
@@ -3059,7 +3048,7 @@
             215
         ],
         "face_path": "static/faces/img_0065_face_0.jpg",
-        "name": "Máté"
+        "name": "Benett"
     },
     {
         "image_file": "img_0065.jpg",
@@ -3070,7 +3059,7 @@
             494
         ],
         "face_path": "static/faces/img_0065_face_1.jpg",
-        "name": "Benett"
+        "name": "Zora"
     },
     {
         "image_file": "img_0138.jpg",
@@ -3081,7 +3070,7 @@
             0
         ],
         "face_path": "static/faces/img_0138_face_0.jpg",
-        "name": "Larkó"
+        "name": "Bia"
     },
     {
         "image_file": "img_0110.jpg",
@@ -3103,7 +3092,7 @@
             1011
         ],
         "face_path": "static/faces/img_0110_face_1.jpg",
-        "name": "Benett"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0110.jpg",
@@ -3114,7 +3103,7 @@
             868
         ],
         "face_path": "static/faces/img_0110_face_2.jpg",
-        "name": "Larkó"
+        "name": "Zora"
     },
     {
         "image_file": "img_0110.jpg",
@@ -3125,17 +3114,6 @@
             353
         ],
         "face_path": "static/faces/img_0110_face_3.jpg",
-        "name": "Larkó"
-    },
-    {
-        "image_file": "img_0066.jpg",
-        "face_location": [
-            378,
-            584,
-            429,
-            533
-        ],
-        "face_path": "static/faces/img_0066_face_0.jpg",
         "name": "Larkó"
     },
     {
@@ -3158,7 +3136,7 @@
             262
         ],
         "face_path": "static/faces/img_0066_face_2.jpg",
-        "name": "Larkó"
+        "name": "Oliver"
     },
     {
         "image_file": "img_0066.jpg",

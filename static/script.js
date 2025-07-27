@@ -17,10 +17,7 @@ const upcomingBirthdaysContainer = document.getElementById('upcoming-birthdays-c
 
 async function initializeApp() {
     try {
-        const [configRes, imageListRes] = await Promise.all([
-            fetch('/config'),
-            fetch('/imagelist')
-        ]);
+        const [configRes, imageListRes] = await Promise.all([ fetch('/config'), fetch('/imagelist') ]);
         config = await configRes.json();
         imageList = await imageListRes.json();
         
@@ -42,9 +39,7 @@ async function initializeApp() {
             }
         }
         startSlideshow();
-    } catch (error) { 
-        console.error("Hiba az alkalmazás inicializálása során:", error); 
-    }
+    } catch (error) { console.error("Hiba az alkalmazás inicializálása során:", error); }
 }
 
 function startSlideshow() {
@@ -59,7 +54,6 @@ function startSlideshow() {
     currentImageDiv.classList.add('visible');
     currentBackgroundDiv.classList.add('visible');
     
-    // Az első képhez tartozó infókat is megjelenítjük
     let infoText = '';
     if (initialImageObject.people && initialImageObject.people.length > 0) infoText += initialImageObject.people.join(' & ');
     if (initialImageObject.date) infoText += (infoText ? ` - ${initialImageObject.date}` : initialImageObject.date);
@@ -168,4 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     setInterval(checkBirthdays, 3600000); 
     setInterval(updateUpcomingBirthdays, 6 * 3600000); 
+
+    const socket = io();
+    socket.on('reload_clients', (data) => {
+        console.log('FRISSÍTÉSI PARANCS FOGADVA:', data.message);
+        location.reload(true);
+    });
 });

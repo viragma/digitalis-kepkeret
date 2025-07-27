@@ -3,6 +3,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager
 from datetime import datetime
+from extensions import socketio 
 
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
@@ -57,8 +58,7 @@ def logout():
 
 @admin_bp.route('/save_config', methods=['POST'])
 def save_config_route():
-    if not session.get('logged_in'): 
-        return redirect(url_for('admin_bp.login'))
+    if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
@@ -79,9 +79,12 @@ def save_config_route():
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
     
-    flash('Beállítások sikeresen mentve!', 'success')
-    return redirect(url_for('admin_bp.dashboard_page'))
+    flash('Beállítások sikeresen mentve! Frissítési parancs kiküldve.', 'success')
 
+    socketio.emit('reload_clients', {'message': 'Config changed'})
+    print(">>> 'reload_clients' üzenet kiküldve a beállítások mentése után.")
+    
+    return redirect(url_for('admin_bp.dashboard_page'))  
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():
     if not session.get('logged_in'): 

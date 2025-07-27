@@ -1,10 +1,39 @@
-// static/admin.js - ÁLTALÁNOS FUNKCIÓK
+// static/admin.js
 
-/**
- * Megjelenít egy Bootstrap Toast értesítést.
- * @param {string} message Az üzenet szövege.
- * @param {string} category A Bootstrap színkategória (success, warning, danger, stb.).
- */
+document.addEventListener('DOMContentLoaded', () => {
+    const settingsTabButton = document.getElementById('v-pills-settings-tab');
+    if (settingsTabButton) {
+        const initSettingsTab = () => {
+            const reloadBtn = document.getElementById('force-reload-btn');
+            if (reloadBtn) {
+                // Hogy ne adjuk hozzá többször az eseményfigyelőt, lecseréljük a gombot a klónjára
+                const newReloadBtn = reloadBtn.cloneNode(true);
+                reloadBtn.parentNode.replaceChild(newReloadBtn, reloadBtn);
+                
+                newReloadBtn.addEventListener('click', async () => {
+                    showToast('Frissítési parancs küldése...', 'info');
+                    try {
+                        const response = await fetch('/api/force_reload', { method: 'POST' });
+                        const result = await response.json();
+                        if (result.status === 'success') {
+                            showToast(result.message);
+                        } else {
+                            showToast(result.message, 'danger');
+                        }
+                    } catch (err) {
+                        showToast('Hiba a parancs küldésekor.', 'danger');
+                    }
+                });
+            }
+        };
+
+        settingsTabButton.addEventListener('shown.bs.tab', initSettingsTab);
+        if (settingsTabButton.classList.contains('active')) {
+            initSettingsTab();
+        }
+    }
+});
+
 function showToast(message, category = 'success') {
     const toastContainer = document.querySelector('.toast-container');
     if (!toastContainer) return;
@@ -28,18 +57,3 @@ function showToast(message, category = 'success') {
         newToastEl.remove();
     });
 }
-document.addEventListener('DOMContentLoaded', () => {
-    const birthdayTab = document.getElementById('v-pills-birthdays-tab');
-    if (birthdayTab) {
-        // Figyeljük, mikor lesz a fül aktív
-        birthdayTab.addEventListener('shown.bs.tab', () => {
-            document.querySelectorAll('.delete-person-btn').forEach(button => {
-                button.addEventListener('click', function(event) {
-                    if (!confirm('Biztosan törlöd ezt a személyt? Ezzel az összes adatát (születésnap, profilkép) véglegesen eltávolítod.')) {
-                        event.preventDefault(); // Megállítja a törlést, ha a felhasználó a "Mégse"-re kattint
-                    }
-                });
-            });
-        });
-    }
-});
