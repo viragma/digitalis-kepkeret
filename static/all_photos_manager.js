@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const personsRes = await fetch('/api/persons');
+            if (!personsRes.ok) throw new Error('Személyek API hiba');
             allPersonNames = await personsRes.json();
         } catch (error) {
             console.error("Hiba a személyek nevének lekérdezésekor:", error);
@@ -115,16 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const widthRatio = displayWidth / naturalWidth;
         const heightRatio = displayHeight / naturalHeight;
         const template = document.getElementById('face-box-template');
-        
+
+        if (!Array.isArray(faces)) return;
+
         // Ha új arcot adunk hozzá, nem töröljük a meglévőket
-        if (!Array.isArray(faces) || (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '')) {
+        if (faces.length > 1 || lightboxFaceBoxContainer.innerHTML === '') {
             lightboxFaceBoxContainer.innerHTML = '';
         }
 
         faces.forEach(face => {
             if (!face.face_location) return;
             const [top, right, bottom, left] = face.face_location;
-
             const clone = template.content.cloneNode(true);
             const box = clone.querySelector('.face-box-interactive');
             box.style.top = `${top * heightRatio}px`;
