@@ -86,6 +86,12 @@ function startAtmosphereTheme() {
     themeOverlay.classList.add('theme-atmosphere');
 }
 
+function startThunderstormTheme() {
+    stopAllThemes();
+    startRainTheme(); // Az eső a vihar része
+    themeOverlay.classList.add('theme-thunderstorm');
+    createLightning();
+}
 
 // --- Létrehozó segédfüggvények ---
 
@@ -159,11 +165,17 @@ function createSunbeam() {
 function createCloud() {
     const cloud = document.createElement('div');
     cloud.className = 'cloud';
-    cloud.style.top = `${Math.random() * 20 - 5}vh`;
-    cloud.style.width = `${Math.random() * 200 + 100}px`;
-    cloud.style.height = `${Math.random() * 100 + 50}px`;
-    cloud.style.animationDuration = `${Math.random() * 30 + 20}s`;
-    cloud.style.animationDelay = `${Math.random() * 10}s`;
-    cloud.style.opacity = Math.random() * 0.3 + 0.1;
+    cloud.style.top = `${Math.random() * 20 - 10}vh`;
+    cloud.style.width = `${Math.random() * 300 + 200}px`;
+    cloud.style.height = `${Math.random() * 150 + 100}px`;
+    cloud.style.animationDuration = `${Math.random() * 40 + 30}s`;
+    cloud.style.animationDelay = `-${Math.random() * 40}s`; 
+    cloud.style.opacity = Math.random() * 0.4 + 0.1;
     themeOverlay.appendChild(cloud);
+}
+
+function createLightning() {
+    const lightning = document.createElement('div');
+    lightning.className = 'lightning';
+    themeOverlay.appendChild(lightning);
 }

@@ -134,9 +134,7 @@ function applyTheme(theme) {
         case 'easter':
             if (theme.settings.animation === 'eggs') startEasterTheme();
             break;
-        // Időjárás témák
         case 'rain':
-        case 'drizzle':
             startRainTheme();
             break;
         case 'snow':
@@ -150,6 +148,9 @@ function applyTheme(theme) {
             break;
         case 'atmosphere':
             startAtmosphereTheme();
+            break;
+        case 'thunderstorm':
+            startThunderstormTheme();
             break;
         case 'none':
         default:

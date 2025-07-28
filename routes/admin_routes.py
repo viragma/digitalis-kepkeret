@@ -1,5 +1,4 @@
 # routes/admin_routes.py
-
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager, event_logger
 from datetime import datetime
@@ -79,10 +78,8 @@ def save_themes_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     
     config_data = data_manager.get_config()
-    
-    # A 'debug_theme' kulcsot a config fő szintjén tároljuk
     config_data['debug_theme'] = request.form.get('debug_theme', 'none')
-
+    
     themes_config = config_data.get('themes', {})
     themes_config['enabled'] = 'themes_enabled' in request.form
     themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
@@ -97,6 +94,7 @@ def save_themes_config_route():
     weather_themes['Clear'] = {'enabled': 'weather_Clear_enabled' in request.form}
     weather_themes['Clouds'] = {'enabled': 'weather_Clouds_enabled' in request.form}
     weather_themes['Atmosphere'] = {'enabled': 'weather_Atmosphere_enabled' in request.form}
+    weather_themes['Thunderstorm'] = {'enabled': 'weather_Thunderstorm_enabled' in request.form}
     themes_config['weather'] = weather_themes
 
     config_data['themes'] = themes_config
@@ -106,7 +104,6 @@ def save_themes_config_route():
     flash('Témák sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Theme config changed'})
     return redirect(url_for('admin_bp.dashboard_page'))
-
 
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():

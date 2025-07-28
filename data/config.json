@@ -56,6 +56,9 @@
             },
             "Atmosphere": {
                 "enabled": true
+            },
+            "Thunderstorm": {
+                "enabled": true
             }
         }
     }
