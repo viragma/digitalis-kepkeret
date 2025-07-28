@@ -4,8 +4,10 @@ let config = {};
 let imageList = [];
 let currentIndex = 0;
 let isPaused = false;
-let currentTheme = 'none';
+let currentAmbientTheme = 'none';
+let currentEventTheme = 'none';
 
+// DOM elemek
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -14,6 +16,7 @@ const birthdayContainer = document.getElementById('birthday-container');
 const currentBackgroundDiv = document.getElementById('current-background');
 const nextBackgroundDiv = document.getElementById('next-background');
 const upcomingBirthdaysContainer = document.getElementById('upcoming-birthdays-container');
+
 
 async function initializeApp() {
     try {
@@ -84,7 +87,7 @@ function showNextImage() {
 
         nextImageDiv.classList.remove('ken-burns');
         if (config.zoom_enabled) {
-            nextImageDiv.style.animationDuration = (config.zoom_duration || 30000) + 'ms';
+            nextImageDiv.style.animationDuration = (config.interval || 10000) + 'ms';
             const origins = ['top left', 'top right', 'bottom left', 'bottom right', 'center center'];
             const randomOrigin = origins[Math.floor(Math.random() * origins.length)];
             nextImageDiv.style.transformOrigin = randomOrigin;
@@ -114,13 +117,20 @@ function showNextImage() {
 async function updateTheme() {
     try {
         const response = await fetch('/api/active_theme');
-        const theme = await response.json();
+        const themes = await response.json();
 
-        if (theme.name !== currentTheme) {
-            console.log(`Téma váltás: ${currentTheme} -> ${theme.name}`);
-            currentTheme = theme.name;
-            applyTheme(theme);
+        if (themes.event_theme.name !== currentEventTheme) {
+            console.log(`Esemény téma váltás: ${currentEventTheme} -> ${themes.event_theme.name}`);
+            currentEventTheme = themes.event_theme.name;
+            applyTheme(themes.event_theme);
         }
+
+        if (themes.ambient_theme !== currentAmbientTheme) {
+            console.log(`Napszak téma váltás: ${currentAmbientTheme} -> ${themes.ambient_theme}`);
+            currentAmbientTheme = themes.ambient_theme;
+            applyAmbientTheme(themes.ambient_theme);
+        }
+
     } catch (error) {
         console.error("Hiba a téma frissítésekor:", error);
     }
@@ -128,7 +138,6 @@ async function updateTheme() {
 
 function applyTheme(theme) {
     stopAllThemes();
-
     switch (theme.name) {
         case 'birthday':
             if (theme.settings.animation === 'confetti') startConfettiTheme();
@@ -143,42 +152,26 @@ function applyTheme(theme) {
         case 'easter':
             if (theme.settings.animation === 'eggs') startEasterTheme();
             break;
-        // Időjárás
-        case 'rain':
-        case 'drizzle':
-            startRainTheme();
-            break;
-        case 'snow':
-            startSnowTheme();
-            break;
-        case 'clear':
-            startClearTheme();
-            break;
-        case 'clouds':
-            startCloudsTheme();
-            break;
-        case 'atmosphere':
-            startAtmosphereTheme();
-            break;
-        case 'thunderstorm':
-            startThunderstormTheme();
-            break;
-        // Napszak
-        case 'sunrise':
-            startSunriseTheme();
-            break;
-        case 'daytime':
-            startDaytimeTheme();
-            break;
-        case 'sunset':
-            startSunsetTheme();
-            break;
-        case 'night':
-            startNightTheme();
-            break;
-        case 'none':
-        default:
-            break;
+        case 'rain': case 'drizzle': startRainTheme(); break;
+        case 'snow': startSnowTheme(); break;
+        case 'clear': startClearTheme(); break;
+        case 'clouds': startCloudsTheme(); break;
+        case 'atmosphere': startAtmosphereTheme(); break;
+        case 'thunderstorm': startThunderstormTheme(); break;
+        case 'none': default: break;
+    }
+}
+
+function applyAmbientTheme(themeName) {
+    // A napszak témák a skyThemeContainer-t használják, nem törlik a többit
+    if (skyThemeContainer) skyThemeContainer.innerHTML = '';
+    
+    switch (themeName) {
+        case 'sunrise': startSunriseTheme(); break;
+        case 'daytime': startDaytimeTheme(); break;
+        case 'sunset': startSunsetTheme(); break;
+        case 'night': startNightTheme(); break;
+        default: break;
     }
 }
 

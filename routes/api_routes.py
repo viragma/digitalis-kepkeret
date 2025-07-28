@@ -14,9 +14,8 @@ api_bp = Blueprint('api_bp', __name__, url_prefix='/api')
 
 @api_bp.route('/active_theme', methods=['GET'])
 def get_active_theme_api():
-    """ API végpont az aktív téma lekérdezéséhez. """
-    active_theme = theme_engine.get_active_theme()
-    return jsonify(active_theme)
+    active_themes = theme_engine.get_active_themes()
+    return jsonify(active_themes)
 
 @api_bp.route('/event_log', methods=['GET'])
 def get_event_log():
@@ -36,7 +35,6 @@ def get_dashboard_stats():
         config = data_manager.get_config()
         image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
         abs_image_folder_path = os.path.join(os.getcwd(), image_folder_name)
-        
         total_images = len([f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))])
         persons = data_manager.get_persons()
         all_faces = data_manager.get_faces()
@@ -46,18 +44,8 @@ def get_dashboard_stats():
             name = face.get('name')
             if name and name not in ['Ismeretlen', 'arc_nélkül']: recognized_faces += 1
             elif name == 'Ismeretlen': unknown_faces += 1
-        
-        latest_images = sorted(
-            [f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))],
-            key=lambda f: os.path.getmtime(os.path.join(abs_image_folder_path, f)),
-            reverse=True
-        )[:5]
-
-        return jsonify({
-            "total_images": total_images, "known_persons": known_persons,
-            "recognized_faces": recognized_faces, "unknown_faces": unknown_faces,
-            "latest_images": latest_images
-        })
+        latest_images = sorted([f for f in os.listdir(abs_image_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))], key=lambda f: os.path.getmtime(os.path.join(abs_image_folder_path, f)), reverse=True)[:5]
+        return jsonify({"total_images": total_images, "known_persons": known_persons, "recognized_faces": recognized_faces, "unknown_faces": unknown_faces, "latest_images": latest_images})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -67,12 +55,10 @@ def get_system_stats():
         config = data_manager.get_config()
         images_folder_path = os.path.join(os.getcwd(), config.get('UPLOAD_FOLDER', 'static/images'))
         faces_folder_path = os.path.join(os.getcwd(), 'static/faces')
-
         total, used, free = shutil.disk_usage("/")
         disk_percent = (used / total) * 100
         memory = psutil.virtual_memory()
         cpu_percent = psutil.cpu_percent(interval=None)
-
         return jsonify({
             "disk": { "percent": round(disk_percent, 1), "free_gb": round(free / (1024**3), 1) },
             "memory": { "percent": memory.percent, "total_gb": round(memory.total / (1024**3), 1) },
@@ -94,6 +80,7 @@ def get_folder_size_mb(folder_path):
     except FileNotFoundError:
         return 0
     return round(total_size / (1024 * 1024), 1)
+
 
 @api_bp.route('/run_face_detection', methods=['POST'])
 def run_face_detection():

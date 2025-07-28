@@ -1,6 +1,7 @@
 // static/themes.js
 
 const themeOverlay = document.getElementById('theme-overlay');
+const skyThemeContainer = document.getElementById('sky-theme-container');
 let themeInterval;
 
 function stopAllThemes() {
@@ -11,10 +12,15 @@ function stopAllThemes() {
         themeOverlay.innerHTML = '';
         themeOverlay.className = '';
     }
+    if (skyThemeContainer) {
+        skyThemeContainer.innerHTML = '';
+        skyThemeContainer.className = '';
+    }
 }
 
+// --- Esemény Témák ---
+
 function startSnowTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-snow');
     for (let i = 0; i < 100; i++) {
         createSnowflake();
@@ -22,7 +28,6 @@ function startSnowTheme() {
 }
 
 function startConfettiTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-confetti');
     for (let i = 0; i < 50; i++) {
         createConfetti();
@@ -30,7 +35,6 @@ function startConfettiTheme() {
 }
 
 function startBalloonsTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-balloons');
     themeInterval = setInterval(() => {
         if (themeOverlay.children.length < 20) {
@@ -40,7 +44,6 @@ function startBalloonsTheme() {
 }
 
 function startFireworksTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-fireworks');
     themeInterval = setInterval(() => {
         if (themeOverlay.children.length < 15) {
@@ -50,7 +53,6 @@ function startFireworksTheme() {
 }
 
 function startEasterTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-eggs');
     themeInterval = setInterval(() => {
         if (themeOverlay.children.length < 25) {
@@ -59,8 +61,9 @@ function startEasterTheme() {
     }, 600);
 }
 
+// --- Időjárás Témák ---
+
 function startRainTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-rain');
     for (let i = 0; i < 100; i++) {
         createRaindrop();
@@ -68,54 +71,55 @@ function startRainTheme() {
 }
 
 function startClearTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-clear');
     createSunbeam();
 }
 
 function startCloudsTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-clouds');
-    // Több rétegben, különböző sebességgel és méretben hozzuk létre a felhőket
-    for (let i = 0; i < 5; i++) createCloud('slow');   // Távoli, lassú felhők
-    for (let i = 0; i < 5; i++) createCloud('medium'); // Középső réteg
-    for (let i = 0; i < 3; i++) createCloud('fast');   // Közeli, gyors felhők
+    for (let i = 0; i < 5; i++) createCloud('slow');
+    for (let i = 0; i < 5; i++) createCloud('medium');
+    for (let i = 0; i < 3; i++) createCloud('fast');
 }
 
 function startAtmosphereTheme() {
-    stopAllThemes();
     themeOverlay.classList.add('theme-atmosphere');
 }
 
 function startThunderstormTheme() {
-    stopAllThemes();
-    startRainTheme(); // Az eső a vihar része
+    startRainTheme();
     themeOverlay.classList.add('theme-thunderstorm');
     createLightning();
 }
 
+// --- Napszak Témák ("Élő Égbolt") ---
 
-// --- Napszak Témák ---
 function startSunriseTheme() {
-    stopAllThemes();
-    document.body.style.setProperty('--sky-gradient', 'linear-gradient(to top, rgba(255, 236, 210, 0) 0%, rgba(255, 204, 188, 0.4) 100%)');
+    skyThemeContainer.className = 'sky-sunrise';
+    const gradient = document.createElement('div');
+    gradient.className = 'sky-gradient';
+    skyThemeContainer.appendChild(gradient);
+    setTimeout(() => gradient.classList.add('visible'), 100);
 }
+
 function startDaytimeTheme() {
-    stopAllThemes();
     // Nappal nincs extra effekt, a háttér tiszta
 }
+
 function startSunsetTheme() {
-    stopAllThemes();
-    document.body.style.setProperty('--sky-gradient', 'linear-gradient(to top, rgba(255, 126, 95, 0) 0%, rgba(255, 107, 107, 0.4) 100%)');
+    skyThemeContainer.className = 'sky-sunset';
+    const gradient = document.createElement('div');
+    gradient.className = 'sky-gradient';
+    skyThemeContainer.appendChild(gradient);
+    setTimeout(() => gradient.classList.add('visible'), 100);
 }
+
 function startNightTheme() {
-    stopAllThemes();
-    themeOverlay.classList.add('theme-night');
+    skyThemeContainer.className = 'sky-night';
     for (let i = 0; i < 100; i++) {
         createStar();
     }
 }
-
 
 // --- Létrehozó segédfüggvények ---
 
@@ -189,36 +193,33 @@ function createSunbeam() {
 function createCloud(speedTier) {
     const cloud = document.createElement('div');
     cloud.className = 'cloud';
-    
     let scale, duration, opacity;
     switch (speedTier) {
-        case 'fast': // Közeli felhők
-            scale = Math.random() * 0.4 + 0.8; // 0.8x - 1.2x méret
-            duration = Math.random() * 20 + 20; // 20-40s sebesség
-            opacity = Math.random() * 0.3 + 0.5; // 0.5 - 0.8 láthatóság
+        case 'fast':
+            scale = Math.random() * 0.4 + 0.8;
+            duration = Math.random() * 20 + 20;
+            opacity = Math.random() * 0.3 + 0.5;
             cloud.style.top = `${Math.random() * 15}vh`;
             break;
-        case 'medium': // Középső réteg
-            scale = Math.random() * 0.3 + 0.5; // 0.5x - 0.8x méret
-            duration = Math.random() * 30 + 40; // 40-70s sebesség
-            opacity = Math.random() * 0.2 + 0.3; // 0.3 - 0.5 láthatóság
+        case 'medium':
+            scale = Math.random() * 0.3 + 0.5;
+            duration = Math.random() * 30 + 40;
+            opacity = Math.random() * 0.2 + 0.3;
             cloud.style.top = `${Math.random() * 10 + 5}vh`;
             break;
-        default: // Távoli, lassú felhők
-            scale = Math.random() * 0.3 + 0.2; // 0.2x - 0.5x méret
-            duration = Math.random() * 40 + 70; // 70-110s sebesség
-            opacity = Math.random() * 0.2 + 0.1; // 0.1 - 0.3 láthatóság
+        default:
+            scale = Math.random() * 0.3 + 0.2;
+            duration = Math.random() * 40 + 70;
+            opacity = Math.random() * 0.2 + 0.1;
             cloud.style.top = `${Math.random() * 5 + 10}vh`;
             break;
     }
-    
     cloud.style.transform = `scale(${scale})`;
-    cloud.style.width = '200px'; // Fix szélesség, a scale változtatja a méretet
+    cloud.style.width = '200px';
     cloud.style.height = '100px';
     cloud.style.animationDuration = `${duration}s`;
     cloud.style.animationDelay = `-${Math.random() * duration}s`;
     cloud.style.opacity = opacity;
-    
     themeOverlay.appendChild(cloud);
 }
 
@@ -231,11 +232,12 @@ function createLightning() {
 function createStar() {
     const star = document.createElement('div');
     star.className = 'star';
-    star.style.left = `${Math.random() * 100}vw`;
-    star.style.top = `${Math.random() * 100}vh`;
+    star.style.setProperty('--x', Math.random());
+    star.style.setProperty('--y', Math.random());
+    star.style.setProperty('--o', Math.random() * 0.6 + 0.2);
     star.style.width = `${Math.random() * 2 + 1}px`;
     star.style.height = star.style.width;
     star.style.animationDuration = `${Math.random() * 5 + 3}s`;
     star.style.animationDelay = `${Math.random() * 5}s`;
-    themeOverlay.appendChild(star);
+    skyThemeContainer.appendChild(star);
 }
