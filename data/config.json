@@ -3,6 +3,7 @@
     "ADMIN_PASSWORD": "admin",
     "WEATHER_API_KEY": "3939ac2b661ccdebd1e4a28a075c56fb",
     "WEATHER_CITY": "Kecskemét,HU",
+    "debug_theme": "none",
     "slideshow": {
         "interval": 10000,
         "zoom_enabled": true,
@@ -19,7 +20,7 @@
         "enable_vignette": true,
         "enable_clock": true,
         "clock_size": "2.5rem",
-        "birthday_boost_ratio": 100,
+        "birthday_boost_ratio": 75,
         "randomize_playlist": true,
         "birthday_message": "🎉 Boldog Születésnapot! 🎉",
         "show_upcoming_birthdays": true,

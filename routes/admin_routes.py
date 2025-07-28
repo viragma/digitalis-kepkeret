@@ -79,10 +79,12 @@ def save_themes_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     
     config_data = data_manager.get_config()
+    
+    # A 'debug_theme' kulcsot a config fő szintjén tároljuk
+    config_data['debug_theme'] = request.form.get('debug_theme', 'none')
+
     themes_config = config_data.get('themes', {})
-    
     themes_config['enabled'] = 'themes_enabled' in request.form
-    
     themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
     themes_config['christmas'] = {"animation": request.form.get('christmas_animation', 'none')}
     themes_config['new_year_eve'] = {"animation": request.form.get('new_year_eve_animation', 'none')}

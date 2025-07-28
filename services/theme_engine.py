@@ -12,6 +12,18 @@ def get_active_theme():
     config = data_manager.get_config()
     themes_config = config.get('themes', {})
     
+    # --- JAVÍTÁS: Először a manuális teszt beállítást ellenőrizzük ---
+    debug_theme = config.get('debug_theme', 'none')
+    if debug_theme != 'none':
+        # Ha van teszt téma beállítva, minden mást felülbírálunk
+        # Az 'if' feltétel biztosítja, hogy a settings létezzen
+        if themes_config.get(debug_theme):
+             return { "name": debug_theme, "settings": themes_config.get(debug_theme, {}) }
+        else: # Kezeli az időjárás témákat is
+             return { "name": debug_theme, "settings": {} }
+
+
+    # Ha nincs teszt, a normál logikával megyünk tovább
     if not themes_config.get('enabled', False):
         return {"name": "none"}
 
@@ -38,10 +50,9 @@ def get_active_theme():
     if weather_themes_settings.get('enabled', True):
         current_weather = weather_service.get_current_weather()
         if current_weather:
-            # Az OpenWeatherMap fő kategóriáit kezeljük
-            # Pl. a "Mist", "Fog", "Haze" mind "Atmosphere"-ként jön
+            theme_name = current_weather.lower()
             if weather_themes_settings.get(current_weather, {}).get('enabled', True):
-                 return { "name": current_weather.lower(), "settings": {} }
+                 return { "name": theme_name, "settings": {} }
     
-    # 4. Alapértelmezett eset: nincs különleges téma
+    # 4. Alapértelmezett eset
     return {"name": "none"}

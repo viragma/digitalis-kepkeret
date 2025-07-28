@@ -1,8 +1,28 @@
 <div class="container mt-4">
     <form method="POST" action="{{ url_for('admin_bp.save_themes_config_route') }}">
+        
+        <div class="card mb-4">
+            <div class="card-header"><h5 class="mb-0">Téma Kényszerítése (Teszthez)</h5></div>
+            <div class="card-body">
+                <p class="text-muted">Válassz ki egy témát, hogy azonnal megnézhesd a vetítőn, függetlenül a dátumtól vagy időjárástól. A normál működéshez állítsd vissza "Nincs (automatikus)"-ra.</p>
+                <select class="form-select" name="debug_theme">
+                    <option value="none" {% if config.get('debug_theme') == 'none' %}selected{% endif %}>Nincs (automatikus)</option>
+                    <option value="birthday" {% if config.get('debug_theme') == 'birthday' %}selected{% endif %}>Születésnap</option>
+                    <option value="christmas" {% if config.get('debug_theme') == 'christmas' %}selected{% endif %}>Karácsony</option>
+                    <option value="new_year_eve" {% if config.get('debug_theme') == 'new_year_eve' %}selected{% endif %}>Szilveszter</option>
+                    <option value="easter" {% if config.get('debug_theme') == 'easter' %}selected{% endif %}>Húsvét</option>
+                    <option value="rain" {% if config.get('debug_theme') == 'rain' %}selected{% endif %}>Időjárás: Eső</option>
+                    <option value="snow" {% if config.get('debug_theme') == 'snow' %}selected{% endif %}>Időjárás: Hó</option>
+                    <option value="clear" {% if config.get('debug_theme') == 'clear' %}selected{% endif %}>Időjárás: Tiszta</option>
+                    <option value="clouds" {% if config.get('debug_theme') == 'clouds' %}selected{% endif %}>Időjárás: Felhős</option>
+                    <option value="atmosphere" {% if config.get('debug_theme') == 'atmosphere' %}selected{% endif %}>Időjárás: Köd</option>
+                </select>
+            </div>
+        </div>
+
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="bi bi-palette-fill"></i> Témák Beállításai</h4>
+                <h4 class="mb-0"><i class="bi bi-palette-fill"></i> Témák Automatikus Beállításai</h4>
                 <div class="form-check form-switch fs-5">
                     <input class="form-check-input" type="checkbox" role="switch" id="themes_enabled" name="themes_enabled" {% if config.get('themes', {}).get('enabled', true) %}checked{% endif %}>
                     <label class="form-check-label" for="themes_enabled">Tematizálás engedélyezve</label>
@@ -10,7 +30,6 @@
             </div>
             <div class="card-body">
                 <div class="accordion" id="themesAccordion">
-                    
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="headingHolidays">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHolidays" aria-expanded="true">
@@ -21,13 +40,7 @@
                             <div class="accordion-body">
                                 <div class="mb-3 row">
                                     <label class="col-sm-4 col-form-label">🎂 Születésnap</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-select" name="birthday_animation">
-                                            <option value="none" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'none' %}selected{% endif %}>Nincs animáció</option>
-                                            <option value="confetti" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'confetti' %}selected{% endif %}>Konfetti</option>
-                                            <option value="balloons" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'balloons' %}selected{% endif %}>Lufik</option>
-                                        </select>
-                                    </div>
+                                    <div class="col-sm-8"><select class="form-select" name="birthday_animation"><option value="none" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option><option value="confetti" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'confetti' %}selected{% endif %}>Konfetti</option><option value="balloons" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'balloons' %}selected{% endif %}>Lufik</option></select></div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label class="col-sm-4 col-form-label">🎄 Karácsony (Dec. 24-26.)</label>
