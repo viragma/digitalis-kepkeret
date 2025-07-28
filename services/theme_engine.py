@@ -3,6 +3,7 @@
 from datetime import date, timedelta
 from dateutil.easter import easter
 from . import data_manager
+from . import weather_service # ÚJ IMPORT
 
 def get_active_theme():
     """
@@ -24,12 +25,21 @@ def get_active_theme():
     # 2. Prioritás: Fix Ünnepek
     if today.month == 12 and today.day in [24, 25, 26]:
         return { "name": "christmas", "settings": themes_config.get('christmas', {}) }
-    
     if today.month == 12 and today.day == 31:
         return { "name": "new_year_eve", "settings": themes_config.get('new_year_eve', {}) }
-        
     easter_date = easter(today.year)
     if today == easter_date or today == easter_date + timedelta(days=1):
         return { "name": "easter", "settings": themes_config.get('easter', {}) }
     
+    # 3. Prioritás: Időjárás
+    current_weather = weather_service.get_current_weather()
+    if current_weather:
+        # Az időjárás nevét (pl. "Rain") adjuk vissza témaként, kisbetűvel
+        theme_name = current_weather.lower()
+        return {
+            "name": theme_name,
+            "settings": themes_config.get(theme_name, {}) # Később itt lehetnek egyedi beállítások
+        }
+    
+    # 4. Alapértelmezett eset: nincs különleges téma
     return {"name": "none"}

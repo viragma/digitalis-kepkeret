@@ -41,7 +41,7 @@ function startFireworksTheme() {
     stopAllThemes();
     themeOverlay.classList.add('theme-fireworks');
     themeInterval = setInterval(() => {
-        if (themeOverlay.children.length < 15) { // Limitáljuk a tűzijátékok számát
+        if (themeOverlay.children.length < 15) {
             createFirework();
         }
     }, 500);
@@ -55,6 +55,14 @@ function startEasterTheme() {
             createEgg();
         }
     }, 600);
+}
+
+function startRainTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-rain');
+    for (let i = 0; i < 100; i++) {
+        createRaindrop();
+    }
 }
 
 
@@ -94,10 +102,10 @@ function createFirework() {
     const firework = document.createElement('div');
     firework.className = 'firework';
     firework.style.left = `${Math.random() * 90 + 5}vw`;
-    firework.style.top = `${Math.random() * 50 + 10}vh`; // Felső fele a képernyőnek
+    firework.style.top = `${Math.random() * 50 + 10}vh`;
     firework.style.borderColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
     themeOverlay.appendChild(firework);
-    setTimeout(() => firework.remove(), 1000); // Eltávolítás az animáció végén
+    setTimeout(() => firework.remove(), 1000);
 }
 
 function createEgg() {
@@ -106,6 +114,15 @@ function createEgg() {
     egg.style.left = `${Math.random() * 90}vw`;
     egg.style.animationDuration = `${Math.random() * 6 + 6}s`;
     egg.style.animationDelay = `${Math.random() * 4}s`;
-    egg.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`; // Pasztell színek
+    egg.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`;
     themeOverlay.appendChild(egg);
+}
+
+function createRaindrop() {
+    const raindrop = document.createElement('div');
+    raindrop.className = 'raindrop';
+    raindrop.style.left = `${Math.random() * 100}vw`;
+    raindrop.style.animationDuration = `${Math.random() * 0.5 + 0.3}s`;
+    raindrop.style.animationDelay = `${Math.random() * 5}s`;
+    themeOverlay.appendChild(raindrop);
 }

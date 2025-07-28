@@ -120,15 +120,31 @@ async function updateTheme() {
 function applyTheme(theme) {
     stopAllThemes();
 
-    if (theme.name === 'birthday') {
-        if (theme.settings.animation === 'confetti') startConfettiTheme();
-        else if (theme.settings.animation === 'balloons') startBalloonsTheme();
-    } else if (theme.name === 'christmas' && theme.settings.animation === 'snow') {
-        startSnowTheme();
-    } else if (theme.name === 'new_year_eve' && theme.settings.animation === 'fireworks') {
-        startFireworksTheme();
-    } else if (theme.name === 'easter' && theme.settings.animation === 'eggs') {
-        startEasterTheme();
+    switch (theme.name) {
+        case 'birthday':
+            if (theme.settings.animation === 'confetti') startConfettiTheme();
+            else if (theme.settings.animation === 'balloons') startBalloonsTheme();
+            break;
+        case 'christmas':
+            if (theme.settings.animation === 'snow') startSnowTheme();
+            break;
+        case 'new_year_eve':
+            if (theme.settings.animation === 'fireworks') startFireworksTheme();
+            break;
+        case 'easter':
+            if (theme.settings.animation === 'eggs') startEasterTheme();
+            break;
+        // Időjárás témák
+        case 'rain':
+            startRainTheme();
+            break;
+        case 'snow':
+            startSnowTheme();
+            break;
+        case 'none':
+        default:
+            // Nincs teendő, a stopAllThemes() már lefutott
+            break;
     }
 }
 

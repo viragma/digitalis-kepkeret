@@ -32,6 +32,12 @@
         },
         "christmas": {
             "animation": "snow"
+        },
+        "new_year_eve": {
+            "animation": "fireworks"
+        },
+        "easter": {
+            "animation": "eggs"
         }
     }
 }

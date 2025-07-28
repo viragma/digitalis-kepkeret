@@ -70,14 +70,14 @@
 /* --- Szilveszteri Téma (Tűzijáték) --- */
 .theme-fireworks .firework {
     position: absolute;
-    width: 4px;
-    height: 4px;
     border-radius: 50%;
-    opacity: 1;
-    animation: firework-explode 1s ease-out forwards;
+    border: 2px solid;
+    /* A box-shadow hozza létre a "robbanás" effektet */
+    box-shadow: 0 0 10px, 0 0 20px, 0 0 30px;
+    animation: explode 1s ease-out forwards;
 }
 
-@keyframes firework-explode {
+@keyframes explode {
     0% {
         transform: scale(0.1);
         opacity: 1;
@@ -100,4 +100,19 @@
 @keyframes egg-fall {
     0% { transform: translateY(-10vh) rotate(-15deg); }
     100% { transform: translateY(110vh) rotate(15deg); }
+}
+
+/* --- Eső Téma --- */
+.theme-rain .raindrop {
+    position: absolute;
+    bottom: 100%;
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.3));
+    animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(110vh); }
 }
