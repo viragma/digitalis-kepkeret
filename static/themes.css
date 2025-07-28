@@ -19,7 +19,7 @@
 @keyframes rain-fall { 0% { transform: translateY(0); } 100% { transform: translateY(110vh); } }
 .theme-clear .sunbeam { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(255, 255, 220, 0.15) 0%, rgba(255, 255, 220, 0) 40%); animation: sun-rotate 60s linear infinite; }
 @keyframes sun-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-.theme-clouds .cloud { position: absolute; background-image: url('/static/images/cloud.png'); background-size: contain; background-repeat: no-repeat; animation: move-clouds linear infinite; filter: blur(2px); opacity: 0.2; }
+.theme-clouds .cloud { position: absolute; background-image: url('/static/source/cloud.png'); background-size: contain; background-repeat: no-repeat; animation: move-clouds linear infinite; filter: blur(2px); opacity: 0.2; }
 @keyframes move-clouds { 0% { transform: translateX(-200px); } 100% { transform: translateX(110vw); } }
 .theme-atmosphere { background: radial-gradient(ellipse at center, rgba(200,200,200,0.1) 0%,rgba(0,0,0,0) 100%); animation: fog-pulse 8s ease-in-out infinite alternate; }
 @keyframes fog-pulse { 0% { opacity: 0.8; } 100% { opacity: 1; } }

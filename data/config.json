@@ -3,7 +3,7 @@
     "ADMIN_PASSWORD": "admin",
     "WEATHER_API_KEY": "3939ac2b661ccdebd1e4a28a075c56fb",
     "WEATHER_CITY": "Kecskemét,HU",
-    "debug_theme": "sunrise",
+    "debug_theme": "none",
     "slideshow": {
         "interval": 10000,
         "zoom_enabled": true,
@@ -29,36 +29,36 @@
     "themes": {
         "enabled": true,
         "birthday": {
-            "animation": "none"
+            "animation": "confetti"
         },
         "christmas": {
-            "animation": "none"
+            "animation": "snow"
         },
         "new_year_eve": {
-            "animation": "none"
+            "animation": "fireworks"
         },
         "easter": {
-            "animation": "none"
+            "animation": "eggs"
         },
         "weather": {
-            "enabled": false,
+            "enabled": true,
             "Rain": {
-                "enabled": false
+                "enabled": true
             },
             "Snow": {
-                "enabled": false
+                "enabled": true
             },
             "Thunderstorm": {
-                "enabled": false
+                "enabled": true
             },
             "Clear": {
-                "enabled": false
+                "enabled": true
             },
             "Clouds": {
-                "enabled": false
+                "enabled": true
             },
             "Atmosphere": {
-                "enabled": false
+                "enabled": true
             }
         },
         "day_cycle": {
