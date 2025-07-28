@@ -30,7 +30,6 @@ def index():
 
 @main_bp.route('/remote')
 def remote():
-    """ A távirányító felületét kiszolgáló útvonal. """
     return render_template('remote.html')
 
 @main_bp.route('/config')

@@ -3,7 +3,7 @@
     "ADMIN_PASSWORD": "admin",
     "WEATHER_API_KEY": "3939ac2b661ccdebd1e4a28a075c56fb",
     "WEATHER_CITY": "Kecskemét,HU",
-    "debug_theme": "none",
+    "debug_theme": "sunrise",
     "slideshow": {
         "interval": 10000,
         "zoom_enabled": true,
@@ -29,31 +29,49 @@
     "themes": {
         "enabled": true,
         "birthday": {
-            "animation": "confetti"
+            "animation": "none"
         },
         "christmas": {
-            "animation": "snow"
+            "animation": "none"
         },
         "new_year_eve": {
-            "animation": "fireworks"
+            "animation": "none"
         },
         "easter": {
-            "animation": "eggs"
+            "animation": "none"
         },
         "weather": {
-            "enabled": true,
-            "Rain": { "enabled": true },
-            "Snow": { "enabled": true },
-            "Thunderstorm": { "enabled": true },
-            "Clear": { "enabled": true },
-            "Clouds": { "enabled": true },
-            "Atmosphere": { "enabled": true }
+            "enabled": false,
+            "Rain": {
+                "enabled": false
+            },
+            "Snow": {
+                "enabled": false
+            },
+            "Thunderstorm": {
+                "enabled": false
+            },
+            "Clear": {
+                "enabled": false
+            },
+            "Clouds": {
+                "enabled": false
+            },
+            "Atmosphere": {
+                "enabled": false
+            }
         },
         "day_cycle": {
             "enabled": true,
-            "sunrise": { "enabled": true },
-            "sunset": { "enabled": true },
-            "night": { "enabled": true }
+            "sunrise": {
+                "enabled": true
+            },
+            "sunset": {
+                "enabled": true
+            },
+            "night": {
+                "enabled": true
+            }
         }
     }
 }
