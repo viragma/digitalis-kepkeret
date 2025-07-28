@@ -54,6 +54,7 @@ def save_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
+    
     slideshow_config['interval'] = int(request.form.get('interval', 10000))
     slideshow_config['transition_speed'] = int(request.form.get('transition_speed', 1000))
     slideshow_config['blur_strength'] = int(request.form.get('blur_strength', 20))
@@ -66,11 +67,14 @@ def save_config_route():
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
     slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
+    
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
+    
     event_logger.log_event("Általános beállítások mentve.")
     flash('Beállítások sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Config changed'})
+    
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/save_themes_config', methods=['POST'])
@@ -110,6 +114,7 @@ def save_themes_config_route():
     event_logger.log_event("Téma beállítások mentve.")
     flash('Témák sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Theme config changed'})
+    
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/add_person', methods=['POST'])
