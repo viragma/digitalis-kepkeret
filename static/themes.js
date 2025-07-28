@@ -7,8 +7,10 @@ function stopAllThemes() {
     if (themeInterval) {
         clearInterval(themeInterval);
     }
-    themeOverlay.innerHTML = '';
-    themeOverlay.className = '';
+    if (themeOverlay) {
+        themeOverlay.innerHTML = '';
+        themeOverlay.className = '';
+    }
 }
 
 function startSnowTheme() {
@@ -64,7 +66,6 @@ function startRainTheme() {
         createRaindrop();
     }
 }
-
 
 function createSnowflake() {
     const snowflake = document.createElement('div');

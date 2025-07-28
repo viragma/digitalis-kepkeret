@@ -72,7 +72,6 @@
     position: absolute;
     border-radius: 50%;
     border: 2px solid;
-    /* A box-shadow hozza létre a "robbanás" effektet */
     box-shadow: 0 0 10px, 0 0 20px, 0 0 30px;
     animation: explode 1s ease-out forwards;
 }

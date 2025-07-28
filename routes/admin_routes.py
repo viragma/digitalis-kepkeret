@@ -82,10 +82,20 @@ def save_themes_config_route():
     themes_config = config_data.get('themes', {})
     
     themes_config['enabled'] = 'themes_enabled' in request.form
+    
     themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
     themes_config['christmas'] = {"animation": request.form.get('christmas_animation', 'none')}
     themes_config['new_year_eve'] = {"animation": request.form.get('new_year_eve_animation', 'none')}
     themes_config['easter'] = {"animation": request.form.get('easter_animation', 'none')}
+    
+    weather_themes = themes_config.get('weather', {})
+    weather_themes['enabled'] = 'weather_themes_enabled' in request.form
+    weather_themes['Rain'] = {'enabled': 'weather_Rain_enabled' in request.form}
+    weather_themes['Snow'] = {'enabled': 'weather_Snow_enabled' in request.form}
+    weather_themes['Clear'] = {'enabled': 'weather_Clear_enabled' in request.form}
+    weather_themes['Clouds'] = {'enabled': 'weather_Clouds_enabled' in request.form}
+    weather_themes['Atmosphere'] = {'enabled': 'weather_Atmosphere_enabled' in request.form}
+    themes_config['weather'] = weather_themes
 
     config_data['themes'] = themes_config
     data_manager.save_config(config_data)
@@ -94,6 +104,7 @@ def save_themes_config_route():
     flash('Témák sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Theme config changed'})
     return redirect(url_for('admin_bp.dashboard_page'))
+
 
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():
