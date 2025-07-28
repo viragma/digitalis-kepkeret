@@ -3,13 +3,12 @@
 from flask import Blueprint, render_template, jsonify
 import os
 import random
+import math
 from datetime import datetime
 from PIL import Image
 from PIL.ExifTags import TAGS
 from services import data_manager
-import math
 
-# Létrehozzuk a blueprintet URL előtag NÉLKÜL
 main_bp = Blueprint('main_bp', __name__)
 
 def get_image_metadata(image_path):
@@ -28,6 +27,11 @@ def get_image_metadata(image_path):
 @main_bp.route('/')
 def index():
     return render_template('index.html')
+
+@main_bp.route('/remote')
+def remote():
+    """ A távirányító felületét kiszolgáló útvonal. """
+    return render_template('remote.html')
 
 @main_bp.route('/config')
 def get_slideshow_config():
@@ -61,10 +65,12 @@ def get_image_list():
             })
 
         final_playlist = []
-        birthday_person = data_manager.get_todays_birthday_person()
-        boost_ratio = slideshow_config.get('birthday_boost_ratio', 0)
+        birthday_person = None
+        if slideshow_config.get('birthday_boost_ratio', 0) > 0:
+            birthday_person = data_manager.get_todays_birthday_person()
 
-        if birthday_person and boost_ratio > 0:
+        if birthday_person:
+            boost_ratio = slideshow_config.get('birthday_boost_ratio', 75)
             birthday_playlist = [img for img in detailed_image_list if birthday_person in img['people']]
             other_playlist = [img for img in detailed_image_list if birthday_person not in img['people']]
             

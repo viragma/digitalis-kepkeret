@@ -8,14 +8,14 @@ BASE_URL = "http://api.openweathermap.org/data/2.5/weather"
 def get_current_weather():
     """
     Lekérdezi az aktuális időjárást az OpenWeatherMap API-ról.
-    Visszaad egy egyszerűsített időjárás-kódot (pl. 'Rain', 'Snow', 'Clear').
     """
     config = data_manager.get_config()
     api_key = config.get("WEATHER_API_KEY")
-    city = config.get("WEATHER_CITY", "Kecskemét,HU")
+    city = config.get("WEATHER_CITY", "Budapest,HU")
 
-    if not api_key or api_key == "3939ac2b661ccdebd1e4a28a075c56fb":
-        print("!!! HIBA: OpenWeatherMap API kulcs nincs beállítva a config.json-ban.")
+    # Eltávolítottuk a hibás ellenőrzést, mert a 401-es hiba kezelése már elég.
+    if not api_key or "IDE_MASOLD" in api_key:
+        print("!!! FIGYELMEZTETÉS: OpenWeatherMap API kulcs nincs (vagy hibásan van) beállítva a config.json-ban.")
         return None
 
     params = {
@@ -27,12 +27,12 @@ def get_current_weather():
 
     try:
         response = requests.get(BASE_URL, params=params, timeout=10)
-        response.raise_for_status() # Hiba dobása, ha a kérés sikertelen (pl. 401, 404)
+        response.raise_for_status() # Ez a sor kezeli a 401-es (hibás kulcs) és egyéb hibákat.
         data = response.json()
         
-        # Az API által visszaadott fő kategóriát használjuk
         weather_main = data.get("weather", [{}])[0].get("main")
-        return weather_main # Pl. "Clouds", "Rain", "Snow", "Clear", "Thunderstorm"
+        print(f"--- Időjárás Adat Sikeresen Lekérve: {weather_main} ---")
+        return weather_main
 
     except requests.exceptions.RequestException as e:
         print(f"!!! HIBA az időjárás API lekérdezésekor: {e}")
