@@ -47,6 +47,7 @@ function startSlideshow() {
     currentIndex = 0;
     const initialImageObject = imageList[0];
     if (!initialImageObject) return;
+    
     const initialImageUrl = `/static/images/${initialImageObject.file}`;
     currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
@@ -54,13 +55,7 @@ function startSlideshow() {
     currentImageDiv.classList.add('visible');
     currentBackgroundDiv.classList.add('visible');
     
-    let infoText = '';
-    if (initialImageObject.people && initialImageObject.people.length > 0) infoText += initialImageObject.people.join(' & ');
-    if (initialImageObject.date) infoText += (infoText ? ` - ${initialImageObject.date}` : initialImageObject.date);
-    infoContainer.textContent = infoText;
-    infoContainer.classList.add('visible');
-    setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
-
+    updateInfo(initialImageObject);
     setTimeout(showNextImage, config.interval || 10000);
 }
 
@@ -74,11 +69,7 @@ function showNextImage() {
     const img = new Image();
     img.src = imageUrl;
     img.onload = () => {
-        let infoText = '';
-        if (imageObject.people && imageObject.people.length > 0) infoText += imageObject.people.join(' & ');
-        if (imageObject.date) infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date);
-        infoContainer.textContent = infoText;
-        infoContainer.classList.add('visible');
+        updateInfo(imageObject);
         
         nextBackgroundDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
@@ -106,9 +97,25 @@ function showNextImage() {
             currentBackgroundDiv.style.backgroundImage = nextBackgroundDiv.style.backgroundImage;
         }, config.transition_speed || 1500);
         
-        setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
         setTimeout(showNextImage, config.interval || 10000);
     };
+}
+
+function updateInfo(imageObject) {
+    let infoText = '';
+    if (imageObject.people && imageObject.people.length > 0) {
+        infoText += imageObject.people.join(' & ');
+    }
+    if (imageObject.date) {
+        infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date);
+    }
+    infoContainer.textContent = infoText;
+    
+    // Áttűnéssel jelenítjük meg, majd elhalványítjuk
+    infoContainer.classList.add('visible');
+    setTimeout(() => {
+        infoContainer.classList.remove('visible');
+    }, (config.interval || 10000) - (config.transition_speed || 1500));
 }
 
 async function checkBirthdays() {

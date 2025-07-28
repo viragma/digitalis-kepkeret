@@ -1,4 +1,5 @@
 # routes/admin_routes.py
+
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager, event_logger
 from datetime import datetime
@@ -37,7 +38,7 @@ def known_faces_page():
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['password'] == 'admin': 
+        if request.form['password'] == 'admin':
             session['logged_in'] = True
             return redirect(url_for('admin_bp.dashboard_page'))
         else:
@@ -54,7 +55,6 @@ def save_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
-    
     slideshow_config['interval'] = int(request.form.get('interval', 10000))
     slideshow_config['transition_speed'] = int(request.form.get('transition_speed', 1000))
     slideshow_config['blur_strength'] = int(request.form.get('blur_strength', 20))
@@ -67,31 +67,32 @@ def save_config_route():
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
     slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
-    
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
     event_logger.log_event("Általános beállítások mentve.")
     flash('Beállítások sikeresen mentve!', 'success')
+    socketio.emit('reload_clients', {'message': 'Config changed'})
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/save_themes_config', methods=['POST'])
 def save_themes_config_route():
-    """ Elmenti a Témák fülön lévő beállításokat. """
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
-    
+
     config_data = data_manager.get_config()
     themes_config = config_data.get('themes', {})
-    
+
     themes_config['enabled'] = 'themes_enabled' in request.form
     themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
     themes_config['christmas'] = {"animation": request.form.get('christmas_animation', 'none')}
 
     config_data['themes'] = themes_config
     data_manager.save_config(config_data)
-    
+
     event_logger.log_event("Téma beállítások mentve.")
     flash('Témák sikeresen mentve!', 'success')
+    socketio.emit('reload_clients', {'message': 'Theme config changed'})
     return redirect(url_for('admin_bp.dashboard_page'))
+
 
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():
