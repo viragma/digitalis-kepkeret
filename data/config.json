@@ -3,7 +3,7 @@
     "ADMIN_PASSWORD": "admin",
     "WEATHER_API_KEY": "3939ac2b661ccdebd1e4a28a075c56fb",
     "WEATHER_CITY": "Kecskemét,HU",
-    "debug_theme": "none",
+    "debug_theme": "atmosphere",
     "slideshow": {
         "interval": 10000,
         "zoom_enabled": true,

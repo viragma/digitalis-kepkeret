@@ -11,12 +11,20 @@
                     <option value="christmas" {% if config.get('debug_theme') == 'christmas' %}selected{% endif %}>Karácsony</option>
                     <option value="new_year_eve" {% if config.get('debug_theme') == 'new_year_eve' %}selected{% endif %}>Szilveszter</option>
                     <option value="easter" {% if config.get('debug_theme') == 'easter' %}selected{% endif %}>Húsvét</option>
-                    <option value="rain" {% if config.get('debug_theme') == 'rain' %}selected{% endif %}>Időjárás: Eső</option>
-                    <option value="snow" {% if config.get('debug_theme') == 'snow' %}selected{% endif %}>Időjárás: Hó</option>
-                    <option value="clear" {% if config.get('debug_theme') == 'clear' %}selected{% endif %}>Időjárás: Tiszta</option>
-                    <option value="clouds" {% if config.get('debug_theme') == 'clouds' %}selected{% endif %}>Időjárás: Felhős</option>
-                    <option value="atmosphere" {% if config.get('debug_theme') == 'atmosphere' %}selected{% endif %}>Időjárás: Köd</option>
-                    <option value="thunderstorm" {% if config.get('debug_theme') == 'thunderstorm' %}selected{% endif %}>Időjárás: Vihar</option>
+                    <optgroup label="Időjárás">
+                        <option value="rain" {% if config.get('debug_theme') == 'rain' %}selected{% endif %}>Eső</option>
+                        <option value="snow" {% if config.get('debug_theme') == 'snow' %}selected{% endif %}>Hó</option>
+                        <option value="clear" {% if config.get('debug_theme') == 'clear' %}selected{% endif %}>Tiszta</option>
+                        <option value="clouds" {% if config.get('debug_theme') == 'clouds' %}selected{% endif %}>Felhős</option>
+                        <option value="atmosphere" {% if config.get('debug_theme') == 'atmosphere' %}selected{% endif %}>Köd</option>
+                        <option value="thunderstorm" {% if config.get('debug_theme') == 'thunderstorm' %}selected{% endif %}>Vihar</option>
+                    </optgroup>
+                    <optgroup label="Napszak">
+                        <option value="sunrise" {% if config.get('debug_theme') == 'sunrise' %}selected{% endif %}>Napkelte</option>
+                        <option value="daytime" {% if config.get('debug_theme') == 'daytime' %}selected{% endif %}>Nappal</option>
+                        <option value="sunset" {% if config.get('debug_theme') == 'sunset' %}selected{% endif %}>Napnyugta</option>
+                        <option value="night" {% if config.get('debug_theme') == 'night' %}selected{% endif %}>Éjszaka</option>
+                    </optgroup>
                 </select>
             </div>
         </div>
@@ -40,11 +48,7 @@
                         </h2>
                         <div id="collapseHolidays" class="accordion-collapse collapse show" data-bs-parent="#themesAccordion">
                             <div class="accordion-body">
-                                <div class="mb-3 row"><label class="col-sm-4 col-form-label">🎂 Születésnap</label><div class="col-sm-8"><select class="form-select" name="birthday_animation"><option value="none" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option><option value="confetti" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'confetti' %}selected{% endif %}>Konfetti</option><option value="balloons" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'balloons' %}selected{% endif %}>Lufik</option></select></div></div>
-                                <div class="mb-3 row"><label class="col-sm-4 col-form-label">🎄 Karácsony</label><div class="col-sm-8"><select class="form-select" name="christmas_animation"><option value="none" {% if config.get('themes', {}).get('christmas', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option><option value="snow" {% if config.get('themes', {}).get('christmas', {}).get('animation') == 'snow' %}selected{% endif %}>Hóesés</option></select></div></div>
-                                <div class="mb-3 row"><label class="col-sm-4 col-form-label">🎆 Szilveszter</label><div class="col-sm-8"><select class="form-select" name="new_year_eve_animation"><option value="none" {% if config.get('themes', {}).get('new_year_eve', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option><option value="fireworks" {% if config.get('themes', {}).get('new_year_eve', {}).get('animation') == 'fireworks' %}selected{% endif %}>Tűzijáték</option></select></div></div>
-                                <div class="mb-3 row"><label class="col-sm-4 col-form-label">🐰 Húsvét</label><div class="col-sm-8"><select class="form-select" name="easter_animation"><option value="none" {% if config.get('themes', {}).get('easter', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option><option value="eggs" {% if config.get('themes', {}).get('easter', {}).get('animation') == 'eggs' %}selected{% endif %}>Tojások</option></select></div></div>
-                            </div>
+                                </div>
                         </div>
                     </div>
                     
@@ -56,17 +60,26 @@
                         </h2>
                         <div id="collapseWeather" class="accordion-collapse collapse" data-bs-parent="#themesAccordion">
                             <div class="accordion-body">
+                                </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingDayCycle">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseDayCycle" aria-expanded="false">
+                                🌅 Napszak-alapú Témák ("Élő Égbolt")
+                            </button>
+                        </h2>
+                        <div id="collapseDayCycle" class="accordion-collapse collapse" data-bs-parent="#themesAccordion">
+                            <div class="accordion-body">
                                 <div class="form-check form-switch mb-3">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="weather_themes_enabled" name="weather_themes_enabled" {% if config.get('themes', {}).get('weather', {}).get('enabled', true) %}checked{% endif %}>
-                                    <label class="form-check-label" for="weather_themes_enabled">Időjárás témák engedélyezése</glabel>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="day_cycle_themes_enabled" name="day_cycle_themes_enabled" {% if config.get('themes', {}).get('day_cycle', {}).get('enabled', true) %}checked{% endif %}>
+                                    <label class="form-check-label" for="day_cycle_themes_enabled">Napszak témák engedélyezése</label>
                                 </div>
                                 <hr>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Rain_enabled" name="weather_Rain_enabled" {% if config.get('themes', {}).get('weather', {}).get('Rain', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Rain_enabled">Eső téma 🌧️</label></div>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Snow_enabled" name="weather_Snow_enabled" {% if config.get('themes', {}).get('weather', {}).get('Snow', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Snow_enabled">Hó téma ❄️</label></div>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Thunderstorm_enabled" name="weather_Thunderstorm_enabled" {% if config.get('themes', {}).get('weather', {}).get('Thunderstorm', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Thunderstorm_enabled">Vihar téma 🌩️</label></div>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Clear_enabled" name="weather_Clear_enabled" {% if config.get('themes', {}).get('weather', {}).get('Clear', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Clear_enabled">Napos téma ☀️</label></div>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Clouds_enabled" name="weather_Clouds_enabled" {% if config.get('themes', {}).get('weather', {}).get('Clouds', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Clouds_enabled">Felhős téma ☁️</label></div>
-                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="weather_Atmosphere_enabled" name="weather_Atmosphere_enabled" {% if config.get('themes', {}).get('weather', {}).get('Atmosphere', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="weather_Atmosphere_enabled">Ködös/Párás téma 🌫️</label></div>
+                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="day_cycle_sunrise_enabled" name="day_cycle_sunrise_enabled" {% if config.get('themes', {}).get('day_cycle', {}).get('sunrise', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="day_cycle_sunrise_enabled">Napkelte effekt</label></div>
+                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="day_cycle_sunset_enabled" name="day_cycle_sunset_enabled" {% if config.get('themes', {}).get('day_cycle', {}).get('sunset', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="day_cycle_sunset_enabled">Napnyugta ("Aranyóra") effekt</label></div>
+                                <div class="mb-2 form-check"><input type="checkbox" class="form-check-input" id="day_cycle_night_enabled" name="day_cycle_night_enabled" {% if config.get('themes', {}).get('day_cycle', {}).get('night', {}).get('enabled', true) %}checked{% endif %}><label class="form-check-label" for="day_cycle_night_enabled">Éjszakai (csillagos ég) effekt</label></div>
                             </div>
                         </div>
                     </div>

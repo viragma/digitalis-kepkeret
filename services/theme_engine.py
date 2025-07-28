@@ -21,6 +21,9 @@ def get_active_theme():
         settings = themes_config.get(theme_name, {})
         if theme_name in ['rain', 'snow', 'clear', 'clouds', 'atmosphere', 'thunderstorm']:
              settings = {}
+        # A napszak témákhoz sincs külön beállítás, amit a JS-nek át kellene adni
+        if theme_name in ['sunrise', 'daytime', 'sunset', 'night']:
+            settings = {}
         return {"name": theme_name, "settings": settings}
 
     if not themes_config.get('enabled', False):
@@ -46,7 +49,7 @@ def get_active_theme():
     # 3. Prioritás: Időjárás
     weather_themes_settings = themes_config.get('weather', {})
     if weather_themes_settings.get('enabled', True):
-        current_weather = weather_service.get_current_weather() # Pl. "Rain", "Snow", "Thunderstorm"
+        current_weather = weather_service.get_current_weather()
         if current_weather and weather_themes_settings.get(current_weather, {}).get('enabled', True):
             theme_name = current_weather.lower()
             if theme_name == "drizzle": theme_name = "rain"
@@ -55,17 +58,25 @@ def get_active_theme():
             return { "name": theme_name, "settings": {} }
     
     # 4. Prioritás: Napszak
-    try:
-        city = LocationInfo("Kecskemét", "Hungary", "Europe/Budapest", 46.906, 19.691)
-        s = sun(city.observer, date=today, tzinfo=city.timezone)
-        
-        if now < s['sunrise']: return {"name": "night"}
-        if now < s['sunrise'] + timedelta(hours=2): return {"name": "sunrise"}
-        if now < s['sunset'] - timedelta(hours=2): return {"name": "daytime"}
-        if now < s['sunset']: return {"name": "sunset"}
-        return {"name": "night"}
-        
-    except Exception as e:
-        print(f"Hiba a napszak meghatározásakor: {e}")
+    day_cycle_settings = themes_config.get('day_cycle', {})
+    if day_cycle_settings.get('enabled', True):
+        try:
+            city = LocationInfo("Kecskemét", "Hungary", "Europe/Budapest", 46.906, 19.691)
+            s = sun(city.observer, date=today, tzinfo=city.timezone)
+            
+            # A 'now' változót időzóna-tudatossá tesszük az összehasonlításhoz
+            now_aware = now.astimezone(city.tzinfo)
+
+            if day_cycle_settings.get('night', {}).get('enabled', True) and (now_aware < s['sunrise'] or now_aware > s['sunset']):
+                return {"name": "night"}
+            if day_cycle_settings.get('sunrise', {}).get('enabled', True) and s['sunrise'] <= now_aware < s['sunrise'] + timedelta(hours=2):
+                return {"name": "sunrise"}
+            if day_cycle_settings.get('sunset', {}).get('enabled', True) and s['sunset'] - timedelta(hours=2) <= now_aware < s['sunset']:
+                 return {"name": "sunset"}
+            if day_cycle_settings.get('daytime', {}).get('enabled', True):
+                return {"name": "daytime"}
+            
+        except Exception as e:
+            print(f"Hiba a napszak meghatározásakor: {e}")
 
     return {"name": "none"}

@@ -76,9 +76,10 @@ function startClearTheme() {
 function startCloudsTheme() {
     stopAllThemes();
     themeOverlay.classList.add('theme-clouds');
-    for (let i = 0; i < 10; i++) {
-        createCloud();
-    }
+    // Több rétegben, különböző sebességgel és méretben hozzuk létre a felhőket
+    for (let i = 0; i < 5; i++) createCloud('slow');   // Távoli, lassú felhők
+    for (let i = 0; i < 5; i++) createCloud('medium'); // Középső réteg
+    for (let i = 0; i < 3; i++) createCloud('fast');   // Közeli, gyors felhők
 }
 
 function startAtmosphereTheme() {
@@ -92,6 +93,29 @@ function startThunderstormTheme() {
     themeOverlay.classList.add('theme-thunderstorm');
     createLightning();
 }
+
+
+// --- Napszak Témák ---
+function startSunriseTheme() {
+    stopAllThemes();
+    document.body.style.setProperty('--sky-gradient', 'linear-gradient(to top, rgba(255, 236, 210, 0) 0%, rgba(255, 204, 188, 0.4) 100%)');
+}
+function startDaytimeTheme() {
+    stopAllThemes();
+    // Nappal nincs extra effekt, a háttér tiszta
+}
+function startSunsetTheme() {
+    stopAllThemes();
+    document.body.style.setProperty('--sky-gradient', 'linear-gradient(to top, rgba(255, 126, 95, 0) 0%, rgba(255, 107, 107, 0.4) 100%)');
+}
+function startNightTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-night');
+    for (let i = 0; i < 100; i++) {
+        createStar();
+    }
+}
+
 
 // --- Létrehozó segédfüggvények ---
 
@@ -162,15 +186,39 @@ function createSunbeam() {
     themeOverlay.appendChild(sunbeam);
 }
 
-function createCloud() {
+function createCloud(speedTier) {
     const cloud = document.createElement('div');
     cloud.className = 'cloud';
-    cloud.style.top = `${Math.random() * 20 - 10}vh`;
-    cloud.style.width = `${Math.random() * 300 + 200}px`;
-    cloud.style.height = `${Math.random() * 150 + 100}px`;
-    cloud.style.animationDuration = `${Math.random() * 40 + 30}s`;
-    cloud.style.animationDelay = `-${Math.random() * 40}s`; 
-    cloud.style.opacity = Math.random() * 0.4 + 0.1;
+    
+    let scale, duration, opacity;
+    switch (speedTier) {
+        case 'fast': // Közeli felhők
+            scale = Math.random() * 0.4 + 0.8; // 0.8x - 1.2x méret
+            duration = Math.random() * 20 + 20; // 20-40s sebesség
+            opacity = Math.random() * 0.3 + 0.5; // 0.5 - 0.8 láthatóság
+            cloud.style.top = `${Math.random() * 15}vh`;
+            break;
+        case 'medium': // Középső réteg
+            scale = Math.random() * 0.3 + 0.5; // 0.5x - 0.8x méret
+            duration = Math.random() * 30 + 40; // 40-70s sebesség
+            opacity = Math.random() * 0.2 + 0.3; // 0.3 - 0.5 láthatóság
+            cloud.style.top = `${Math.random() * 10 + 5}vh`;
+            break;
+        default: // Távoli, lassú felhők
+            scale = Math.random() * 0.3 + 0.2; // 0.2x - 0.5x méret
+            duration = Math.random() * 40 + 70; // 70-110s sebesség
+            opacity = Math.random() * 0.2 + 0.1; // 0.1 - 0.3 láthatóság
+            cloud.style.top = `${Math.random() * 5 + 10}vh`;
+            break;
+    }
+    
+    cloud.style.transform = `scale(${scale})`;
+    cloud.style.width = '200px'; // Fix szélesség, a scale változtatja a méretet
+    cloud.style.height = '100px';
+    cloud.style.animationDuration = `${duration}s`;
+    cloud.style.animationDelay = `-${Math.random() * duration}s`;
+    cloud.style.opacity = opacity;
+    
     themeOverlay.appendChild(cloud);
 }
 
@@ -178,4 +226,16 @@ function createLightning() {
     const lightning = document.createElement('div');
     lightning.className = 'lightning';
     themeOverlay.appendChild(lightning);
+}
+
+function createStar() {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.left = `${Math.random() * 100}vw`;
+    star.style.top = `${Math.random() * 100}vh`;
+    star.style.width = `${Math.random() * 2 + 1}px`;
+    star.style.height = star.style.width;
+    star.style.animationDuration = `${Math.random() * 5 + 3}s`;
+    star.style.animationDelay = `${Math.random() * 5}s`;
+    themeOverlay.appendChild(star);
 }

@@ -91,11 +91,18 @@ def save_themes_config_route():
     weather_themes['enabled'] = 'weather_themes_enabled' in request.form
     weather_themes['Rain'] = {'enabled': 'weather_Rain_enabled' in request.form}
     weather_themes['Snow'] = {'enabled': 'weather_Snow_enabled' in request.form}
+    weather_themes['Thunderstorm'] = {'enabled': 'weather_Thunderstorm_enabled' in request.form}
     weather_themes['Clear'] = {'enabled': 'weather_Clear_enabled' in request.form}
     weather_themes['Clouds'] = {'enabled': 'weather_Clouds_enabled' in request.form}
     weather_themes['Atmosphere'] = {'enabled': 'weather_Atmosphere_enabled' in request.form}
-    weather_themes['Thunderstorm'] = {'enabled': 'weather_Thunderstorm_enabled' in request.form}
     themes_config['weather'] = weather_themes
+    
+    day_cycle_themes = themes_config.get('day_cycle', {})
+    day_cycle_themes['enabled'] = 'day_cycle_themes_enabled' in request.form
+    day_cycle_themes['sunrise'] = {'enabled': 'day_cycle_sunrise_enabled' in request.form}
+    day_cycle_themes['sunset'] = {'enabled': 'day_cycle_sunset_enabled' in request.form}
+    day_cycle_themes['night'] = {'enabled': 'day_cycle_night_enabled' in request.form}
+    themes_config['day_cycle'] = day_cycle_themes
 
     config_data['themes'] = themes_config
     data_manager.save_config(config_data)

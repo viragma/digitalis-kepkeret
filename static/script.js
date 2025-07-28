@@ -65,6 +65,11 @@ function showNextImage() {
 
     currentIndex = (currentIndex + 1) % imageList.length;
     const imageObject = imageList[currentIndex];
+    if (!imageObject) {
+        setTimeout(showNextImage, 100);
+        return;
+    }
+    
     const imageUrl = `/static/images/${imageObject.file}`;
     
     const img = new Image();
@@ -100,6 +105,10 @@ function showNextImage() {
         
         setTimeout(showNextImage, config.interval || 10000);
     };
+    img.onerror = () => {
+        console.error("Hiba a kép betöltésekor:", imageUrl);
+        setTimeout(showNextImage, 100); 
+    };
 }
 
 async function updateTheme() {
@@ -134,7 +143,9 @@ function applyTheme(theme) {
         case 'easter':
             if (theme.settings.animation === 'eggs') startEasterTheme();
             break;
+        // Időjárás
         case 'rain':
+        case 'drizzle':
             startRainTheme();
             break;
         case 'snow':
@@ -151,6 +162,19 @@ function applyTheme(theme) {
             break;
         case 'thunderstorm':
             startThunderstormTheme();
+            break;
+        // Napszak
+        case 'sunrise':
+            startSunriseTheme();
+            break;
+        case 'daytime':
+            startDaytimeTheme();
+            break;
+        case 'sunset':
+            startSunsetTheme();
+            break;
+        case 'night':
+            startNightTheme();
             break;
         case 'none':
         default:
