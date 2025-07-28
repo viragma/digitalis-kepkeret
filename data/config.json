@@ -19,7 +19,7 @@
         "enable_vignette": true,
         "enable_clock": true,
         "clock_size": "2.5rem",
-        "birthday_boost_ratio": 75,
+        "birthday_boost_ratio": 100,
         "randomize_playlist": true,
         "birthday_message": "🎉 Boldog Születésnapot! 🎉",
         "show_upcoming_birthdays": true,

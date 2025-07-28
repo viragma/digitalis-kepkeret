@@ -77,22 +77,23 @@ def save_config_route():
 @admin_bp.route('/save_themes_config', methods=['POST'])
 def save_themes_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
-
+    
     config_data = data_manager.get_config()
     themes_config = config_data.get('themes', {})
-
+    
     themes_config['enabled'] = 'themes_enabled' in request.form
     themes_config['birthday'] = {"animation": request.form.get('birthday_animation', 'none')}
     themes_config['christmas'] = {"animation": request.form.get('christmas_animation', 'none')}
+    themes_config['new_year_eve'] = {"animation": request.form.get('new_year_eve_animation', 'none')}
+    themes_config['easter'] = {"animation": request.form.get('easter_animation', 'none')}
 
     config_data['themes'] = themes_config
     data_manager.save_config(config_data)
-
+    
     event_logger.log_event("Téma beállítások mentve.")
     flash('Témák sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Theme config changed'})
     return redirect(url_for('admin_bp.dashboard_page'))
-
 
 @admin_bp.route('/add_person', methods=['POST'])
 def add_person():

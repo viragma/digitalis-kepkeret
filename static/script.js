@@ -4,8 +4,9 @@ let config = {};
 let imageList = [];
 let currentIndex = 0;
 let isPaused = false;
+let currentTheme = 'none';
 
-// DOM elemek
+// A "themeOverlay" sort innen töröltük, mert a themes.js-ben már létezik
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -23,6 +24,7 @@ async function initializeApp() {
         
         await checkBirthdays();
         await updateUpcomingBirthdays();
+        await updateTheme();
 
         const transitionSpeed = (config.transition_speed || 1500) / 1000;
         currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
@@ -101,21 +103,42 @@ function showNextImage() {
     };
 }
 
+async function updateTheme() {
+    try {
+        const response = await fetch('/api/active_theme');
+        const theme = await response.json();
+
+        if (theme.name !== currentTheme) {
+            console.log(`Téma váltás: ${currentTheme} -> ${theme.name}`);
+            currentTheme = theme.name;
+            applyTheme(theme);
+        }
+    } catch (error) {
+        console.error("Hiba a téma frissítésekor:", error);
+    }
+}
+
+function applyTheme(theme) {
+    stopAllThemes();
+
+    if (theme.name === 'birthday') {
+        if (theme.settings.animation === 'confetti') {
+            startConfettiTheme();
+        } else if (theme.settings.animation === 'balloons') {
+            startBalloonsTheme();
+        }
+    } else if (theme.name === 'christmas' && theme.settings.animation === 'snow') {
+        startSnowTheme();
+    }
+}
+
 function updateInfo(imageObject) {
     let infoText = '';
-    if (imageObject.people && imageObject.people.length > 0) {
-        infoText += imageObject.people.join(' & ');
-    }
-    if (imageObject.date) {
-        infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date);
-    }
+    if (imageObject.people && imageObject.people.length > 0) { infoText += imageObject.people.join(' & '); }
+    if (imageObject.date) { infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date); }
     infoContainer.textContent = infoText;
-    
-    // Áttűnéssel jelenítjük meg, majd elhalványítjuk
     infoContainer.classList.add('visible');
-    setTimeout(() => {
-        infoContainer.classList.remove('visible');
-    }, (config.interval || 10000) - (config.transition_speed || 1500));
+    setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
 }
 
 async function checkBirthdays() {
@@ -132,7 +155,7 @@ async function checkBirthdays() {
 }
 
 async function updateUpcomingBirthdays() {
-    if (!config.show_upcoming_birthdays) {
+    if (config.show_upcoming_birthdays === false) {
         if (upcomingBirthdaysContainer) upcomingBirthdaysContainer.innerHTML = '';
         return;
     }
@@ -169,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 1000);
     setInterval(checkBirthdays, 3600000); 
     setInterval(updateUpcomingBirthdays, 6 * 3600000); 
+    setInterval(updateTheme, 60000);
 
     const socket = io();
     socket.on('reload_clients', (data) => {

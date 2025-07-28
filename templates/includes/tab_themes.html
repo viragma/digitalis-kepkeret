@@ -4,7 +4,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="mb-0"><i class="bi bi-palette-fill"></i> Témák Beállításai</h4>
                 <div class="form-check form-switch fs-5">
-                    <input class="form-check-input" type="checkbox" role="switch" id="themes_enabled" name="themes_enabled" {% if config.themes.get('enabled', true) %}checked{% endif %}>
+                    <input class="form-check-input" type="checkbox" role="switch" id="themes_enabled" name="themes_enabled" {% if config.get('themes', {}).get('enabled', true) %}checked{% endif %}>
                     <label class="form-check-label" for="themes_enabled">Tematizálás engedélyezve</label>
                 </div>
             </div>
@@ -23,9 +23,9 @@
                                     <label class="col-sm-4 col-form-label">Animáció típusa</label>
                                     <div class="col-sm-8">
                                         <select class="form-select" name="birthday_animation">
-                                            <option value="none" {% if config.themes.birthday.animation == 'none' %}selected{% endif %}>Nincs</option>
-                                            <option value="confetti" {% if config.themes.birthday.animation == 'confetti' %}selected{% endif %}>Konfetti</option>
-                                            <option value="balloons" {% if config.themes.birthday.animation == 'balloons' %}selected{% endif %}>Lufik</option>
+                                            <option value="none" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option>
+                                            <option value="confetti" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'confetti' %}selected{% endif %}>Konfetti</option>
+                                            <option value="balloons" {% if config.get('themes', {}).get('birthday', {}).get('animation') == 'balloons' %}selected{% endif %}>Lufik</option>
                                         </select>
                                     </div>
                                 </div>
@@ -45,8 +45,8 @@
                                     <label class="col-sm-4 col-form-label">Animáció típusa</label>
                                     <div class="col-sm-8">
                                         <select class="form-select" name="christmas_animation">
-                                            <option value="none" {% if config.themes.christmas.animation == 'none' %}selected{% endif %}>Nincs</option>
-                                            <option value="snow" {% if config.themes.christmas.animation == 'snow' %}selected{% endif %}>Finom hóesés</option>
+                                            <option value="none" {% if config.get('themes', {}).get('christmas', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option>
+                                            <option value="snow" {% if config.get('themes', {}).get('christmas', {}).get('animation') == 'snow' %}selected{% endif %}>Finom hóesés</option>
                                         </select>
                                     </div>
                                 </div>
@@ -55,15 +55,44 @@
                     </div>
 
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="headingWeather">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWeather" aria-expanded="false" aria-controls="collapseWeather">
-                                🌦️ Időjárás-alapú Témák
+                        <h2 class="accordion-header" id="headingNewYear">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNewYear" aria-expanded="false" aria-controls="collapseNewYear">
+                                🎆 Szilveszteri Téma (Dec. 31.)
                             </button>
                         </h2>
-                        <div id="collapseWeather" class="accordion-collapse collapse" aria-labelledby="headingWeather" data-bs-parent="#themesAccordion">
+                        <div id="collapseNewYear" class="accordion-collapse collapse" aria-labelledby="headingNewYear" data-bs-parent="#themesAccordion">
                             <div class="accordion-body">
-                                <p class="text-muted">Ezek a témák automatikusan aktiválódnak az OpenWeatherMap adatai alapján, ha nincs fontosabb esemény (pl. születésnap).</p>
+                                <div class="mb-3 row">
+                                    <label class="col-sm-4 col-form-label">Animáció típusa</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-select" name="new_year_eve_animation">
+                                            <option value="none" {% if config.get('themes', {}).get('new_year_eve', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option>
+                                            <option value="fireworks" {% if config.get('themes', {}).get('new_year_eve', {}).get('animation') == 'fireworks' %}selected{% endif %}>Tűzijáték</option>
+                                        </select>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="headingEaster">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEaster" aria-expanded="false" aria-controls="collapseEaster">
+                                🐰 Húsvéti Téma
+                            </button>
+                        </h2>
+                        <div id="collapseEaster" class="accordion-collapse collapse" aria-labelledby="headingEaster" data-bs-parent="#themesAccordion">
+                            <div class="accordion-body">
+                                <div class="mb-3 row">
+                                    <label class="col-sm-4 col-form-label">Animáció típusa</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-select" name="easter_animation">
+                                            <option value="none" {% if config.get('themes', {}).get('easter', {}).get('animation') == 'none' %}selected{% endif %}>Nincs</option>
+                                            <option value="eggs" {% if config.get('themes', {}).get('easter', {}).get('animation') == 'eggs' %}selected{% endif %}>Lebegő tojások</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
