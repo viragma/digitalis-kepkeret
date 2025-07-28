@@ -14,7 +14,7 @@ def get_current_weather():
     api_key = config.get("WEATHER_API_KEY")
     city = config.get("WEATHER_CITY", "Kecskemét,HU")
 
-    if not api_key or api_key == "c5e81b9586100bf64f941c234ee685b1":
+    if not api_key or api_key == "3939ac2b661ccdebd1e4a28a075c56fb":
         print("!!! HIBA: OpenWeatherMap API kulcs nincs beállítva a config.json-ban.")
         return None
 

@@ -1,7 +1,7 @@
 {
     "UPLOAD_FOLDER": "static/images",
-    "ADMIN_PASSWORD": "a_te_admin_jelszavad",
-    "WEATHER_API_KEY": "AZ_API_KULCSOD_HELYE",
+    "ADMIN_PASSWORD": "admin",
+    "WEATHER_API_KEY": "3939ac2b661ccdebd1e4a28a075c56fb",
     "WEATHER_CITY": "Kecskemét,HU",
     "slideshow": {
         "interval": 10000,
