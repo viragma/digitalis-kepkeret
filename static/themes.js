@@ -67,6 +67,28 @@ function startRainTheme() {
     }
 }
 
+function startClearTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-clear');
+    createSunbeam();
+}
+
+function startCloudsTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-clouds');
+    for (let i = 0; i < 10; i++) {
+        createCloud();
+    }
+}
+
+function startAtmosphereTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-atmosphere');
+}
+
+
+// --- Létrehozó segédfüggvények ---
+
 function createSnowflake() {
     const snowflake = document.createElement('div');
     snowflake.className = 'snowflake';
@@ -126,4 +148,22 @@ function createRaindrop() {
     raindrop.style.animationDuration = `${Math.random() * 0.5 + 0.3}s`;
     raindrop.style.animationDelay = `${Math.random() * 5}s`;
     themeOverlay.appendChild(raindrop);
+}
+
+function createSunbeam() {
+    const sunbeam = document.createElement('div');
+    sunbeam.className = 'sunbeam';
+    themeOverlay.appendChild(sunbeam);
+}
+
+function createCloud() {
+    const cloud = document.createElement('div');
+    cloud.className = 'cloud';
+    cloud.style.top = `${Math.random() * 20 - 5}vh`;
+    cloud.style.width = `${Math.random() * 200 + 100}px`;
+    cloud.style.height = `${Math.random() * 100 + 50}px`;
+    cloud.style.animationDuration = `${Math.random() * 30 + 20}s`;
+    cloud.style.animationDelay = `${Math.random() * 10}s`;
+    cloud.style.opacity = Math.random() * 0.3 + 0.1;
+    themeOverlay.appendChild(cloud);
 }
