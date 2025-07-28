@@ -38,7 +38,7 @@ def known_faces_page():
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if request.form['password'] == 'admin':
+        if request.form['password'] == 'admin': 
             session['logged_in'] = True
             return redirect(url_for('admin_bp.dashboard_page'))
         else:

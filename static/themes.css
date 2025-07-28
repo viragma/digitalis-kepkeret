@@ -9,6 +9,7 @@
     height: 100%;
     z-index: 3;
     pointer-events: none; /* Ne lehessen rákattintani az animációkra */
+    overflow: hidden; /* Biztosítja, hogy az elemek a képernyőn kívülről induljanak */
 }
 
 /* --- Hóesés Téma --- */
@@ -22,8 +23,8 @@
 }
 
 @keyframes fall {
-    0% { transform: translateY(-10vh); }
-    100% { transform: translateY(110vh); }
+    0% { transform: translateY(-10vh) translateX(0); }
+    100% { transform: translateY(110vh) translateX(5vw); }
 }
 
 /* --- Konfetti Téma --- */
@@ -41,7 +42,7 @@
 
 /* --- Lufi Téma --- */
 .theme-balloons .balloon {
-    --balloon-color: rgba(255, 0, 0, 0.7); /* Alapértelmezett szín */
+    --balloon-color: rgba(255, 0, 0, 0.7);
     position: absolute;
     width: 50px;
     height: 60px;
@@ -64,4 +65,39 @@
 @keyframes float {
     0% { transform: translateY(110vh) rotate(-10deg); }
     100% { transform: translateY(-20vh) rotate(10deg); }
+}
+
+/* --- Szilveszteri Téma (Tűzijáték) --- */
+.theme-fireworks .firework {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    opacity: 1;
+    animation: firework-explode 1s ease-out forwards;
+}
+
+@keyframes firework-explode {
+    0% {
+        transform: scale(0.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(30);
+        opacity: 0;
+    }
+}
+
+/* --- Húsvéti Téma (Tojások) --- */
+.theme-eggs .egg {
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: egg-fall linear infinite;
+}
+
+@keyframes egg-fall {
+    0% { transform: translateY(-10vh) rotate(-15deg); }
+    100% { transform: translateY(110vh) rotate(15deg); }
 }

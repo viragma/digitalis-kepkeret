@@ -6,7 +6,6 @@ let currentIndex = 0;
 let isPaused = false;
 let currentTheme = 'none';
 
-// A "themeOverlay" sort innen töröltük, mert a themes.js-ben már létezik
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -122,13 +121,14 @@ function applyTheme(theme) {
     stopAllThemes();
 
     if (theme.name === 'birthday') {
-        if (theme.settings.animation === 'confetti') {
-            startConfettiTheme();
-        } else if (theme.settings.animation === 'balloons') {
-            startBalloonsTheme();
-        }
+        if (theme.settings.animation === 'confetti') startConfettiTheme();
+        else if (theme.settings.animation === 'balloons') startBalloonsTheme();
     } else if (theme.name === 'christmas' && theme.settings.animation === 'snow') {
         startSnowTheme();
+    } else if (theme.name === 'new_year_eve' && theme.settings.animation === 'fireworks') {
+        startFireworksTheme();
+    } else if (theme.name === 'easter' && theme.settings.animation === 'eggs') {
+        startEasterTheme();
     }
 }
 

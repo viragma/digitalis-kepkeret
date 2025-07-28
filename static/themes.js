@@ -30,13 +30,33 @@ function startConfettiTheme() {
 function startBalloonsTheme() {
     stopAllThemes();
     themeOverlay.classList.add('theme-balloons');
-    // Időzítve hozzuk létre a lufikat, hogy ne egyszerre induljanak
     themeInterval = setInterval(() => {
-        if (themeOverlay.children.length < 20) { // Limitáljuk a lufik számát
+        if (themeOverlay.children.length < 20) {
             createBalloon();
         }
     }, 700);
 }
+
+function startFireworksTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-fireworks');
+    themeInterval = setInterval(() => {
+        if (themeOverlay.children.length < 15) { // Limitáljuk a tűzijátékok számát
+            createFirework();
+        }
+    }, 500);
+}
+
+function startEasterTheme() {
+    stopAllThemes();
+    themeOverlay.classList.add('theme-eggs');
+    themeInterval = setInterval(() => {
+        if (themeOverlay.children.length < 25) {
+            createEgg();
+        }
+    }, 600);
+}
+
 
 function createSnowflake() {
     const snowflake = document.createElement('div');
@@ -64,13 +84,28 @@ function createBalloon() {
     balloon.style.left = `${Math.random() * 90}vw`;
     balloon.style.animationDuration = `${Math.random() * 8 + 8}s`;
     balloon.style.animationDelay = `${Math.random() * 2}s`;
-    
     const color = `hsla(${Math.random() * 360}, 100%, 60%, 0.7)`;
     balloon.style.setProperty('--balloon-color', color);
-    
     themeOverlay.appendChild(balloon);
+    setTimeout(() => balloon.remove(), (parseFloat(balloon.style.animationDuration) + parseFloat(balloon.style.animationDelay)) * 1000);
+}
 
-    setTimeout(() => {
-        balloon.remove();
-    }, (parseFloat(balloon.style.animationDuration) + parseFloat(balloon.style.animationDelay)) * 1000);
+function createFirework() {
+    const firework = document.createElement('div');
+    firework.className = 'firework';
+    firework.style.left = `${Math.random() * 90 + 5}vw`;
+    firework.style.top = `${Math.random() * 50 + 10}vh`; // Felső fele a képernyőnek
+    firework.style.borderColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+    themeOverlay.appendChild(firework);
+    setTimeout(() => firework.remove(), 1000); // Eltávolítás az animáció végén
+}
+
+function createEgg() {
+    const egg = document.createElement('div');
+    egg.className = 'egg';
+    egg.style.left = `${Math.random() * 90}vw`;
+    egg.style.animationDuration = `${Math.random() * 6 + 6}s`;
+    egg.style.animationDelay = `${Math.random() * 4}s`;
+    egg.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 75%)`; // Pasztell színek
+    themeOverlay.appendChild(egg);
 }
