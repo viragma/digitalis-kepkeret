@@ -6,6 +6,8 @@ let currentIndex = 0;
 let isPaused = false;
 let currentTheme = 'none';
 
+// DOM elemek
+const themeOverlay = document.getElementById('theme-overlay');
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -65,6 +67,8 @@ function showNextImage() {
 
     currentIndex = (currentIndex + 1) % imageList.length;
     const imageObject = imageList[currentIndex];
+    if (!imageObject) return; // Biztonsági ellenőrzés
+    
     const imageUrl = `/static/images/${imageObject.file}`;
     
     const img = new Image();
@@ -100,6 +104,11 @@ function showNextImage() {
         
         setTimeout(showNextImage, config.interval || 10000);
     };
+    img.onerror = () => {
+        console.error("Hiba a kép betöltésekor:", imageUrl);
+        // Hiba esetén ugorjunk a következő képre, hogy ne akadjon el a vetítés
+        setTimeout(showNextImage, 100); 
+    };
 }
 
 async function updateTheme() {
@@ -134,7 +143,6 @@ function applyTheme(theme) {
         case 'easter':
             if (theme.settings.animation === 'eggs') startEasterTheme();
             break;
-        // Időjárás témák
         case 'rain':
             startRainTheme();
             break;
@@ -143,7 +151,6 @@ function applyTheme(theme) {
             break;
         case 'none':
         default:
-            // Nincs teendő, a stopAllThemes() már lefutott
             break;
     }
 }

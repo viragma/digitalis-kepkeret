@@ -38,6 +38,24 @@
         },
         "easter": {
             "animation": "eggs"
+        },
+        "weather": {
+            "enabled": true,
+            "Rain": {
+                "enabled": true
+            },
+            "Snow": {
+                "enabled": true
+            },
+            "Clear": {
+                "enabled": true
+            },
+            "Clouds": {
+                "enabled": true
+            },
+            "Atmosphere": {
+                "enabled": true
+            }
         }
     }
 }
