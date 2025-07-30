@@ -56,7 +56,6 @@ def login():
             event_logger.log_event("Sikertelen bejelentkezési kísérlet.")
             flash('Hibás jelszó!')
     
-    # Véletlenszerű háttérkép kiválasztása a login oldalhoz
     background_image = None
     try:
         config = data_manager.get_config()
@@ -70,6 +69,11 @@ def login():
 
     return render_template('login.html', background_image=background_image)
 
+@admin_bp.route('/logout')
+def logout():
+    session.pop('logged_in', None)
+    event_logger.log_event("Admin kijelentkezés.")
+    return redirect(url_for('admin_bp.login'))
 
 @admin_bp.route('/save_config', methods=['POST'])
 def save_config_route():
