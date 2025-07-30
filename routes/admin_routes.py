@@ -44,10 +44,32 @@ def login():
             flash('Hibás jelszó!')
     return render_template('login.html')
 
-@admin_bp.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    return redirect(url_for('admin_bp.login'))
+@admin_bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        config = data_manager.get_config()
+        if request.form['password'] == config.get("ADMIN_PASSWORD", "admin"): 
+            session['logged_in'] = True
+            event_logger.log_event("Sikeres admin bejelentkezés.")
+            return redirect(url_for('admin_bp.dashboard_page'))
+        else:
+            event_logger.log_event("Sikertelen bejelentkezési kísérlet.")
+            flash('Hibás jelszó!')
+    
+    # Véletlenszerű háttérkép kiválasztása a login oldalhoz
+    background_image = None
+    try:
+        config = data_manager.get_config()
+        image_folder = config.get('UPLOAD_FOLDER', 'static/images')
+        abs_image_folder = os.path.join(os.getcwd(), image_folder)
+        images = [f for f in os.listdir(abs_image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        if images:
+            background_image = random.choice(images)
+    except Exception as e:
+        print(f"Hiba a háttérkép kiválasztásakor: {e}")
+
+    return render_template('login.html', background_image=background_image)
+
 
 @admin_bp.route('/save_config', methods=['POST'])
 def save_config_route():

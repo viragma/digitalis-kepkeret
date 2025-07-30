@@ -8,6 +8,31 @@ body {
     background-color: #212529;
 }
 
+
+/* ÚJ: Login oldal stílusai */
+.login-page-body {
+    background-size: cover;
+    background-position: center center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.login-container {
+    max-width: 400px;
+    width: 100%;
+}
+.login-card {
+    padding: 2rem;
+    border-radius: 15px;
+    background: rgba(33, 37, 41, 0.75); /* Sötét, áttetsző háttér */
+    backdrop-filter: blur(10px); /* Az "üveg" effekt */
+    -webkit-backdrop-filter: blur(10px); /* Safari kompatibilitás */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+
 /* --- Alap elrendezés --- */
 .sidebar {
     position: fixed;
