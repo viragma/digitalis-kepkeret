@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='admin_style.css') }}">
 </head>
-<body class="login-page-body" {% if background_image %}style="background-image: url('{{ url_for('static', filename='images/' + background_image) }}');"{% endif %}>
+<body class="login-page-body">
     
+    <canvas id="login-canvas" class="login-canvas"></canvas>
+
     <div class="login-container">
         <div class="login-card">
             <h2 class="text-center mb-4">Digitális Képkeret</h2>
@@ -35,5 +37,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='login_background.js') }}"></script>
 </body>
 </html>
