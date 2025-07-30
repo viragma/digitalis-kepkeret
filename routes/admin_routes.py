@@ -4,6 +4,10 @@ from services import data_manager, event_logger
 from datetime import datetime
 from extensions import socketio
 
+import random 
+import os
+
+
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
 def calculate_age(birthday_str):
@@ -33,16 +37,6 @@ def dashboard_page():
 def known_faces_page():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     return render_template('known_faces.html')
-
-@admin_bp.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        if request.form['password'] == 'admin': 
-            session['logged_in'] = True
-            return redirect(url_for('admin_bp.dashboard_page'))
-        else:
-            flash('Hibás jelszó!')
-    return render_template('login.html')
 
 @admin_bp.route('/login', methods=['GET', 'POST'])
 def login():
