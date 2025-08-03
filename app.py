@@ -26,9 +26,19 @@ def create_app():
     from routes.main_routes import main_bp
     from routes.admin_routes import admin_bp
     from routes.api_routes import api_bp
+    from routes.api.dashboard import dashboard_api_bp
+    from routes.api.gallery import gallery_api_bp
+    from routes.api.faces import faces_api_bp
+    from routes.api.persons import persons_api_bp
+    from routes.api.slideshow import slideshow_api_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(dashboard_api_bp)
+    app.register_blueprint(gallery_api_bp)
+    app.register_blueprint(faces_api_bp)
+    app.register_blueprint(persons_api_bp)
+    app.register_blueprint(slideshow_api_bp)
     app.register_blueprint(api_bp)
 
     # Kiegészítők inicializálása
@@ -39,4 +49,4 @@ def create_app():
 if __name__ == '__main__':
     app = create_app()
     # JAVÍTÁS: Hozzáadjuk az 'allow_unsafe_werkzeug=True' paramétert
-    socketio.run(app, debug=True, host='flows0002', port=5010, use_reloader=True, reloader_type='stat', allow_unsafe_werkzeug=True)
+    socketio.run(app, debug=True, host='100.109.70.114', port=5010, use_reloader=True, reloader_type='stat', allow_unsafe_werkzeug=True)
