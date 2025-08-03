@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allPersonNames = [];
     let selectedFaces = new Set();
 
-    // DOM Elemek
+    // DOM Elemek (pontos ID-kkal)
     const grid = document.getElementById('unknown-faces-grid');
     const loadingSpinner = document.getElementById('loading-spinner');
     const noUnknownFacesMsg = document.getElementById('no-unknown-faces');
@@ -19,7 +19,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const batchReassignBtn = document.getElementById('batch-reassign-btn-unknown');
 
     async function loadUnknownFaces() {
-        console.log("FACES_MANAGER: Ismeretlen arcok betöltése elindult...");
+        if (!grid || !loadingSpinner || !noUnknownFacesMsg) {
+            console.error("Ismeretlen arcok: Hiányzó HTML elemek!");
+            return;
+        }
         loadingSpinner.classList.remove('d-none');
         grid.innerHTML = '';
         actionsPanel.classList.add('d-none');
@@ -30,8 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('/api/faces/unknown'),
                 fetch('/api/persons')
             ]);
-            
-            console.log("FACES_MANAGER: API válaszok megérkeztek.");
 
             if (!facesRes.ok) throw new Error(`Hiba az ismeretlen arcok lekérdezésekor. Státusz: ${facesRes.status}`);
             if (!personsRes.ok) throw new Error('Hiba a személyek lekérdezésekor.');
@@ -39,8 +40,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const faces = await facesRes.json();
             allPersonNames = await personsRes.json();
             
-            console.log(`FACES_MANAGER: ${faces.length} ismeretlen arc és ${allPersonNames.length} személy betöltve.`);
-
             updatePersonsDropdown(allPersonNames);
 
             if (faces.length === 0) {
@@ -48,24 +47,17 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 noUnknownFacesMsg.classList.add('d-none');
                 const template = document.getElementById('face-card-template-unknown');
-                
                 faces.forEach(face => {
                     const cardClone = template.content.cloneNode(true);
                     const card = cardClone.querySelector('.face-card');
                     const img = card.querySelector('img');
 
-                    // --- DIAGNOSZTIKA ---
-                    console.log(`Feldolgozás: Kapott face_path: '${face.face_path}' (típus: ${typeof face.face_path})`);
-                    
-                    // Ellenőrizzük, hogy a kapott útvonal valid-e
-                    if (face.face_path && typeof face.face_path === 'string') {
+                    if (face.face_path) {
                         img.src = face.face_path;
                         card.dataset.facePath = face.face_path;
                     } else {
-                        console.error("Érvénytelen face_path kapva:", face);
-                        img.src = "https://via.placeholder.com/150/dc3545/FFFFFF?text=HIBA"; // Hibás kép
+                        img.src = "https://via.placeholder.com/150/dc3545/FFFFFF?text=HIBA";
                     }
-                    // --- DIAGNOSZTIKA VÉGE ---
                     
                     card.addEventListener('click', () => {
                         card.classList.toggle('selected');
@@ -89,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updatePersonsDropdown(names) {
+        if (!batchReassignSelect) return;
         batchReassignSelect.innerHTML = '<option selected disabled>Válassz új nevet...</option>';
         names.sort().forEach(name => {
             const option = document.createElement('option');
@@ -99,6 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateActionsBar() {
+        if (!actionsPanel || !selectionCounter) return;
         actionsPanel.classList.toggle('d-none', selectedFaces.size === 0);
         selectionCounter.textContent = `${selectedFaces.size} arc kijelölve`;
     }
@@ -142,8 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isInitialized) return;
         isInitialized = true;
         loadUnknownFaces();
-        batchDeleteBtn.addEventListener('click', batchDelete);
-        batchReassignBtn.addEventListener('click', batchReassign);
+
+        if (batchDeleteBtn && batchReassignBtn) {
+            batchDeleteBtn.addEventListener('click', batchDelete);
+            batchReassignBtn.addEventListener('click', batchReassign);
+        } else {
+            console.error("Hiányzó tömeges műveleti gombok!");
+        }
     };
     
     if (facesTabButton.classList.contains('active')) {

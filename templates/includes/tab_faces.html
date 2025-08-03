@@ -1,40 +1,40 @@
-<div class="container mt-4">
+<div class="container-fluid mt-4">
     <h3 class="mb-3">Ismeretlen arcok címkézése</h3>
 
-    <div id="batch-actions-panel" class="card mb-4" style="display: none;">
-        <div class="card-body">
-            <h5 class="card-title">Tömeges műveletek</h5>
-            <div class="input-group mb-2">
-                <select id="batch-name-select" class="form-select">
-                    <option selected disabled>Válassz egy nevet...</option>
+    <div id="batch-actions-panel" class="p-3 mb-4 rounded d-none">
+        <div class="d-flex align-items-center">
+            <div class="flex-grow-1">
+                <span id="selection-counter-unknown" class="fw-bold">0 arc kijelölve</span>
+            </div>
+            <div class="input-group w-50 me-3">
+                <label class="input-group-text" for="batch-reassign-select-unknown">Átnevezés erre:</label>
+                <select class="form-select" id="batch-reassign-select-unknown">
+                    <option selected disabled>Válassz új nevet...</option>
                 </select>
-                <button id="batch-save-button" class="btn btn-primary">Kijelöltek mentése</button>
+                <button id="batch-reassign-btn-unknown" class="btn btn-warning">Átnevez</button>
             </div>
-            <div>
-                <button id="select-all-button" class="btn btn-sm btn-outline-secondary">Összes kijelölése</button>
-                <button id="deselect-all-button" class="btn btn-sm btn-outline-secondary">Kijelölés törlése</button>
-            </div>
+            <button id="batch-delete-btn-unknown" class="btn btn-danger"><i class="bi bi-trash"></i> Kijelöltek törlése</button>
         </div>
     </div>
 
-    <div id="loading-spinner" class="text-center mt-5"> ... </div>
-    <div id="unknown-faces-container" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+    <div id="loading-spinner" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Töltés...</span>
         </div>
-    <p id="no-unknown-faces" class="text-center text-muted mt-5" style="display: none;">Nincs több ismeretlen arc! 🎉</p>
+    </div>
+
+    <div id="no-unknown-faces" class="alert alert-success d-none" role="alert">
+        <i class="bi bi-check-circle-fill"></i> Nincs több azonosítatlan arc, remek munka!
+    </div>
+
+    <div id="unknown-faces-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-6 g-3">
+        </div>
 </div>
 
-<template id="face-card-template">
+<template id="face-card-template-unknown">
     <div class="col">
-        <div class="card h-100 face-card" style="cursor: pointer;">
-            <img src="" class="card-img-top face-image" alt="Ismeretlen arc">
-            <div class="card-body p-2 text-center">
-                <small>Egyedi mentés:</small>
-                <div class="input-group">
-                    <select class="form-select form-select-sm name-select">
-                        </select>
-                    <button class="btn btn-outline-secondary btn-sm save-button">Ment</button>
-                </div>
-            </div>
+        <div class="card face-card">
+            <img src="" class="card-img-top" alt="Ismeretlen arc">
         </div>
     </div>
 </template>

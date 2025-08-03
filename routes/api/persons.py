@@ -10,13 +10,14 @@ def make_web_path(full_path):
     if not isinstance(full_path, str):
         return None
     
-    # A biztonság kedvéért a normál / jelet használjuk
     full_path = full_path.replace('\\', '/')
     
-    if 'static/' in full_path:
-        # Megkeressük a 'static' mappát az útvonalban, és onnan kezdjük a vágást
-        return '/' + full_path.split('static/', 1)[1]
-    return full_path
+    # A 'static' szótól kezdve adjuk vissza az útvonalat, egy / jellel az elején
+    try:
+        index = full_path.index('static/')
+        return '/' + full_path[index:]
+    except ValueError:
+        return full_path # Visszaadjuk az eredetit, ha a 'static' nem található
 
 @persons_api_bp.route('/persons', methods=['GET'])
 def get_persons_api():
