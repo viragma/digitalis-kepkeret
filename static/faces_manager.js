@@ -1,182 +1,153 @@
 // static/faces_manager.js
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     const facesTabButton = document.getElementById('v-pills-faces-tab');
-    
-    if (facesTabButton) {
-        let facesLoaded = false;
-        if (facesTabButton.classList.contains('active')) {
-            loadUnknownFaces();
-            facesLoaded = true;
-        }
-        facesTabButton.addEventListener('show.bs.tab', function () {
-            if (!facesLoaded) {
-                loadUnknownFaces();
-                facesLoaded = true;
-            }
-        });
-    }
-});
+    if (!facesTabButton) return;
 
-async function loadUnknownFaces() {
-    const container = document.getElementById('unknown-faces-container');
-    const template = document.getElementById('face-card-template');
+    let isInitialized = false;
+    let allPersonNames = [];
+    let selectedFaces = new Set();
+
+    // DOM Elemek
+    const grid = document.getElementById('unknown-faces-grid');
     const loadingSpinner = document.getElementById('loading-spinner');
-    const noFacesMessage = document.getElementById('no-unknown-faces');
-    const batchActionsPanel = document.getElementById('batch-actions-panel');
-    const batchNameSelect = document.getElementById('batch-name-select');
+    const noUnknownFacesMsg = document.getElementById('no-unknown-faces');
+    const actionsPanel = document.getElementById('batch-actions-panel');
+    const selectionCounter = document.getElementById('selection-counter-unknown');
+    const batchReassignSelect = document.getElementById('batch-reassign-select-unknown');
+    const batchDeleteBtn = document.getElementById('batch-delete-btn-unknown');
+    const batchReassignBtn = document.getElementById('batch-reassign-btn-unknown');
 
-    if (!container || !template) return;
+    async function loadUnknownFaces() {
+        console.log("FACES_MANAGER: Ismeretlen arcok betöltése elindult...");
+        loadingSpinner.classList.remove('d-none');
+        grid.innerHTML = '';
+        actionsPanel.classList.add('d-none');
+        selectedFaces.clear();
 
-    try {
-        const [personsResponse, facesResponse] = await Promise.all([
-            fetch('/api/persons'),
-            fetch('/api/faces/unknown')
-        ]);
+        try {
+            const [facesRes, personsRes] = await Promise.all([
+                fetch('/api/faces/unknown'),
+                fetch('/api/persons')
+            ]);
+            
+            console.log("FACES_MANAGER: API válaszok megérkeztek.");
 
-        if (!personsResponse.ok || !facesResponse.ok) throw new Error('Hiba a szerverrel való kommunikáció során.');
+            if (!facesRes.ok) throw new Error(`Hiba az ismeretlen arcok lekérdezésekor. Státusz: ${facesRes.status}`);
+            if (!personsRes.ok) throw new Error('Hiba a személyek lekérdezésekor.');
 
-        const personNames = await personsResponse.json();
-        const unknownFaces = await facesResponse.json();
-        
-        loadingSpinner.style.display = 'none';
-        if (unknownFaces.length === 0) {
-            noFacesMessage.style.display = 'block';
-            return;
+            const faces = await facesRes.json();
+            allPersonNames = await personsRes.json();
+            
+            console.log(`FACES_MANAGER: ${faces.length} ismeretlen arc és ${allPersonNames.length} személy betöltve.`);
+
+            updatePersonsDropdown(allPersonNames);
+
+            if (faces.length === 0) {
+                noUnknownFacesMsg.classList.remove('d-none');
+            } else {
+                noUnknownFacesMsg.classList.add('d-none');
+                const template = document.getElementById('face-card-template-unknown');
+                
+                faces.forEach(face => {
+                    const cardClone = template.content.cloneNode(true);
+                    const card = cardClone.querySelector('.face-card');
+                    const img = card.querySelector('img');
+
+                    // --- DIAGNOSZTIKA ---
+                    console.log(`Feldolgozás: Kapott face_path: '${face.face_path}' (típus: ${typeof face.face_path})`);
+                    
+                    // Ellenőrizzük, hogy a kapott útvonal valid-e
+                    if (face.face_path && typeof face.face_path === 'string') {
+                        img.src = face.face_path;
+                        card.dataset.facePath = face.face_path;
+                    } else {
+                        console.error("Érvénytelen face_path kapva:", face);
+                        img.src = "https://via.placeholder.com/150/dc3545/FFFFFF?text=HIBA"; // Hibás kép
+                    }
+                    // --- DIAGNOSZTIKA VÉGE ---
+                    
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('selected');
+                        if (card.classList.contains('selected')) {
+                            selectedFaces.add(face.face_path);
+                        } else {
+                            selectedFaces.delete(face.face_path);
+                        }
+                        updateActionsBar();
+                    });
+
+                    grid.appendChild(cardClone);
+                });
+            }
+        } catch (error) {
+            console.error("Hiba az ismeretlen arcok betöltésekor:", error);
+            grid.innerHTML = `<p class="text-danger">Hiba történt a betöltés közben: ${error.message}</p>`;
+        } finally {
+            loadingSpinner.classList.add('d-none');
         }
-        
-        batchActionsPanel.style.display = 'block';
-
-        batchNameSelect.innerHTML = '<option selected disabled>Válassz egy nevet...</option>';
-        personNames.forEach(name => {
+    }
+    
+    function updatePersonsDropdown(names) {
+        batchReassignSelect.innerHTML = '<option selected disabled>Válassz új nevet...</option>';
+        names.sort().forEach(name => {
             const option = document.createElement('option');
             option.value = name;
             option.textContent = name;
-            batchNameSelect.appendChild(option);
+            batchReassignSelect.appendChild(option);
         });
-
-        container.innerHTML = '';
-        unknownFaces.forEach(face => {
-            const cardClone = template.content.cloneNode(true);
-            const cardElement = cardClone.querySelector('.face-card');
-            
-            cardElement.dataset.facePath = face.face_path;
-            cardElement.querySelector('.face-image').src = `/${face.face_path}`;
-            
-            cardElement.addEventListener('click', (event) => {
-                if (event.target.tagName !== 'SELECT' && event.target.tagName !== 'BUTTON') {
-                    cardElement.classList.toggle('selected');
-                }
-            });
-            
-            const select = cardElement.querySelector('.name-select');
-            personNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                select.appendChild(option);
-            });
-
-            cardElement.querySelector('.save-button').addEventListener('click', async (event) => {
-                event.stopPropagation();
-                await saveFaceName(face.face_path, select.value, cardElement);
-            });
-
-            container.appendChild(cardClone);
-        });
-
-        setupBatchActions();
-
-    } catch (error) {
-        console.error('Hiba az ismeretlen arcok betöltésekor:', error);
-        loadingSpinner.innerHTML = `<p class="text-danger">Hiba történt a betöltés során.</p>`;
     }
-}
 
-function setupBatchActions() {
-    const selectAllBtn = document.getElementById('select-all-button');
-    const deselectAllBtn = document.getElementById('deselect-all-button');
-    const batchSaveBtn = document.getElementById('batch-save-button');
-    const batchNameSelect = document.getElementById('batch-name-select');
-    
-    selectAllBtn.addEventListener('click', () => {
-        document.querySelectorAll('.face-card').forEach(card => card.classList.add('selected'));
-    });
+    function updateActionsBar() {
+        actionsPanel.classList.toggle('d-none', selectedFaces.size === 0);
+        selectionCounter.textContent = `${selectedFaces.size} arc kijelölve`;
+    }
 
-    deselectAllBtn.addEventListener('click', () => {
-        document.querySelectorAll('.face-card').forEach(card => card.classList.remove('selected'));
-    });
-
-    batchSaveBtn.addEventListener('click', async () => {
-        const selectedName = batchNameSelect.value;
-        if (selectedName === 'Válassz egy nevet...') {
-            showToast('Kérlek, válassz egy nevet a tömeges mentéshez!', 'warning');
-            return;
-        }
-
-        const selectedCards = document.querySelectorAll('.face-card.selected');
-        if (selectedCards.length === 0) {
-            showToast('Nincs kijelölt arc a mentéshez!', 'warning');
-            return;
-        }
-
-        const updates = Array.from(selectedCards).map(card => ({
-            face_path: card.dataset.facePath,
-            new_name: selectedName
-        }));
-
-        try {
-            const response = await fetch('/api/update_faces_batch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates),
-            });
-
-            if (!response.ok) throw new Error('A szerver hibát adott.');
-            
-            const result = await response.json();
-            if (result.status === 'success') {
-                showToast(result.message);
-                selectedCards.forEach(card => {
-                    card.parentElement.style.transition = 'opacity 0.5s ease';
-                    card.parentElement.style.opacity = '0';
-                    setTimeout(() => card.parentElement.remove(), 500);
-                });
-            } else {
-                showToast(result.message, 'danger');
-            }
-        } catch (error) {
-            console.error('Hiba a tömeges mentés során:', error);
-            showToast('Hálózati hiba történt a mentés során.', 'danger');
-        }
-    });
-}
-
-async function saveFaceName(facePath, newName, cardElement) {
-    try {
-        const response = await fetch('/api/update_face_name', {
+    async function batchReassign() {
+        const targetName = batchReassignSelect.value;
+        if (targetName === 'Válassz új nevet...' || selectedFaces.size === 0) return;
+        
+        const response = await fetch('/api/faces/reassign_batch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ face_path: facePath, new_name: newName }),
+            body: JSON.stringify({ face_paths: Array.from(selectedFaces), target_name: targetName })
         });
-
-        if (!response.ok) throw new Error('A mentés sikertelen.');
-
         const result = await response.json();
         if (result.status === 'success') {
-            cardElement.parentElement.style.transition = 'opacity 0.5s ease';
-            cardElement.parentElement.style.opacity = '0';
-            setTimeout(() => {
-                if (document.getElementById('unknown-faces-container').children.length === 0) {
-                    document.getElementById('no-unknown-faces').style.display = 'block';
-                    document.getElementById('batch-actions-panel').style.display = 'none';
-                }
-            }, 500);
+            showToast(result.message);
+            loadUnknownFaces();
         } else {
-            showToast(`Hiba: ${result.message}`, 'danger');
+            showToast(result.message, 'danger');
         }
-    } catch (error) {
-        console.error('Hiba az arc nevének mentésekor:', error);
-        showToast('Hálózati hiba történt a mentés során.', 'danger');
     }
-}
+
+    async function batchDelete() {
+        if (selectedFaces.size === 0 || !confirm(`Biztosan törlöd a kijelölt ${selectedFaces.size} arcot? Ez a művelet nem vonható vissza.`)) return;
+
+        const response = await fetch('/api/faces/delete_batch', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ face_paths: Array.from(selectedFaces) })
+        });
+        const result = await response.json();
+        if (result.status === 'success') {
+            showToast(result.message);
+            loadUnknownFaces();
+        } else {
+            showToast(result.message, 'danger');
+        }
+    }
+
+    const init = () => {
+        if (isInitialized) return;
+        isInitialized = true;
+        loadUnknownFaces();
+        batchDeleteBtn.addEventListener('click', batchDelete);
+        batchReassignBtn.addEventListener('click', batchReassign);
+    };
+    
+    if (facesTabButton.classList.contains('active')) {
+        init();
+    }
+    facesTabButton.addEventListener('shown.bs.tab', init);
+});
