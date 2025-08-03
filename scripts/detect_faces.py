@@ -6,7 +6,6 @@ import pickle
 import json
 from PIL import Image
 
-# A projekt gyökérkönyvtárának meghatározása és hozzáadása a path-hoz
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(PROJECT_ROOT)
 
@@ -18,29 +17,26 @@ FACES_OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'static', 'faces')
 ENCODINGS_CACHE = os.path.join(PROJECT_ROOT, 'data', 'known_encodings.pkl')
 
 def get_known_encodings(force_retrain=False):
-    """ Betölti a tanított arcok kódolásait a gyorsítótárból, vagy újraépíti azt. """
     if not force_retrain and os.path.exists(ENCODINGS_CACHE):
         print("-> Gyorsítótárból betöltöm a tanult arcokat...")
         with open(ENCODINGS_CACHE, 'rb') as f:
             return pickle.load(f)
 
     known_encodings = {"names": [], "encodings": []}
-    print("Tanító adatbázis építése (ez eltarthat egy ideig)...")
+    print("Tanító adatbázis építése...")
     for name in os.listdir(KNOWN_FACES_DIR):
         person_dir = os.path.join(KNOWN_FACES_DIR, name)
         if os.path.isdir(person_dir):
             for filename in os.listdir(person_dir):
                 if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
-                    image_path = os.path.join(person_dir, filename)
                     try:
-                        image = face_recognition.load_image_file(image_path)
+                        image = face_recognition.load_image_file(os.path.join(person_dir, filename))
                         encodings = face_recognition.face_encodings(image)
                         if encodings:
                             known_encodings["names"].append(name)
                             known_encodings["encodings"].append(encodings[0])
-                            print(f"- {name} arca hozzáadva a '{filename}' képből.")
                     except Exception as e:
-                        print(f"!!! Hiba a tanítókép feldolgozása közben: {image_path}, {e}")
+                        print(f"!!! Hiba a tanítókép feldolgozása közben: {filename}, {e}")
     
     with open(ENCODINGS_CACHE, 'wb') as f:
         pickle.dump(known_encodings, f)
@@ -48,7 +44,6 @@ def get_known_encodings(force_retrain=False):
     return known_encodings
 
 def detect_new_faces():
-    """ Végignézi a feltöltött képeket, és feldolgozza azokat, amiken még nem futott arcfelismerés. """
     print("\n--- Új arcfelismerési ciklus indul ---")
     
     known_data = get_known_encodings()
@@ -56,12 +51,11 @@ def detect_new_faces():
     recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
     print(f"Felismerési tolerancia beállítva: {recognition_tolerance}")
     
-    # JAVÍTÁS: A központi data_manager-ből kérjük a kapcsolatot
     conn = data_manager.get_db_connection()
     cursor = conn.cursor()
     
     processed_images_rows = cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()
-    processed_images = {row['filename'] for row in processed_images_rows}
+    processed_images = {row[0] for row in processed_images_rows}
     all_images = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
     
     images_to_process = all_images - processed_images
@@ -83,7 +77,7 @@ def detect_new_faces():
                 conn.commit()
                 image_id = cursor.lastrowid
             else:
-                image_id = image_record['id']
+                image_id = image_record[0]
 
             image_data = face_recognition.load_image_file(image_path)
             face_locations = face_recognition.face_locations(image_data)
@@ -91,7 +85,7 @@ def detect_new_faces():
 
             if not face_encodings:
                 print("- Nem található arc.")
-                cursor.execute('INSERT OR IGNORE INTO faces (image_id, person_id) VALUES (?, NULL)', (image_id,))
+                cursor.execute('INSERT OR IGNORE INTO faces (image_id) VALUES (?)', (image_id,))
                 conn.commit()
                 continue
             
@@ -108,10 +102,10 @@ def detect_new_faces():
                         best_match_index = list(distances).index(min_distance)
                         name = known_data["names"][best_match_index]
                         person_row = cursor.execute('SELECT id FROM persons WHERE name = ?', (name,)).fetchone()
-                        person_id = person_row['id'] if person_row else None
+                        person_id = person_row[0] if person_row else None
                         print(f"  - Arc #{i+1}: Felismerve mint '{name}', távolság: {min_distance:.2f}")
                     else:
-                        print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f} (küszöb: {recognition_tolerance})")
+                        print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f}")
                 else:
                     print(f"  - Arc #{i+1}: Ismeretlen, nincsenek tanított arcok.")
 
