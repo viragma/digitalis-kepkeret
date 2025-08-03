@@ -87,6 +87,9 @@ def save_config_route():
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
     slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
+     # ÚJ: Tolerancia mentése
+    slideshow_config['recognition_tolerance'] = float(request.form.get('recognition_tolerance', 0.6))
+
     
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)

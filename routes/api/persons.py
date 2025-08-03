@@ -18,9 +18,10 @@ def get_persons_gallery_data():
     """ Visszaadja a személyek listáját a galéria nézethez, képek számával. """
     conn = data_manager.get_db_connection()
     persons_rows = conn.execute("""
-        SELECT p.name, p.birthday, p.profile_image, COUNT(f.id) as face_count
+        SELECT p.name, p.birthday, f.face_path as profile_image, COUNT(f_all.id) as face_count
         FROM persons p
-        LEFT JOIN faces f ON p.id = f.person_id
+        LEFT JOIN faces f ON p.profile_face_id = f.id
+        LEFT JOIN faces f_all ON p.id = f_all.person_id
         WHERE p.is_active = 1
         GROUP BY p.id
         ORDER BY p.name
@@ -86,11 +87,8 @@ def reassign_persons_batch():
         return jsonify({'status': 'error', 'message': 'Cél személy nem található'}), 404
     target_person_id = target_person_row['id']
     
-    # Arcok átnevezése
     placeholders = ', '.join('?' for _ in source_names)
     cursor.execute(f'UPDATE faces SET person_id = ? WHERE person_id IN (SELECT id FROM persons WHERE name IN ({placeholders}))', [target_person_id] + source_names)
-
-    # Forrás személyek törlése
     cursor.execute(f'DELETE FROM persons WHERE name IN ({placeholders})', source_names)
     conn.commit()
     conn.close()
@@ -111,9 +109,7 @@ def delete_persons_batch():
     cursor = conn.cursor()
 
     placeholders = ', '.join('?' for _ in names_to_delete)
-    # Az érintett arcokat visszaállítjuk "Ismeretlen"-re (person_id = NULL)
     cursor.execute(f'UPDATE faces SET person_id = NULL WHERE person_id IN (SELECT id FROM persons WHERE name IN ({placeholders}))', names_to_delete)
-    # Töröljük a személyeket
     cursor.execute(f'DELETE FROM persons WHERE name IN ({placeholders})', names_to_delete)
     conn.commit()
     conn.close()

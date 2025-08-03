@@ -83,6 +83,41 @@
                     </div>
                 </div>
             </form>
+            <div class="container mt-4">
+    <form method="POST" action="{{ url_for('admin_bp.save_config_route') }}">
+        <div class="card">
+            <div class="card-header"><h4 class="mb-0">Beállítások</h4></div>
+            <div class="card-body">
+                
+                <h5 class="mt-4"><i class="bi bi-robot"></i> Arcfelismerés</h5>
+                <hr>
+                <div class="mb-3 row">
+                    <label for="recognition_tolerance" class="col-sm-4 col-form-label">Felismerési Tolerancia</label>
+                    <div class="col-sm-8">
+                        <div class="d-flex align-items-center">
+                            <span class="small me-2">Szigorú</span>
+                            <input type="range" class="form-range" id="recognition_tolerance" name="recognition_tolerance" 
+                                   min="0.4" max="0.7" step="0.05" 
+                                   value="{{ config.slideshow.get('recognition_tolerance', 0.6) }}"
+                                   oninput="this.nextElementSibling.value = this.value">
+                            <output class="ms-2 fw-bold">{{ config.slideshow.get('recognition_tolerance', 0.6) }}</output>
+                            <span class="small ms-2">Megengedő</span>
+                        </div>
+                        <div class="form-text">
+                            Alacsonyabb érték = kevesebb, de pontosabb találat. Magasabb érték = több találat, de több tévedés. Ajánlott érték: 0.55 - 0.6.
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
+                <hr>
+                </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Beállítások Mentése</button>
+            </div>
+        </div>
+    </form>
+</div>
         </div>
     </div>
 </div>

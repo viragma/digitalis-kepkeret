@@ -1,133 +1,137 @@
-# scripts/detect_faces.py - ÚJ, INTELLIGENS VERZIÓ
-
-import sys
+# scripts/detect_faces.py
 import os
+import sys
 import face_recognition
+import pickle
+import json
 from PIL import Image
-import pickle # A tanult adatok mentéséhez
 
-# Hozzáadjuk a projekt gyökérkönyvtárát a Python path-hoz
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# A projekt gyökérkönyvtárának meghatározása és hozzáadása a path-hoz
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(PROJECT_ROOT)
 
 from services import data_manager
 
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 KNOWN_FACES_DIR = os.path.join(PROJECT_ROOT, 'data', 'known_faces')
-ENCODINGS_CACHE_PATH = os.path.join(PROJECT_ROOT, 'data', 'known_encodings.pkl')
+UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'static', 'images')
+FACES_OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'static', 'faces')
+ENCODINGS_CACHE = os.path.join(PROJECT_ROOT, 'data', 'known_encodings.pkl')
 
-def train_known_faces(force_retrain=False):
-    """
-    Betanítja a rendszert az ismert arcokra a known_faces mappából.
-    Gyorsítótárat használ a gyorsabb működés érdekében.
-    """
-    if not force_retrain and os.path.exists(ENCODINGS_CACHE_PATH):
-        print("-> Gyorsítótárból betöltöm a tanult arcokat...")
-        with open(ENCODINGS_CACHE_PATH, 'rb') as f:
+def get_known_encodings():
+    """ Betölti a tanított arcok kódolásait a gyorsítótárból, vagy újraépíti azt. """
+    if os.path.exists(ENCODINGS_CACHE):
+        with open(ENCODINGS_CACHE, 'rb') as f:
             return pickle.load(f)
 
-    print("-> Tanulási fázis indul (ez eltarthat egy ideig)...")
-    known_face_encodings = []
-    known_face_names = []
-
+    known_encodings = {"names": [], "encodings": []}
+    print("Tanító adatbázis építése...")
     for name in os.listdir(KNOWN_FACES_DIR):
         person_dir = os.path.join(KNOWN_FACES_DIR, name)
         if os.path.isdir(person_dir):
             for filename in os.listdir(person_dir):
-                image_path = os.path.join(person_dir, filename)
-                try:
-                    image = face_recognition.load_image_file(image_path)
-                    # Fontos: feltételezzük, hogy minden tanítóképen csak egy arc van
-                    encodings = face_recognition.face_encodings(image)
-                    if encodings:
-                        known_face_encodings.append(encodings[0])
-                        known_face_names.append(name)
-                        print(f"   - '{name}' arca betanítva a '{filename}' képből.")
-                except Exception as e:
-                    print(f"!!! Hiba a '{filename}' tanítókép feldolgozásakor: {e}")
-
-    # Elmentjük a tanult adatokat a gyorsítótárba
-    with open(ENCODINGS_CACHE_PATH, 'wb') as f:
-        pickle.dump((known_face_encodings, known_face_names), f)
+                if filename.lower().endswith(('.png', '.jpg', '.jpeg')):
+                    image_path = os.path.join(person_dir, filename)
+                    try:
+                        image = face_recognition.load_image_file(image_path)
+                        encodings = face_recognition.face_encodings(image)
+                        if encodings:
+                            known_encodings["names"].append(name)
+                            known_encodings["encodings"].append(encodings[0])
+                            print(f"- {name} arca hozzáadva a '{filename}' képből.")
+                    except Exception as e:
+                        print(f"!!! Hiba a tanítókép feldolgozása közben: {image_path}, {e}")
     
-    print("-> Tanulás befejezve, gyorsítótár elmentve.")
-    return known_face_encodings, known_face_names
+    with open(ENCODINGS_CACHE, 'wb') as f:
+        pickle.dump(known_encodings, f)
+    print("Tanító adatbázis gyorsítótárazva.")
+    return known_encodings
 
-def scan_and_recognize_faces():
-    """
-    Végigpásztázza a képeket, és megpróbálja felismerni az arcokat.
-    """
-    # 1. Tanulás vagy gyorsítótár betöltése
-    known_encodings, known_names = train_known_faces()
-    if not known_encodings:
-        print("!!! Nincsenek tanult arcok, a felismerés nem lehetséges. !!!")
+def detect_new_faces():
+    """ Végignézi a feltöltött képeket, és feldolgozza azokat, amiken még nem futott arcfelismerés. """
+    print("\n--- Új arcfelismerési ciklus indul ---")
+    
+    known_data = get_known_encodings()
+    config = data_manager.get_config()
+    recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
+    print(f"Felismerési tolerancia beállítva: {recognition_tolerance}")
+    
+    conn = data_manager.get_db_connection()
+    cursor = conn.cursor()
+    
+    processed_images = {row['filename'] for row in cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()}
+    all_images = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
+    
+    images_to_process = all_images - processed_images
+
+    print(f"{len(images_to_process)} új kép vár feldolgozásra.")
+    if not images_to_process:
+        print("--- Ciklus vége: Nincs új kép. ---")
+        conn.close()
         return
 
-    print("\n--- Új képek pásztázása és arcfelismerés ---")
-    all_faces_db = data_manager.get_faces()
-    config = data_manager.get_config()
-    
-    processed_images = {face['image_file'] for face in all_faces_db if 'image_file' in face}
-    print(f"Eddig {len(processed_images)} kép lett feldolgozva.")
-
-    image_folder = os.path.join(PROJECT_ROOT, config.get('UPLOAD_FOLDER', 'static/images'))
-    faces_folder = os.path.join(PROJECT_ROOT, 'static/faces')
-    new_faces_count = 0
-
-    image_files = [f for f in os.listdir(image_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-
-    for filename in image_files:
-        if filename in processed_images:
-            continue
-
-        print(f"-> Kép feldolgozása: {filename}")
-        image_path = os.path.join(image_folder, filename)
-
+    for filename in images_to_process:
+        print(f"\nFeldolgozás alatt: {filename}")
+        image_path = os.path.join(UPLOAD_FOLDER, filename)
+        
         try:
-            image = face_recognition.load_image_file(image_path)
-            face_locations = face_recognition.face_locations(image)
-            
-            if not face_locations:
-                all_faces_db.append({"image_file": filename, "name": "arc_nélkül"})
+            image_record = cursor.execute('SELECT id FROM images WHERE filename = ?', (filename,)).fetchone()
+            if not image_record:
+                cursor.execute('INSERT INTO images (filename) VALUES (?)', (filename,))
+                conn.commit()
+                image_id = cursor.lastrowid
+            else:
+                image_id = image_record['id']
+
+            image_data = face_recognition.load_image_file(image_path)
+            face_locations = face_recognition.face_locations(image_data)
+            face_encodings = face_recognition.face_encodings(image_data, face_locations)
+
+            if not face_encodings:
+                print("- Nem található arc.")
+                cursor.execute('INSERT INTO faces (image_id, person_id) VALUES (?, NULL)', (image_id,))
+                conn.commit()
                 continue
-
-            # Arckódolások generálása a képen talált arcokhoz
-            unknown_encodings = face_recognition.face_encodings(image, face_locations)
             
-            pil_image = Image.open(image_path)
-
-            for i, (top, right, bottom, left) in enumerate(face_locations):
-                # 2. Összehasonlítás
-                matches = face_recognition.compare_faces(known_encodings, unknown_encodings[i])
-                name = "Ismeretlen"
-                if True in matches:
-                    first_match_index = matches.index(True)
-                    name = known_names[first_match_index]
-                    print(f"   - Találat! Ez valószínűleg: {name}")
-
-                # 3. Mentés
-                face_image = pil_image.crop((left, top, right, bottom))
-                face_filename = f"{os.path.splitext(filename)[0]}_face_{i}.jpg"
-                face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
-                face_filepath_abs = os.path.join(PROJECT_ROOT, face_filepath_relative)
+            print(f"- {len(face_encodings)} arc található.")
+            for i, face_encoding in enumerate(face_encodings):
+                distances = face_recognition.face_distance(known_data["encodings"], face_encoding)
                 
-                face_image.save(face_filepath_abs)
+                best_match_index = -1
+                min_distance = 1.0 # Kezdőérték, ami nagyobb, mint a max lehetséges távolság
 
-                all_faces_db.append({
-                    "image_file": filename,
-                    "face_location": [top, right, bottom, left],
-                    "face_path": face_filepath_relative,
-                    "name": name
-                })
-                new_faces_count += 1
+                if len(distances) > 0:
+                    min_distance = min(distances)
+                    if min_distance < recognition_tolerance:
+                        best_match_index = list(distances).index(min_distance)
+
+                name = "Ismeretlen"
+                person_id = None
+                if best_match_index != -1:
+                    name = known_data["names"][best_match_index]
+                    person_row = cursor.execute('SELECT id FROM persons WHERE name = ?', (name,)).fetchone()
+                    person_id = person_row['id'] if person_row else None
+                    print(f"  - Arc #{i+1}: Felismerve mint '{name}', távolság: {min_distance:.2f}")
+                else:
+                    print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f}")
+
+                # Arc kivágása és mentése
+                top, right, bottom, left = face_locations[i]
+                face_image = Image.fromarray(image_data[top:bottom, left:right])
+                face_filename = f"{os.path.splitext(filename)[0]}_face_{i}.jpg"
+                face_path = os.path.join(FACES_OUTPUT_DIR, face_filename).replace('\\', '/')
+                face_image.save(face_path)
+
+                cursor.execute("""
+                    INSERT INTO faces (image_id, person_id, face_location, face_path, distance)
+                    VALUES (?, ?, ?, ?, ?)
+                """, (image_id, person_id, json.dumps(face_locations[i]), face_path, min_distance))
+                conn.commit()
+
         except Exception as e:
-            print(f"!!! Hiba történt a(z) {filename} feldolgozása közben: {e}")
+            print(f"!!! Hiba a '{filename}' feldolgozása közben: {e}")
 
-    if new_faces_count > 0:
-        print(f"\nÖsszesen {new_faces_count} új arc mentése az adatbázisba...")
-        data_manager.save_faces(all_faces_db)
-        print("Adatbázis sikeresen frissítve.")
-    else:
-        print("\nNem található új, feldolgozandó kép.")
+    conn.close()
+    print("\n--- Arcfelismerési ciklus befejezve. ---")
 
 if __name__ == '__main__':
-    scan_and_recognize_faces()
+    detect_new_faces()

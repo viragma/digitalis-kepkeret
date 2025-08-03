@@ -6,9 +6,9 @@
     "debug_theme": "none",
     "slideshow": {
         "interval": 10000,
-        "zoom_enabled": true,
-        "blur_strength": 30,
-        "transition_speed": 1500,
+        "zoom_enabled": false,
+        "blur_strength": 20,
+        "transition_speed": 1000,
         "zoom_start": 1.0,
         "zoom_end": 1.2,
         "zoom_duration": 30000,
@@ -18,13 +18,14 @@
         "background_opacity": 0.4,
         "enable_overlay": true,
         "enable_vignette": true,
-        "enable_clock": true,
+        "enable_clock": false,
         "clock_size": "2.5rem",
-        "birthday_boost_ratio": 100,
-        "randomize_playlist": true,
+        "birthday_boost_ratio": 75,
+        "randomize_playlist": false,
         "birthday_message": "Boldog Születésnapot!",
-        "show_upcoming_birthdays": true,
-        "upcoming_days_limit": 30
+        "show_upcoming_birthdays": false,
+        "upcoming_days_limit": 30,
+        "recognition_tolerance": 0.5
     },
     "themes": {
         "enabled": true,
