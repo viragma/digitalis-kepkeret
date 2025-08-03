@@ -17,14 +17,15 @@ UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'static', 'images')
 FACES_OUTPUT_DIR = os.path.join(PROJECT_ROOT, 'static', 'faces')
 ENCODINGS_CACHE = os.path.join(PROJECT_ROOT, 'data', 'known_encodings.pkl')
 
-def get_known_encodings():
+def get_known_encodings(force_retrain=False):
     """ Betölti a tanított arcok kódolásait a gyorsítótárból, vagy újraépíti azt. """
-    if os.path.exists(ENCODINGS_CACHE):
+    if not force_retrain and os.path.exists(ENCODINGS_CACHE):
+        print("-> Gyorsítótárból betöltöm a tanult arcokat...")
         with open(ENCODINGS_CACHE, 'rb') as f:
             return pickle.load(f)
 
     known_encodings = {"names": [], "encodings": []}
-    print("Tanító adatbázis építése...")
+    print("Tanító adatbázis építése (ez eltarthat egy ideig)...")
     for name in os.listdir(KNOWN_FACES_DIR):
         person_dir = os.path.join(KNOWN_FACES_DIR, name)
         if os.path.isdir(person_dir):
@@ -55,10 +56,12 @@ def detect_new_faces():
     recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
     print(f"Felismerési tolerancia beállítva: {recognition_tolerance}")
     
+    # JAVÍTÁS: A központi data_manager-ből kérjük a kapcsolatot
     conn = data_manager.get_db_connection()
     cursor = conn.cursor()
     
-    processed_images = {row['filename'] for row in cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()}
+    processed_images_rows = cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()
+    processed_images = {row['filename'] for row in processed_images_rows}
     all_images = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
     
     images_to_process = all_images - processed_images
@@ -88,7 +91,7 @@ def detect_new_faces():
 
             if not face_encodings:
                 print("- Nem található arc.")
-                cursor.execute('INSERT INTO faces (image_id, person_id) VALUES (?, NULL)', (image_id,))
+                cursor.execute('INSERT OR IGNORE INTO faces (image_id, person_id) VALUES (?, NULL)', (image_id,))
                 conn.commit()
                 continue
             
@@ -96,25 +99,22 @@ def detect_new_faces():
             for i, face_encoding in enumerate(face_encodings):
                 distances = face_recognition.face_distance(known_data["encodings"], face_encoding)
                 
-                best_match_index = -1
-                min_distance = 1.0 # Kezdőérték, ami nagyobb, mint a max lehetséges távolság
+                person_id = None
+                min_distance = 1.0
 
                 if len(distances) > 0:
                     min_distance = min(distances)
                     if min_distance < recognition_tolerance:
                         best_match_index = list(distances).index(min_distance)
-
-                name = "Ismeretlen"
-                person_id = None
-                if best_match_index != -1:
-                    name = known_data["names"][best_match_index]
-                    person_row = cursor.execute('SELECT id FROM persons WHERE name = ?', (name,)).fetchone()
-                    person_id = person_row['id'] if person_row else None
-                    print(f"  - Arc #{i+1}: Felismerve mint '{name}', távolság: {min_distance:.2f}")
+                        name = known_data["names"][best_match_index]
+                        person_row = cursor.execute('SELECT id FROM persons WHERE name = ?', (name,)).fetchone()
+                        person_id = person_row['id'] if person_row else None
+                        print(f"  - Arc #{i+1}: Felismerve mint '{name}', távolság: {min_distance:.2f}")
+                    else:
+                        print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f} (küszöb: {recognition_tolerance})")
                 else:
-                    print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f}")
+                    print(f"  - Arc #{i+1}: Ismeretlen, nincsenek tanított arcok.")
 
-                # Arc kivágása és mentése
                 top, right, bottom, left = face_locations[i]
                 face_image = Image.fromarray(image_data[top:bottom, left:right])
                 face_filename = f"{os.path.splitext(filename)[0]}_face_{i}.jpg"

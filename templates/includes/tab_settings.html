@@ -1,89 +1,4 @@
 <div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <form method="POST" action="{{ url_for('admin_bp.save_config_route') }}">
-                <div class="card">
-                    <div class="card-header"><h4 class="mb-0">Diavetítés Beállításai</h4></div>
-                    <div class="card-body">
-                        
-                        <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
-                        <hr>
-                        <div class="mb-3 row">
-                            <label for="birthday_boost_ratio" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
-                            <div class="col-sm-8">
-                                <div class="d-flex align-items-center">
-                                    <input type="range" class="form-range" id="birthday_boost_ratio" name="birthday_boost_ratio" min="0" max="100" step="5" value="{{ config.slideshow.get('birthday_boost_ratio', 75) }}" oninput="this.nextElementSibling.value = this.value + '%'">
-                                    <output class="ms-2 fw-bold">{{ config.slideshow.get('birthday_boost_ratio', 75) }}%</output>
-                                </div>
-                                <div class="form-text">Milyen arányban jelenjenek meg a szülinapos képei. 0% = nincs kiemelés, 100% = csak az ő képei.</div>
-                            </div>
-                        </div>
-                         <div class="mb-3 row">
-                            <label for="birthday_message" class="col-sm-4 col-form-label">Szülinapi köszöntő</label>
-                            <div class="col-sm-8"><input type="text" class="form-control" id="birthday_message" name="birthday_message" value="{{ config.slideshow.get('birthday_message', 'Boldog Születésnapot!') }}"></div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="show_upcoming_birthdays" class="col-sm-4 col-form-label">Közelgő szülinapok kijelzése</label>
-                            <div class="col-sm-8">
-                                <div class="form-check form-switch fs-5">
-                                    <input class="form-check-input" type="checkbox" role="switch" id="show_upcoming_birthdays" name="show_upcoming_birthdays" {% if config.slideshow.get('show_upcoming_birthdays', true) %}checked{% endif %}>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="upcoming_days_limit" class="col-sm-4 col-form-label">Előrejelzés (nap)</label>
-                            <div class="col-sm-8">
-                                <input type="number" class="form-control" id="upcoming_days_limit" name="upcoming_days_limit" value="{{ config.slideshow.get('upcoming_days_limit', 30) }}">
-                                <div class="form-text">Hány nappal előre jelezze a születésnapokat.</div>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="randomize_playlist" class="col-sm-4 col-form-label">Véletlenszerű sorrend</label>
-                            <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}></div></div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="enable_clock" class="col-sm-4 col-form-label">Óra megjelenítése</label>
-                            <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="enable_clock" name="enable_clock" {% if config.slideshow.get('enable_clock', false) %}checked{% endif %}></div></div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="clock_size" class="col-sm-4 col-form-label">Óra betűmérete</label>
-                            <div class="col-sm-8"><input type="text" class="form-control" id="clock_size" name="clock_size" value="{{ config.slideshow.get('clock_size', '2.5rem') }}"><div class="form-text">Adj meg egy CSS mértékegységet (pl. <code>2.5rem</code>).</div></div>
-                        </div>
-                        
-                        <h5 class="mt-4"><i class="bi bi-clock"></i> Időzítés</h5>
-                        <hr>
-                        <div class="mb-3 row">
-                            <label for="interval" class="col-sm-4 col-form-label">Képváltás sebessége</label>
-                            <div class="col-sm-8"><div class="input-group"><input type="number" class="form-control" id="interval" name="interval" value="{{ config.slideshow.get('interval', 10000) }}"><span class="input-group-text">ms</span></div></div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="transition_speed" class="col-sm-4 col-form-label">Áttűnés sebessége</label>
-                            <div class="col-sm-8"><div class="input-group"><input type="number" class="form-control" id="transition_speed" name="transition_speed" value="{{ config.slideshow.get('transition_speed', 1000) }}"><span class="input-group-text">ms</span></div></div>
-                        </div>
-
-                        <h5 class="mt-4"><i class="bi bi-palette"></i> Vizuális Effektek</h5>
-                        <hr>
-                        <div class="mb-3 row">
-                            <label for="zoom_enabled" class="col-sm-4 col-form-label">Ken Burns (zoom) effekt</label>
-                            <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="zoom_enabled" name="zoom_enabled" {% if config.slideshow.get('zoom_enabled', true) %}checked{% endif %}></div></div>
-                        </div>
-                        <div class="mb-3 row">
-                            <label for="blur_strength" class="col-sm-4 col-form-label">Háttér elmosásának erőssége</label>
-                            <div class="col-sm-8"><div class="d-flex align-items-center"><input type="range" class="form-range" id="blur_strength" name="blur_strength" min="0" max="50" value="{{ config.slideshow.get('blur_strength', 20) }}" oninput="this.nextElementSibling.value = this.value"><output class="ms-2">{{ config.slideshow.get('blur_strength', 20) }}</output></div></div>
-                        </div>
-                         <div class="mb-3 row">
-                            <label for="image_filter" class="col-sm-4 col-form-label">Kép CSS filter</label>
-                            <div class="col-sm-8"><input type="text" class="form-control" id="image_filter" name="image_filter" value="{{ config.slideshow.get('image_filter', 'contrast(1.05) saturate(1.1)') }}"><div class="form-text">Például: <code>contrast(1.1) saturate(1.2)</code></div></div>
-                        </div>
-
-                    </div>
-                    <div class="card-footer text-end">
-                        <button type="button" id="force-reload-btn" class="btn btn-info"><i class="bi bi-broadcast"></i> Minden eszköz frissítése</button>
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Beállítások Mentése</button>
-                    </div>
-                </div>
-            </form>
-            <div class="container mt-4">
     <form method="POST" action="{{ url_for('admin_bp.save_config_route') }}">
         <div class="card">
             <div class="card-header"><h4 class="mb-0">Beállítások</h4></div>
@@ -111,13 +26,69 @@
 
                 <h5 class="mt-4"><i class="bi bi-person-check"></i> Tartalom és Egyebek</h5>
                 <hr>
+                <div class="mb-3 row">
+                    <label for="birthday_boost_ratio" class="col-sm-4 col-form-label">Szülinapos kiemelése</label>
+                    <div class="col-sm-8">
+                        <div class="d-flex align-items-center">
+                            <input type="range" class="form-range" id="birthday_boost_ratio" name="birthday_boost_ratio" min="0" max="100" step="5" value="{{ config.slideshow.get('birthday_boost_ratio', 75) }}" oninput="this.nextElementSibling.value = this.value + '%'">
+                            <output class="ms-2 fw-bold">{{ config.slideshow.get('birthday_boost_ratio', 75) }}%</output>
+                        </div>
+                    </div>
                 </div>
+                <div class="mb-3 row">
+                    <label for="birthday_message" class="col-sm-4 col-form-label">Szülinapi köszöntő</label>
+                    <div class="col-sm-8"><input type="text" class="form-control" id="birthday_message" name="birthday_message" value="{{ config.slideshow.get('birthday_message', 'Boldog Születésnapot!') }}"></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="show_upcoming_birthdays" class="col-sm-4 col-form-label">Közelgő szülinapok kijelzése</label>
+                    <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="show_upcoming_birthdays" name="show_upcoming_birthdays" {% if config.slideshow.get('show_upcoming_birthdays', true) %}checked{% endif %}></div></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="upcoming_days_limit" class="col-sm-4 col-form-label">Előrejelzés (nap)</label>
+                    <div class="col-sm-8"><input type="number" class="form-control" id="upcoming_days_limit" name="upcoming_days_limit" value="{{ config.slideshow.get('upcoming_days_limit', 30) }}"></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="randomize_playlist" class="col-sm-4 col-form-label">Véletlenszerű sorrend</label>
+                    <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="randomize_playlist" name="randomize_playlist" {% if config.slideshow.get('randomize_playlist', true) %}checked{% endif %}></div></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="enable_clock" class="col-sm-4 col-form-label">Óra megjelenítése</label>
+                    <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="enable_clock" name="enable_clock" {% if config.slideshow.get('enable_clock', false) %}checked{% endif %}></div></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="clock_size" class="col-sm-4 col-form-label">Óra betűmérete</label>
+                    <div class="col-sm-8"><input type="text" class="form-control" id="clock_size" name="clock_size" value="{{ config.slideshow.get('clock_size', '2.5rem') }}"></div>
+                </div>
+
+                <h5 class="mt-4"><i class="bi bi-clock"></i> Időzítés</h5>
+                <hr>
+                <div class="mb-3 row">
+                    <label for="interval" class="col-sm-4 col-form-label">Képváltás sebessége</label>
+                    <div class="col-sm-8"><div class="input-group"><input type="number" class="form-control" id="interval" name="interval" value="{{ config.slideshow.get('interval', 10000) }}"><span class="input-group-text">ms</span></div></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="transition_speed" class="col-sm-4 col-form-label">Áttűnés sebessége</label>
+                    <div class="col-sm-8"><div class="input-group"><input type="number" class="form-control" id="transition_speed" name="transition_speed" value="{{ config.slideshow.get('transition_speed', 1000) }}"><span class="input-group-text">ms</span></div></div>
+                </div>
+
+                <h5 class="mt-4"><i class="bi bi-palette"></i> Vizuális Effektek</h5>
+                <hr>
+                <div class="mb-3 row">
+                    <label for="zoom_enabled" class="col-sm-4 col-form-label">Ken Burns (zoom) effekt</label>
+                    <div class="col-sm-8"><div class="form-check form-switch fs-5"><input class="form-check-input" type="checkbox" role="switch" id="zoom_enabled" name="zoom_enabled" {% if config.slideshow.get('zoom_enabled', true) %}checked{% endif %}></div></div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="blur_strength" class="col-sm-4 col-form-label">Háttér elmosásának erőssége</label>
+                    <div class="col-sm-8"><div class="d-flex align-items-center"><input type="range" class="form-range" id="blur_strength" name="blur_strength" min="0" max="50" value="{{ config.slideshow.get('blur_strength', 20) }}" oninput="this.nextElementSibling.value = this.value"><output class="ms-2">{{ config.slideshow.get('blur_strength', 20) }}</output></div></div>
+                </div>
+                 <div class="mb-3 row">
+                    <label for="image_filter" class="col-sm-4 col-form-label">Kép CSS filter</label>
+                    <div class="col-sm-8"><input type="text" class="form-control" id="image_filter" name="image_filter" value="{{ config.slideshow.get('image_filter', 'contrast(1.05) saturate(1.1)') }}"></div>
+                </div>
+            </div>
             <div class="card-footer text-end">
                 <button type="submit" class="btn btn-primary"><i class="bi bi-save"></i> Beállítások Mentése</button>
             </div>
         </div>
     </form>
-</div>
-        </div>
-    </div>
 </div>

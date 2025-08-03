@@ -1,12 +1,11 @@
 # routes/admin_routes.py
+
 from flask import Blueprint, render_template, request, redirect, url_for, session, flash
 from services import data_manager, event_logger
 from datetime import datetime
 from extensions import socketio
-
-import random 
+import random
 import os
-
 
 admin_bp = Blueprint('admin_bp', __name__, url_prefix='/admin', template_folder='../../templates')
 
@@ -42,14 +41,14 @@ def known_faces_page():
 def login():
     if request.method == 'POST':
         config = data_manager.get_config()
-        if request.form['password'] == config.get("ADMIN_PASSWORD", "admin"): 
+        if request.form['password'] == config.get("ADMIN_PASSWORD", "admin"):
             session['logged_in'] = True
             event_logger.log_event("Sikeres admin bejelentkezés.")
             return redirect(url_for('admin_bp.dashboard_page'))
         else:
             event_logger.log_event("Sikertelen bejelentkezési kísérlet.")
             flash('Hibás jelszó!')
-    
+
     background_image = None
     try:
         config = data_manager.get_config()
@@ -74,7 +73,7 @@ def save_config_route():
     if not session.get('logged_in'): return redirect(url_for('admin_bp.login'))
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
-    
+
     slideshow_config['interval'] = int(request.form.get('interval', 10000))
     slideshow_config['transition_speed'] = int(request.form.get('transition_speed', 1000))
     slideshow_config['blur_strength'] = int(request.form.get('blur_strength', 20))
@@ -87,17 +86,16 @@ def save_config_route():
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
     slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
-     # ÚJ: Tolerancia mentése
+    
+    # ÚJ: Tolerancia mentése
     slideshow_config['recognition_tolerance'] = float(request.form.get('recognition_tolerance', 0.6))
 
-    
     config_data['slideshow'] = slideshow_config
     data_manager.save_config(config_data)
-    
+
     event_logger.log_event("Általános beállítások mentve.")
     flash('Beállítások sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Config changed'})
-    
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/save_themes_config', methods=['POST'])
@@ -137,7 +135,6 @@ def save_themes_config_route():
     event_logger.log_event("Téma beállítások mentve.")
     flash('Témák sikeresen mentve!', 'success')
     socketio.emit('reload_clients', {'message': 'Theme config changed'})
-    
     return redirect(url_for('admin_bp.dashboard_page'))
 
 @admin_bp.route('/add_person', methods=['POST'])
