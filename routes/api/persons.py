@@ -120,3 +120,4 @@ def delete_persons_batch():
 
     event_logger.log_event(f"{len(names_to_delete)} személy törölve: {', '.join(names_to_delete)}.")
     return jsonify({'status': 'success', 'message': f'{len(names_to_delete)} személy sikeresen törölve.'})
+    
