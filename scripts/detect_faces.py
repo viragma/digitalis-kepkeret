@@ -3,7 +3,10 @@ import os
 import sys
 import face_recognition
 import pickle
+import json
 from PIL import Image
+import sqlite3
+import traceback
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(PROJECT_ROOT)
@@ -18,9 +21,18 @@ ENCODINGS_CACHE = os.path.join(PROJECT_ROOT, 'data', 'known_encodings.pkl')
 def get_known_encodings(force_retrain=False):
     if not force_retrain and os.path.exists(ENCODINGS_CACHE):
         print("-> Gyorsítótárból betöltöm a tanult arcokat...")
-        with open(ENCODINGS_CACHE, 'rb') as f:
-            return pickle.load(f)
-
+        try:
+            with open(ENCODINGS_CACHE, 'rb') as f:
+                data = pickle.load(f)
+                # Ellenőrizzük, hogy a betöltött adat a helyes, szótár formátumú-e
+                if isinstance(data, dict) and "names" in data and "encodings" in data:
+                    return data
+                else:
+                    print("!!! A gyorsítótár-fájl formátuma hibás. Újraépítem.")
+        except Exception as e:
+            print(f"!!! Hiba a gyorsítótár olvasásakor, újraépítem. Hiba: {e}")
+    
+    # Ha a gyorsítótár nem létezik, vagy hibás, újraépítjük
     known_encodings = {"names": [], "encodings": []}
     print("Tanító adatbázis építése...")
     for name in os.listdir(KNOWN_FACES_DIR):
@@ -50,13 +62,19 @@ def detect_new_faces():
     recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
     print(f"Felismerési tolerancia beállítva: {recognition_tolerance}")
     
-    processed_images = data_manager.get_processed_images()
+    conn = data_manager.get_db_connection()
+    cursor = conn.cursor()
+    
+    processed_images_rows = cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()
+    processed_images = {row['filename'] for row in processed_images_rows}
     all_images_in_folder = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
+    
     images_to_process = all_images_in_folder - processed_images
 
     print(f"{len(images_to_process)} új kép vár feldolgozásra.")
     if not images_to_process:
         print("--- Ciklus vége: Nincs új kép. ---")
+        conn.close()
         return
 
     for filename in images_to_process:
@@ -64,7 +82,14 @@ def detect_new_faces():
         image_path = os.path.join(UPLOAD_FOLDER, filename)
         
         try:
-            image_id = data_manager.get_or_create_image_id(filename)
+            image_record = cursor.execute('SELECT id FROM images WHERE filename = ?', (filename,)).fetchone()
+            image_id = image_record['id'] if image_record else None
+
+            if not image_id:
+                cursor.execute('INSERT INTO images (filename) VALUES (?)', (filename,))
+                conn.commit()
+                image_id = cursor.lastrowid
+            
             image_data = face_recognition.load_image_file(image_path)
             face_locations = face_recognition.face_locations(image_data)
             face_encodings = face_recognition.face_encodings(image_data, face_locations)
@@ -99,9 +124,12 @@ def detect_new_faces():
 
                 data_manager.add_face_to_db(image_id, person_id, face_locations[i], face_path, min_distance)
 
-        except Exception as e:
-            print(f"!!! Hiba a '{filename}' feldolgozása közben: {e}")
+        except Exception:
+            print(f"!!! RÉSZLETES HIBA a '{filename}' feldolgozása közben: !!!")
+            traceback.print_exc()
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
 
+    conn.close()
     print("\n--- Arcfelismerési ciklus befejezve. ---")
 
 if __name__ == '__main__':
