@@ -3247,5 +3247,2985 @@
         ],
         "face_path": "static/faces/manual_img_0160_316.jpg",
         "name": "Zora"
+    },
+    {
+        "image_file": "IMG_5154.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_4958.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            516,
+            785,
+            578,
+            722
+        ],
+        "face_path": "static/faces/IMG_5407_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            405,
+            633,
+            494,
+            544
+        ],
+        "face_path": "static/faces/IMG_5407_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            528,
+            1371,
+            683,
+            1216
+        ],
+        "face_path": "static/faces/IMG_5407_face_2.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            277,
+            419,
+            598,
+            98
+        ],
+        "face_path": "static/faces/IMG_5407_face_3.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            495,
+            884,
+            569,
+            809
+        ],
+        "face_path": "static/faces/IMG_5407_face_4.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5407.JPG",
+        "face_location": [
+            588,
+            662,
+            811,
+            439
+        ],
+        "face_path": "static/faces/IMG_5407_face_5.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5317.JPG",
+        "face_location": [
+            324,
+            501,
+            367,
+            458
+        ],
+        "face_path": "static/faces/IMG_5317_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5171.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5310.JPG",
+        "face_location": [
+            387,
+            270,
+            461,
+            196
+        ],
+        "face_path": "static/faces/IMG_5310_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5310.JPG",
+        "face_location": [
+            285,
+            394,
+            375,
+            305
+        ],
+        "face_path": "static/faces/IMG_5310_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5310.JPG",
+        "face_location": [
+            493,
+            475,
+            545,
+            423
+        ],
+        "face_path": "static/faces/IMG_5310_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5416.JPG",
+        "face_location": [
+            345,
+            386,
+            531,
+            201
+        ],
+        "face_path": "static/faces/IMG_5416_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5316.JPG",
+        "face_location": [
+            242,
+            513,
+            278,
+            477
+        ],
+        "face_path": "static/faces/IMG_5316_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5392.JPG",
+        "face_location": [
+            365,
+            165,
+            454,
+            76
+        ],
+        "face_path": "static/faces/IMG_5392_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5392.JPG",
+        "face_location": [
+            350,
+            294,
+            412,
+            232
+        ],
+        "face_path": "static/faces/IMG_5392_face_1.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5373.JPG",
+        "face_location": [
+            225,
+            612,
+            354,
+            483
+        ],
+        "face_path": "static/faces/IMG_5373_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5373.JPG",
+        "face_location": [
+            271,
+            294,
+            378,
+            187
+        ],
+        "face_path": "static/faces/IMG_5373_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5373.JPG",
+        "face_location": [
+            38,
+            270,
+            113,
+            196
+        ],
+        "face_path": "static/faces/IMG_5373_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_4818.JPG",
+        "face_location": [
+            233,
+            788,
+            788,
+            233
+        ],
+        "face_path": "static/faces/IMG_4818_face_0.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5390.JPG",
+        "face_location": [
+            282,
+            569,
+            411,
+            440
+        ],
+        "face_path": "static/faces/IMG_5390_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5390.JPG",
+        "face_location": [
+            283,
+            390,
+            390,
+            282
+        ],
+        "face_path": "static/faces/IMG_5390_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "d155e2e1083a6baae1638a281ce3bbc2.jpeg",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5385.JPG",
+        "face_location": [
+            194,
+            861,
+            657,
+            399
+        ],
+        "face_path": "static/faces/IMG_5385_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5403.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5345.JPG",
+        "face_location": [
+            364,
+            322,
+            426,
+            259
+        ],
+        "face_path": "static/faces/IMG_5345_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5345.JPG",
+        "face_location": [
+            405,
+            405,
+            467,
+            342
+        ],
+        "face_path": "static/faces/IMG_5345_face_1.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5364.JPG",
+        "face_location": [
+            407,
+            655,
+            593,
+            469
+        ],
+        "face_path": "static/faces/IMG_5364_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5364.JPG",
+        "face_location": [
+            263,
+            283,
+            449,
+            97
+        ],
+        "face_path": "static/faces/IMG_5364_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            175,
+            1130,
+            283,
+            1023
+        ],
+        "face_path": "static/faces/IMG_5353_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            223,
+            605,
+            331,
+            497
+        ],
+        "face_path": "static/faces/IMG_5353_face_1.jpg",
+        "name": "Viki"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            265,
+            832,
+            355,
+            743
+        ],
+        "face_path": "static/faces/IMG_5353_face_2.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            652,
+            892,
+            727,
+            818
+        ],
+        "face_path": "static/faces/IMG_5353_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            67,
+            1228,
+            196,
+            1099
+        ],
+        "face_path": "static/faces/IMG_5353_face_4.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            211,
+            354,
+            319,
+            247
+        ],
+        "face_path": "static/faces/IMG_5353_face_5.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            569,
+            801,
+            644,
+            726
+        ],
+        "face_path": "static/faces/IMG_5353_face_6.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            116,
+            673,
+            206,
+            583
+        ],
+        "face_path": "static/faces/IMG_5353_face_7.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            163,
+            983,
+            237,
+            909
+        ],
+        "face_path": "static/faces/IMG_5353_face_8.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5353.JPG",
+        "face_location": [
+            94,
+            868,
+            156,
+            805
+        ],
+        "face_path": "static/faces/IMG_5353_face_9.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5396.JPG",
+        "face_location": [
+            420,
+            419,
+            741,
+            98
+        ],
+        "face_path": "static/faces/IMG_5396_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5237.JPG",
+        "face_location": [
+            326,
+            907,
+            378,
+            855
+        ],
+        "face_path": "static/faces/IMG_5237_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5237.JPG",
+        "face_location": [
+            262,
+            757,
+            314,
+            705
+        ],
+        "face_path": "static/faces/IMG_5237_face_1.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5237.JPG",
+        "face_location": [
+            398,
+            1013,
+            460,
+            951
+        ],
+        "face_path": "static/faces/IMG_5237_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5237.JPG",
+        "face_location": [
+            375,
+            1300,
+            464,
+            1210
+        ],
+        "face_path": "static/faces/IMG_5237_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5237.JPG",
+        "face_location": [
+            558,
+            527,
+            825,
+            260
+        ],
+        "face_path": "static/faces/IMG_5237_face_4.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5213.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5393.JPG",
+        "face_location": [
+            204,
+            589,
+            590,
+            204
+        ],
+        "face_path": "static/faces/IMG_5393_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5383.JPG",
+        "face_location": [
+            468,
+            646,
+            736,
+            379
+        ],
+        "face_path": "static/faces/IMG_5383_face_0.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5383.JPG",
+        "face_location": [
+            588,
+            860,
+            811,
+            637
+        ],
+        "face_path": "static/faces/IMG_5383_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5560.JPG",
+        "face_location": [
+            550,
+            487,
+            602,
+            435
+        ],
+        "face_path": "static/faces/IMG_5560_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5560.JPG",
+        "face_location": [
+            424,
+            440,
+            475,
+            389
+        ],
+        "face_path": "static/faces/IMG_5560_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5388.JPG",
+        "face_location": [
+            368,
+            569,
+            497,
+            440
+        ],
+        "face_path": "static/faces/IMG_5388_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5388.JPG",
+        "face_location": [
+            474,
+            354,
+            582,
+            247
+        ],
+        "face_path": "static/faces/IMG_5388_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5391.JPG",
+        "face_location": [
+            348,
+            419,
+            669,
+            98
+        ],
+        "face_path": "static/faces/IMG_5391_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5357.JPG",
+        "face_location": [
+            202,
+            820,
+            356,
+            666
+        ],
+        "face_path": "static/faces/IMG_5357_face_0.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5357.JPG",
+        "face_location": [
+            426,
+            970,
+            555,
+            841
+        ],
+        "face_path": "static/faces/IMG_5357_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5397.JPG",
+        "face_location": [
+            204,
+            589,
+            590,
+            204
+        ],
+        "face_path": "static/faces/IMG_5397_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5397.JPG",
+        "face_location": [
+            330,
+            173,
+            366,
+            137
+        ],
+        "face_path": "static/faces/IMG_5397_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5417.JPG",
+        "face_location": [
+            409,
+            468,
+            676,
+            200
+        ],
+        "face_path": "static/faces/IMG_5417_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5294.JPG",
+        "face_location": [
+            397,
+            354,
+            526,
+            225
+        ],
+        "face_path": "static/faces/IMG_5294_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5350.JPG",
+        "face_location": [
+            474,
+            354,
+            582,
+            247
+        ],
+        "face_path": "static/faces/IMG_5350_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5336.JPG",
+        "face_location": [
+            331,
+            533,
+            438,
+            426
+        ],
+        "face_path": "static/faces/IMG_5336_face_0.jpg",
+        "name": "Viki"
+    },
+    {
+        "image_file": "IMG_5336.JPG",
+        "face_location": [
+            56,
+            485,
+            163,
+            378
+        ],
+        "face_path": "static/faces/IMG_5336_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5425.JPG",
+        "face_location": [
+            194,
+            605,
+            657,
+            142
+        ],
+        "face_path": "static/faces/IMG_5425_face_0.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5301.JPG",
+        "face_location": [
+            304,
+            428,
+            490,
+            242
+        ],
+        "face_path": "static/faces/IMG_5301_face_0.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5208.JPG",
+        "face_location": [
+            614,
+            551,
+            800,
+            366
+        ],
+        "face_path": "static/faces/IMG_5208_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5348.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5358.JPG",
+        "face_location": [
+            397,
+            411,
+            526,
+            282
+        ],
+        "face_path": "static/faces/IMG_5358_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5302.JPG",
+        "face_location": [
+            355,
+            337,
+            406,
+            285
+        ],
+        "face_path": "static/faces/IMG_5302_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5302.JPG",
+        "face_location": [
+            377,
+            432,
+            440,
+            370
+        ],
+        "face_path": "static/faces/IMG_5302_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "e80b56534c0ab1b57837bf2090d980dd.jpeg",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5426.JPG",
+        "face_location": [
+            450,
+            270,
+            558,
+            163
+        ],
+        "face_path": "static/faces/IMG_5426_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5426.JPG",
+        "face_location": [
+            343,
+            390,
+            450,
+            282
+        ],
+        "face_path": "static/faces/IMG_5426_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5414.JPG",
+        "face_location": [
+            407,
+            469,
+            593,
+            283
+        ],
+        "face_path": "static/faces/IMG_5414_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5414.JPG",
+        "face_location": [
+            387,
+            1232,
+            573,
+            1047
+        ],
+        "face_path": "static/faces/IMG_5414_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5414.JPG",
+        "face_location": [
+            428,
+            882,
+            614,
+            696
+        ],
+        "face_path": "static/faces/IMG_5414_face_2.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5421.JPG",
+        "face_location": [
+            206,
+            414,
+            295,
+            325
+        ],
+        "face_path": "static/faces/IMG_5421_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5371.JPG",
+        "face_location": [
+            440,
+            538,
+            663,
+            315
+        ],
+        "face_path": "static/faces/IMG_5371_face_0.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5371.JPG",
+        "face_location": [
+            341,
+            315,
+            563,
+            92
+        ],
+        "face_path": "static/faces/IMG_5371_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5367.JPG",
+        "face_location": [
+            412,
+            577,
+            486,
+            502
+        ],
+        "face_path": "static/faces/IMG_5367_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5367.JPG",
+        "face_location": [
+            354,
+            395,
+            428,
+            320
+        ],
+        "face_path": "static/faces/IMG_5367_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5367.JPG",
+        "face_location": [
+            844,
+            677,
+            952,
+            569
+        ],
+        "face_path": "static/faces/IMG_5367_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5367.JPG",
+        "face_location": [
+            825,
+            409,
+            1080,
+            141
+        ],
+        "face_path": "static/faces/IMG_5367_face_3.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5201.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5354.JPG",
+        "face_location": [
+            279,
+            1166,
+            354,
+            1091
+        ],
+        "face_path": "static/faces/IMG_5354_face_0.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5354.JPG",
+        "face_location": [
+            237,
+            950,
+            312,
+            876
+        ],
+        "face_path": "static/faces/IMG_5354_face_1.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5354.JPG",
+        "face_location": [
+            94,
+            722,
+            156,
+            660
+        ],
+        "face_path": "static/faces/IMG_5354_face_2.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5386.JPG",
+        "face_location": [
+            311,
+            583,
+            440,
+            454
+        ],
+        "face_path": "static/faces/IMG_5386_face_0.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5386.JPG",
+        "face_location": [
+            355,
+            963,
+            462,
+            856
+        ],
+        "face_path": "static/faces/IMG_5386_face_1.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            534,
+            999,
+            641,
+            892
+        ],
+        "face_path": "static/faces/IMG_5381_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            454,
+            855,
+            583,
+            726
+        ],
+        "face_path": "static/faces/IMG_5381_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            497,
+            268,
+            626,
+            139
+        ],
+        "face_path": "static/faces/IMG_5381_face_2.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            534,
+            581,
+            641,
+            474
+        ],
+        "face_path": "static/faces/IMG_5381_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            383,
+            1214,
+            512,
+            1085
+        ],
+        "face_path": "static/faces/IMG_5381_face_4.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5381.JPG",
+        "face_location": [
+            522,
+            1274,
+            629,
+            1166
+        ],
+        "face_path": "static/faces/IMG_5381_face_5.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5399.JPG",
+        "face_location": [
+            297,
+            656,
+            759,
+            194
+        ],
+        "face_path": "static/faces/IMG_5399_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5412.JPG",
+        "face_location": [
+            345,
+            504,
+            435,
+            414
+        ],
+        "face_path": "static/faces/IMG_5412_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5412.JPG",
+        "face_location": [
+            375,
+            285,
+            464,
+            195
+        ],
+        "face_path": "static/faces/IMG_5412_face_1.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5412.JPG",
+        "face_location": [
+            365,
+            703,
+            454,
+            613
+        ],
+        "face_path": "static/faces/IMG_5412_face_2.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5226.JPG",
+        "face_location": [
+            395,
+            384,
+            484,
+            295
+        ],
+        "face_path": "static/faces/IMG_5226_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5226.JPG",
+        "face_location": [
+            370,
+            469,
+            445,
+            395
+        ],
+        "face_path": "static/faces/IMG_5226_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5408.JPG",
+        "face_location": [
+            592,
+            653,
+            654,
+            591
+        ],
+        "face_path": "static/faces/IMG_5408_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5408.JPG",
+        "face_location": [
+            433,
+            149,
+            495,
+            87
+        ],
+        "face_path": "static/faces/IMG_5408_face_1.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5408.JPG",
+        "face_location": [
+            446,
+            584,
+            509,
+            522
+        ],
+        "face_path": "static/faces/IMG_5408_face_2.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5404.JPG",
+        "face_location": [
+            320,
+            230,
+            587,
+            0
+        ],
+        "face_path": "static/faces/IMG_5404_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5372.JPG",
+        "face_location": [
+            383,
+            540,
+            512,
+            411
+        ],
+        "face_path": "static/faces/IMG_5372_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5372.JPG",
+        "face_location": [
+            343,
+            378,
+            450,
+            270
+        ],
+        "face_path": "static/faces/IMG_5372_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5372.JPG",
+        "face_location": [
+            453,
+            785,
+            516,
+            722
+        ],
+        "face_path": "static/faces/IMG_5372_face_2.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5419.JPG",
+        "face_location": [
+            259,
+            402,
+            367,
+            294
+        ],
+        "face_path": "static/faces/IMG_5419_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5419.JPG",
+        "face_location": [
+            297,
+            597,
+            426,
+            468
+        ],
+        "face_path": "static/faces/IMG_5419_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5210.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5321.JPG",
+        "face_location": [
+            348,
+            384,
+            669,
+            63
+        ],
+        "face_path": "static/faces/IMG_5321_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5321.JPG",
+        "face_location": [
+            498,
+            676,
+            766,
+            409
+        ],
+        "face_path": "static/faces/IMG_5321_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5379.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            460,
+            764,
+            523,
+            702
+        ],
+        "face_path": "static/faces/IMG_5374_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            539,
+            665,
+            591,
+            613
+        ],
+        "face_path": "static/faces/IMG_5374_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            564,
+            871,
+            607,
+            828
+        ],
+        "face_path": "static/faces/IMG_5374_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            540,
+            419,
+            583,
+            376
+        ],
+        "face_path": "static/faces/IMG_5374_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            539,
+            602,
+            591,
+            550
+        ],
+        "face_path": "static/faces/IMG_5374_face_4.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5374.JPG",
+        "face_location": [
+            510,
+            976,
+            562,
+            924
+        ],
+        "face_path": "static/faces/IMG_5374_face_5.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5420.JPG",
+        "face_location": [
+            638,
+            662,
+            861,
+            439
+        ],
+        "face_path": "static/faces/IMG_5420_face_0.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5420.JPG",
+        "face_location": [
+            378,
+            1379,
+            429,
+            1327
+        ],
+        "face_path": "static/faces/IMG_5420_face_1.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5340.JPG",
+        "face_location": [
+            372,
+            463,
+            415,
+            419
+        ],
+        "face_path": "static/faces/IMG_5340_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5340.JPG",
+        "face_location": [
+            331,
+            377,
+            383,
+            325
+        ],
+        "face_path": "static/faces/IMG_5340_face_1.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5340.JPG",
+        "face_location": [
+            562,
+            550,
+            614,
+            498
+        ],
+        "face_path": "static/faces/IMG_5340_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5340.JPG",
+        "face_location": [
+            486,
+            337,
+            561,
+            262
+        ],
+        "face_path": "static/faces/IMG_5340_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5366.JPG",
+        "face_location": [
+            307,
+            1107,
+            414,
+            999
+        ],
+        "face_path": "static/faces/IMG_5366_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5424.JPG",
+        "face_location": [
+            536,
+            685,
+            611,
+            610
+        ],
+        "face_path": "static/faces/IMG_5424_face_0.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5313.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5334.JPG",
+        "face_location": [
+            339,
+            752,
+            494,
+            597
+        ],
+        "face_path": "static/faces/IMG_5334_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5334.JPG",
+        "face_location": [
+            290,
+            973,
+            558,
+            706
+        ],
+        "face_path": "static/faces/IMG_5334_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5323.JPG",
+        "face_location": [
+            196,
+            554,
+            325,
+            425
+        ],
+        "face_path": "static/faces/IMG_5323_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5324.JPG",
+        "face_location": [
+            216,
+            305,
+            305,
+            215
+        ],
+        "face_path": "static/faces/IMG_5324_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5324.JPG",
+        "face_location": [
+            387,
+            569,
+            461,
+            494
+        ],
+        "face_path": "static/faces/IMG_5324_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5330.JPG",
+        "face_location": [
+            634,
+            455,
+            955,
+            134
+        ],
+        "face_path": "static/faces/IMG_5330_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5410.JPG",
+        "face_location": [
+            442,
+            545,
+            597,
+            390
+        ],
+        "face_path": "static/faces/IMG_5410_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5410.JPG",
+        "face_location": [
+            411,
+            440,
+            540,
+            311
+        ],
+        "face_path": "static/faces/IMG_5410_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5376.JPG",
+        "face_location": [
+            307,
+            306,
+            414,
+            199
+        ],
+        "face_path": "static/faces/IMG_5376_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5376.JPG",
+        "face_location": [
+            526,
+            540,
+            655,
+            411
+        ],
+        "face_path": "static/faces/IMG_5376_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5238.JPG",
+        "face_location": [
+            290,
+            854,
+            558,
+            587
+        ],
+        "face_path": "static/faces/IMG_5238_face_0.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5238.JPG",
+        "face_location": [
+            291,
+            1083,
+            514,
+            860
+        ],
+        "face_path": "static/faces/IMG_5238_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5238.JPG",
+        "face_location": [
+            253,
+            494,
+            408,
+            339
+        ],
+        "face_path": "static/faces/IMG_5238_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5418.JPG",
+        "face_location": [
+            325,
+            195,
+            415,
+            106
+        ],
+        "face_path": "static/faces/IMG_5418_face_0.jpg",
+        "name": "Luca"
+    },
+    {
+        "image_file": "IMG_5418.JPG",
+        "face_location": [
+            312,
+            312,
+            387,
+            237
+        ],
+        "face_path": "static/faces/IMG_5418_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5418.JPG",
+        "face_location": [
+            418,
+            348,
+            470,
+            296
+        ],
+        "face_path": "static/faces/IMG_5418_face_2.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5418.JPG",
+        "face_location": [
+            470,
+            212,
+            544,
+            137
+        ],
+        "face_path": "static/faces/IMG_5418_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5275.JPG",
+        "face_location": [
+            288,
+            717,
+            442,
+            562
+        ],
+        "face_path": "static/faces/IMG_5275_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5275.JPG",
+        "face_location": [
+            118,
+            448,
+            304,
+            262
+        ],
+        "face_path": "static/faces/IMG_5275_face_1.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5275.JPG",
+        "face_location": [
+            119,
+            1488,
+            504,
+            1103
+        ],
+        "face_path": "static/faces/IMG_5275_face_3.jpg",
+        "name": "Gyula"
+    },
+    {
+        "image_file": "IMG_5563.JPG",
+        "face_location": [
+            529,
+            73,
+            592,
+            11
+        ],
+        "face_path": "static/faces/IMG_5563_face_0.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5563.JPG",
+        "face_location": [
+            268,
+            411,
+            397,
+            282
+        ],
+        "face_path": "static/faces/IMG_5563_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5328.JPG",
+        "face_location": [
+            276,
+            266,
+            319,
+            223
+        ],
+        "face_path": "static/faces/IMG_5328_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5328.JPG",
+        "face_location": [
+            285,
+            337,
+            337,
+            285
+        ],
+        "face_path": "static/faces/IMG_5328_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5328.JPG",
+        "face_location": [
+            488,
+            446,
+            550,
+            384
+        ],
+        "face_path": "static/faces/IMG_5328_face_2.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5328.JPG",
+        "face_location": [
+            596,
+            429,
+            648,
+            377
+        ],
+        "face_path": "static/faces/IMG_5328_face_3.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5328.JPG",
+        "face_location": [
+            521,
+            237,
+            564,
+            194
+        ],
+        "face_path": "static/faces/IMG_5328_face_4.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5356.JPG",
+        "face_location": [
+            152,
+            736,
+            259,
+            629
+        ],
+        "face_path": "static/faces/IMG_5356_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5356.JPG",
+        "face_location": [
+            206,
+            583,
+            295,
+            494
+        ],
+        "face_path": "static/faces/IMG_5356_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5356.JPG",
+        "face_location": [
+            435,
+            802,
+            524,
+            713
+        ],
+        "face_path": "static/faces/IMG_5356_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5356.JPG",
+        "face_location": [
+            403,
+            453,
+            478,
+            378
+        ],
+        "face_path": "static/faces/IMG_5356_face_3.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5356.JPG",
+        "face_location": [
+            325,
+            1091,
+            415,
+            1001
+        ],
+        "face_path": "static/faces/IMG_5356_face_4.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5326.JPG",
+        "face_location": [
+            378,
+            584,
+            429,
+            533
+        ],
+        "face_path": "static/faces/IMG_5326_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5326.JPG",
+        "face_location": [
+            322,
+            501,
+            384,
+            439
+        ],
+        "face_path": "static/faces/IMG_5326_face_1.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5326.JPG",
+        "face_location": [
+            401,
+            314,
+            452,
+            262
+        ],
+        "face_path": "static/faces/IMG_5326_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5326.JPG",
+        "face_location": [
+            355,
+            446,
+            406,
+            394
+        ],
+        "face_path": "static/faces/IMG_5326_face_3.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5394.JPG",
+        "face_location": [
+            204,
+            546,
+            590,
+            161
+        ],
+        "face_path": "static/faces/IMG_5394_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5423.JPG",
+        "face_location": [
+            449,
+            366,
+            634,
+            180
+        ],
+        "face_path": "static/faces/IMG_5423_face_0.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5423.JPG",
+        "face_location": [
+            786,
+            365,
+            1009,
+            142
+        ],
+        "face_path": "static/faces/IMG_5423_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5423.JPG",
+        "face_location": [
+            263,
+            634,
+            449,
+            448
+        ],
+        "face_path": "static/faces/IMG_5423_face_2.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5152.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5409.JPG",
+        "face_location": [
+            391,
+            408,
+            546,
+            253
+        ],
+        "face_path": "static/faces/IMG_5409_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5409.JPG",
+        "face_location": [
+            391,
+            580,
+            546,
+            425
+        ],
+        "face_path": "static/faces/IMG_5409_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5406.JPG",
+        "face_location": [
+            612,
+            368,
+            741,
+            239
+        ],
+        "face_path": "static/faces/IMG_5406_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5406.JPG",
+        "face_location": [
+            288,
+            545,
+            442,
+            390
+        ],
+        "face_path": "static/faces/IMG_5406_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5335.JPG",
+        "face_location": [
+            96,
+            753,
+            186,
+            663
+        ],
+        "face_path": "static/faces/IMG_5335_face_0.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5335.JPG",
+        "face_location": [
+            305,
+            545,
+            460,
+            390
+        ],
+        "face_path": "static/faces/IMG_5335_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5411.JPG",
+        "face_location": [
+            475,
+            423,
+            527,
+            371
+        ],
+        "face_path": "static/faces/IMG_5411_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5370.JPG",
+        "face_location": [
+            316,
+            563,
+            539,
+            340
+        ],
+        "face_path": "static/faces/IMG_5370_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5370.JPG",
+        "face_location": [
+            201,
+            319,
+            468,
+            52
+        ],
+        "face_path": "static/faces/IMG_5370_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5338.JPG",
+        "face_location": [
+            235,
+            557,
+            343,
+            450
+        ],
+        "face_path": "static/faces/IMG_5338_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5274.JPG",
+        "face_location": [
+            325,
+            368,
+            454,
+            239
+        ],
+        "face_path": "static/faces/IMG_5274_face_0.jpg",
+        "name": "Apa"
+    },
+    {
+        "image_file": "IMG_5277.JPG",
+        "face_location": [
+            82,
+            253,
+            211,
+            124
+        ],
+        "face_path": "static/faces/IMG_5277_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5389.JPG",
+        "face_location": [
+            320,
+            438,
+            587,
+            171
+        ],
+        "face_path": "static/faces/IMG_5389_face_0.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5389.JPG",
+        "face_location": [
+            426,
+            956,
+            555,
+            827
+        ],
+        "face_path": "static/faces/IMG_5389_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5311.JPG",
+        "face_location": [
+            325,
+            304,
+            511,
+            118
+        ],
+        "face_path": "static/faces/IMG_5311_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5311.JPG",
+        "face_location": [
+            322,
+            562,
+            477,
+            408
+        ],
+        "face_path": "static/faces/IMG_5311_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5209.JPG",
+        "face_location": [
+            64,
+            390,
+            219,
+            236
+        ],
+        "face_path": "static/faces/IMG_5209_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5209.JPG",
+        "face_location": [
+            268,
+            196,
+            397,
+            67
+        ],
+        "face_path": "static/faces/IMG_5209_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5209.JPG",
+        "face_location": [
+            72,
+            876,
+            146,
+            801
+        ],
+        "face_path": "static/faces/IMG_5209_face_2.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5209.JPG",
+        "face_location": [
+            786,
+            984,
+            1009,
+            761
+        ],
+        "face_path": "static/faces/IMG_5209_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5113.JPG",
+        "face_location": [
+            357,
+            972,
+            911,
+            418
+        ],
+        "face_path": "static/faces/IMG_5113_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5308.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5561.JPG",
+        "face_location": [
+            424,
+            999,
+            475,
+            947
+        ],
+        "face_path": "static/faces/IMG_5561_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5561.JPG",
+        "face_location": [
+            433,
+            868,
+            495,
+            805
+        ],
+        "face_path": "static/faces/IMG_5561_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5561.JPG",
+        "face_location": [
+            370,
+            801,
+            445,
+            726
+        ],
+        "face_path": "static/faces/IMG_5561_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5214.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5401.JPG",
+        "face_location": [
+            304,
+            283,
+            490,
+            97
+        ],
+        "face_path": "static/faces/IMG_5401_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5342.JPG",
+        "face_location": [
+            484,
+            932,
+            574,
+            842
+        ],
+        "face_path": "static/faces/IMG_5342_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5270.JPG",
+        "face_location": [
+            311,
+            368,
+            440,
+            239
+        ],
+        "face_path": "static/faces/IMG_5270_face_0.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5270.JPG",
+        "face_location": [
+            414,
+            485,
+            522,
+            378
+        ],
+        "face_path": "static/faces/IMG_5270_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5400.JPG",
+        "face_location": [
+            379,
+            319,
+            647,
+            52
+        ],
+        "face_path": "static/faces/IMG_5400_face_0.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5400.JPG",
+        "face_location": [
+            68,
+            662,
+            291,
+            439
+        ],
+        "face_path": "static/faces/IMG_5400_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5382.JPG",
+        "face_location": [
+            211,
+            497,
+            340,
+            368
+        ],
+        "face_path": "static/faces/IMG_5382_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5382.JPG",
+        "face_location": [
+            304,
+            448,
+            490,
+            262
+        ],
+        "face_path": "static/faces/IMG_5382_face_1.jpg",
+        "name": "Gyula"
+    },
+    {
+        "image_file": "IMG_5378.JPG",
+        "face_location": [
+            420,
+            560,
+            495,
+            486
+        ],
+        "face_path": "static/faces/IMG_5378_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5378.JPG",
+        "face_location": [
+            495,
+            320,
+            569,
+            245
+        ],
+        "face_path": "static/faces/IMG_5378_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5211.JPG",
+        "face_location": [
+            260,
+            498,
+            528,
+            230
+        ],
+        "face_path": "static/faces/IMG_5211_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5368.JPG",
+        "face_location": [
+            219,
+            562,
+            374,
+            408
+        ],
+        "face_path": "static/faces/IMG_5368_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5368.JPG",
+        "face_location": [
+            340,
+            354,
+            469,
+            225
+        ],
+        "face_path": "static/faces/IMG_5368_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5344.JPG",
+        "face_location": [
+            186,
+            325,
+            275,
+            235
+        ],
+        "face_path": "static/faces/IMG_5344_face_0.jpg",
+        "name": "Apa"
+    },
+    {
+        "image_file": "IMG_5349.JPG",
+        "face_location": [
+            219,
+            734,
+            374,
+            580
+        ],
+        "face_path": "static/faces/IMG_5349_face_0.jpg",
+        "name": "Apa"
+    },
+    {
+        "image_file": "IMG_5349.JPG",
+        "face_location": [
+            311,
+            1113,
+            440,
+            984
+        ],
+        "face_path": "static/faces/IMG_5349_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5349.JPG",
+        "face_location": [
+            385,
+            325,
+            474,
+            235
+        ],
+        "face_path": "static/faces/IMG_5349_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5422.JPG",
+        "face_location": [
+            377,
+            446,
+            440,
+            384
+        ],
+        "face_path": "static/faces/IMG_5422_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5422.JPG",
+        "face_location": [
+            305,
+            563,
+            395,
+            474
+        ],
+        "face_path": "static/faces/IMG_5422_face_1.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5359.JPG",
+        "face_location": [
+            502,
+            598,
+            564,
+            536
+        ],
+        "face_path": "static/faces/IMG_5359_face_0.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5415.JPG",
+        "face_location": [
+            461,
+            418,
+            846,
+            33
+        ],
+        "face_path": "static/faces/IMG_5415_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5415.JPG",
+        "face_location": [
+            498,
+            735,
+            766,
+            468
+        ],
+        "face_path": "static/faces/IMG_5415_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5352.JPG",
+        "face_location": [
+            391,
+            598,
+            453,
+            536
+        ],
+        "face_path": "static/faces/IMG_5352_face_0.jpg",
+        "name": "Bia"
+    },
+    {
+        "image_file": "IMG_5352.JPG",
+        "face_location": [
+            395,
+            458,
+            447,
+            406
+        ],
+        "face_path": "static/faces/IMG_5352_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5352.JPG",
+        "face_location": [
+            593,
+            280,
+            636,
+            237
+        ],
+        "face_path": "static/faces/IMG_5352_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5352.JPG",
+        "face_location": [
+            474,
+            421,
+            510,
+            385
+        ],
+        "face_path": "static/faces/IMG_5352_face_3.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5347.JPG",
+        "face_location": [
+            407,
+            283,
+            593,
+            97
+        ],
+        "face_path": "static/faces/IMG_5347_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_4938.JPG",
+        "face_location": [
+            313,
+            455,
+            634,
+            134
+        ],
+        "face_path": "static/faces/IMG_4938_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5413.JPG",
+        "face_location": [
+            354,
+            798,
+            1020,
+            132
+        ],
+        "face_path": "static/faces/IMG_5413_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5413.JPG",
+        "face_location": [
+            172,
+            1342,
+            726,
+            788
+        ],
+        "face_path": "static/faces/IMG_5413_face_1.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5212.JPG",
+        "face_location": [
+            384,
+            633,
+            705,
+            312
+        ],
+        "face_path": "static/faces/IMG_5212_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "CEA4EDFB-710F-47D4-A33C-0256DD977F99.png",
+        "face_location": [
+            206,
+            872,
+            872,
+            206
+        ],
+        "face_path": "static/faces/CEA4EDFB-710F-47D4-A33C-0256DD977F99_face_0.jpg",
+        "name": "Viki"
+    },
+    {
+        "image_file": "IMG_5351.JPG",
+        "face_location": [
+            641,
+            338,
+            684,
+            295
+        ],
+        "face_path": "static/faces/IMG_5351_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5351.JPG",
+        "face_location": [
+            406,
+            492,
+            458,
+            440
+        ],
+        "face_path": "static/faces/IMG_5351_face_1.jpg",
+        "name": "Máté"
+    },
+    {
+        "image_file": "IMG_5351.JPG",
+        "face_location": [
+            395,
+            590,
+            447,
+            538
+        ],
+        "face_path": "static/faces/IMG_5351_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5351.JPG",
+        "face_location": [
+            450,
+            417,
+            486,
+            381
+        ],
+        "face_path": "static/faces/IMG_5351_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_4952.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5341.JPG",
+        "face_location": [
+            322,
+            562,
+            477,
+            408
+        ],
+        "face_path": "static/faces/IMG_5341_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5219.JPG",
+        "face_location": [
+            182,
+            368,
+            311,
+            239
+        ],
+        "face_path": "static/faces/IMG_5219_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5219.JPG",
+        "face_location": [
+            425,
+            614,
+            580,
+            459
+        ],
+        "face_path": "static/faces/IMG_5219_face_1.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5380.JPG",
+        "face_location": [
+            374,
+            425,
+            528,
+            270
+        ],
+        "face_path": "static/faces/IMG_5380_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5398.JPG",
+        "face_location": [
+            350,
+            557,
+            617,
+            290
+        ],
+        "face_path": "static/faces/IMG_5398_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5398.JPG",
+        "face_location": [
+            449,
+            262,
+            634,
+            77
+        ],
+        "face_path": "static/faces/IMG_5398_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5309.JPG",
+        "face_location": [
+            307,
+            402,
+            414,
+            294
+        ],
+        "face_path": "static/faces/IMG_5309_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5309.JPG",
+        "face_location": [
+            285,
+            573,
+            375,
+            484
+        ],
+        "face_path": "static/faces/IMG_5309_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5322.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5362.JPG",
+        "face_location": [
+            449,
+            262,
+            634,
+            77
+        ],
+        "face_path": "static/faces/IMG_5362_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5377.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5402.JPG",
+        "face_location": [
+            365,
+            538,
+            588,
+            315
+        ],
+        "face_path": "static/faces/IMG_5402_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5331.JPG",
+        "face_location": [
+            285,
+            504,
+            375,
+            414
+        ],
+        "face_path": "static/faces/IMG_5331_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5331.JPG",
+        "face_location": [
+            139,
+            468,
+            268,
+            339
+        ],
+        "face_path": "static/faces/IMG_5331_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5314.JPG",
+        "face_location": [
+            284,
+            324,
+            469,
+            139
+        ],
+        "face_path": "static/faces/IMG_5314_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5314.JPG",
+        "face_location": [
+            411,
+            411,
+            540,
+            282
+        ],
+        "face_path": "static/faces/IMG_5314_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5375.JPG",
+        "face_location": [
+            484,
+            782,
+            574,
+            693
+        ],
+        "face_path": "static/faces/IMG_5375_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5375.JPG",
+        "face_location": [
+            464,
+            1101,
+            554,
+            1011
+        ],
+        "face_path": "static/faces/IMG_5375_face_1.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5375.JPG",
+        "face_location": [
+            529,
+            930,
+            592,
+            868
+        ],
+        "face_path": "static/faces/IMG_5375_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5375.JPG",
+        "face_location": [
+            420,
+            428,
+            495,
+            353
+        ],
+        "face_path": "static/faces/IMG_5375_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5395.JPG",
+        "face_location": [
+            455,
+            1311,
+            776,
+            990
+        ],
+        "face_path": "static/faces/IMG_5395_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5395.JPG",
+        "face_location": [
+            418,
+            974,
+            804,
+            589
+        ],
+        "face_path": "static/faces/IMG_5395_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5395.JPG",
+        "face_location": [
+            313,
+            598,
+            634,
+            277
+        ],
+        "face_path": "static/faces/IMG_5395_face_2.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5327.JPG",
+        "name": "arc_nélkül"
+    },
+    {
+        "image_file": "IMG_5369.JPG",
+        "face_location": [
+            211,
+            709,
+            274,
+            646
+        ],
+        "face_path": "static/faces/IMG_5369_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5369.JPG",
+        "face_location": [
+            260,
+            529,
+            322,
+            467
+        ],
+        "face_path": "static/faces/IMG_5369_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5369.JPG",
+        "face_location": [
+            617,
+            557,
+            885,
+            290
+        ],
+        "face_path": "static/faces/IMG_5369_face_2.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5369.JPG",
+        "face_location": [
+            155,
+            884,
+            229,
+            809
+        ],
+        "face_path": "static/faces/IMG_5369_face_3.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5303.JPG",
+        "face_location": [
+            262,
+            919,
+            314,
+            867
+        ],
+        "face_path": "static/faces/IMG_5303_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5303.JPG",
+        "face_location": [
+            246,
+            515,
+            308,
+            453
+        ],
+        "face_path": "static/faces/IMG_5303_face_1.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5303.JPG",
+        "face_location": [
+            605,
+            923,
+            668,
+            861
+        ],
+        "face_path": "static/faces/IMG_5303_face_2.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5303.JPG",
+        "face_location": [
+            519,
+            444,
+            594,
+            370
+        ],
+        "face_path": "static/faces/IMG_5303_face_3.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5303.JPG",
+        "face_location": [
+            384,
+            660,
+            446,
+            598
+        ],
+        "face_path": "static/faces/IMG_5303_face_4.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            150,
+            992,
+            305,
+            838
+        ],
+        "face_path": "static/faces/IMG_5363_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            150,
+            287,
+            305,
+            132
+        ],
+        "face_path": "static/faces/IMG_5363_face_1.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            65,
+            1058,
+            108,
+            1015
+        ],
+        "face_path": "static/faces/IMG_5363_face_2.jpg",
+        "name": "Ismeretlen"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            74,
+            1165,
+            110,
+            1129
+        ],
+        "face_path": "static/faces/IMG_5363_face_3.jpg",
+        "name": "Ivett"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            511,
+            1150,
+            696,
+            964
+        ],
+        "face_path": "static/faces/IMG_5363_face_4.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5363.JPG",
+        "face_location": [
+            235,
+            629,
+            343,
+            521
+        ],
+        "face_path": "static/faces/IMG_5363_face_5.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5318.JPG",
+        "face_location": [
+            752,
+            406,
+            804,
+            354
+        ],
+        "face_path": "static/faces/IMG_5318_face_0.jpg",
+        "name": "Larkó"
+    },
+    {
+        "image_file": "IMG_5346.JPG",
+        "face_location": [
+            168,
+            511,
+            297,
+            382
+        ],
+        "face_path": "static/faces/IMG_5346_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5346.JPG",
+        "face_location": [
+            268,
+            755,
+            397,
+            626
+        ],
+        "face_path": "static/faces/IMG_5346_face_1.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5564.JPG",
+        "face_location": [
+            408,
+            339,
+            563,
+            184
+        ],
+        "face_path": "static/faces/IMG_5564_face_0.jpg",
+        "name": "Norisz"
+    },
+    {
+        "image_file": "IMG_5405.JPG",
+        "face_location": [
+            270,
+            356,
+            425,
+            201
+        ],
+        "face_path": "static/faces/IMG_5405_face_0.jpg",
+        "name": "Anya"
+    },
+    {
+        "image_file": "IMG_5405.JPG",
+        "face_location": [
+            184,
+            494,
+            339,
+            339
+        ],
+        "face_path": "static/faces/IMG_5405_face_1.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5384.JPG",
+        "face_location": [
+            587,
+            973,
+            855,
+            706
+        ],
+        "face_path": "static/faces/IMG_5384_face_0.jpg",
+        "name": "Bogi"
+    },
+    {
+        "image_file": "IMG_5384.JPG",
+        "face_location": [
+            333,
+            675,
+            718,
+            290
+        ],
+        "face_path": "static/faces/IMG_5384_face_1.jpg",
+        "name": "Laci"
+    },
+    {
+        "image_file": "IMG_5332.JPG",
+        "face_location": [
+            236,
+            476,
+            391,
+            322
+        ],
+        "face_path": "static/faces/IMG_5332_face_0.jpg",
+        "name": "Benett"
+    },
+    {
+        "image_file": "IMG_5312.JPG",
+        "face_location": [
+            453,
+            425,
+            516,
+            363
+        ],
+        "face_path": "static/faces/IMG_5312_face_0.jpg",
+        "name": "Benett"
     }
 ]

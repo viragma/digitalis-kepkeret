@@ -38,5 +38,5 @@ def create_app():
 
 if __name__ == '__main__':
     app = create_app()
-    # A reloader típusát 'stat'-ra állítjuk a végtelen ciklus elkerülése érdekében
-    socketio.run(app, debug=True, host='192.168.1.6', port=5010, use_reloader=True, reloader_type='stat')
+    # JAVÍTÁS: Hozzáadjuk az 'allow_unsafe_werkzeug=True' paramétert
+    socketio.run(app, debug=True, host='flows0002', port=5010, use_reloader=True, reloader_type='stat', allow_unsafe_werkzeug=True)
