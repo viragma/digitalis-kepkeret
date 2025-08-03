@@ -3,7 +3,6 @@ import os
 import sys
 import face_recognition
 import pickle
-import json
 from PIL import Image
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -51,19 +50,13 @@ def detect_new_faces():
     recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
     print(f"Felismerési tolerancia beállítva: {recognition_tolerance}")
     
-    conn = data_manager.get_db_connection()
-    cursor = conn.cursor()
-    
-    processed_images_rows = cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()
-    processed_images = {row[0] for row in processed_images_rows}
-    all_images = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
-    
-    images_to_process = all_images - processed_images
+    processed_images = data_manager.get_processed_images()
+    all_images_in_folder = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
+    images_to_process = all_images_in_folder - processed_images
 
     print(f"{len(images_to_process)} új kép vár feldolgozásra.")
     if not images_to_process:
         print("--- Ciklus vége: Nincs új kép. ---")
-        conn.close()
         return
 
     for filename in images_to_process:
@@ -71,43 +64,32 @@ def detect_new_faces():
         image_path = os.path.join(UPLOAD_FOLDER, filename)
         
         try:
-            image_record = cursor.execute('SELECT id FROM images WHERE filename = ?', (filename,)).fetchone()
-            if not image_record:
-                cursor.execute('INSERT INTO images (filename) VALUES (?)', (filename,))
-                conn.commit()
-                image_id = cursor.lastrowid
-            else:
-                image_id = image_record[0]
-
+            image_id = data_manager.get_or_create_image_id(filename)
             image_data = face_recognition.load_image_file(image_path)
             face_locations = face_recognition.face_locations(image_data)
             face_encodings = face_recognition.face_encodings(image_data, face_locations)
 
             if not face_encodings:
                 print("- Nem található arc.")
-                cursor.execute('INSERT OR IGNORE INTO faces (image_id) VALUES (?)', (image_id,))
-                conn.commit()
+                data_manager.add_no_face_record(image_id)
                 continue
             
             print(f"- {len(face_encodings)} arc található.")
             for i, face_encoding in enumerate(face_encodings):
                 distances = face_recognition.face_distance(known_data["encodings"], face_encoding)
-                
-                person_id = None
-                min_distance = 1.0
+                person_id, min_distance = None, 1.0
 
                 if len(distances) > 0:
                     min_distance = min(distances)
                     if min_distance < recognition_tolerance:
                         best_match_index = list(distances).index(min_distance)
                         name = known_data["names"][best_match_index]
-                        person_row = cursor.execute('SELECT id FROM persons WHERE name = ?', (name,)).fetchone()
-                        person_id = person_row[0] if person_row else None
+                        person_id = data_manager.get_person_id_by_name(name)
                         print(f"  - Arc #{i+1}: Felismerve mint '{name}', távolság: {min_distance:.2f}")
                     else:
                         print(f"  - Arc #{i+1}: Ismeretlen, legkisebb távolság: {min_distance:.2f}")
                 else:
-                    print(f"  - Arc #{i+1}: Ismeretlen, nincsenek tanított arcok.")
+                    print(f"  - Arc #{i+1}: Ismeretlen.")
 
                 top, right, bottom, left = face_locations[i]
                 face_image = Image.fromarray(image_data[top:bottom, left:right])
@@ -115,16 +97,11 @@ def detect_new_faces():
                 face_path = os.path.join(FACES_OUTPUT_DIR, face_filename).replace('\\', '/')
                 face_image.save(face_path)
 
-                cursor.execute("""
-                    INSERT INTO faces (image_id, person_id, face_location, face_path, distance)
-                    VALUES (?, ?, ?, ?, ?)
-                """, (image_id, person_id, json.dumps(face_locations[i]), face_path, min_distance))
-                conn.commit()
+                data_manager.add_face_to_db(image_id, person_id, face_locations[i], face_path, min_distance)
 
         except Exception as e:
             print(f"!!! Hiba a '{filename}' feldolgozása közben: {e}")
 
-    conn.close()
     print("\n--- Arcfelismerési ciklus befejezve. ---")
 
 if __name__ == '__main__':
