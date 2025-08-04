@@ -113,3 +113,27 @@ def add_no_face_record(image_id):
 def save_config(config_data):
     with open(CONFIG_JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(config_data, f, indent=4, ensure_ascii=False)
+        # --- ÚJ: Csoportosításhoz szükséges funkciók ---
+def get_unclustered_unknown_faces():
+    """Visszaadja az összes ismeretlen arcot, ami még nincs csoportosítva."""
+    conn = get_db_connection()
+    rows = conn.execute("""
+        SELECT id, face_encoding FROM faces
+        WHERE person_id IS NULL AND cluster_id IS NULL AND face_encoding IS NOT NULL
+    """).fetchall()
+    conn.close()
+    
+    faces = []
+    for row in rows:
+        faces.append({
+            "id": row['id'],
+            "encoding": np.frombuffer(row['face_encoding'])
+        })
+    return faces
+
+def update_face_cluster_id(face_id, cluster_id):
+    """Frissíti egy arc csoport azonosítóját."""
+    conn = get_db_connection()
+    conn.execute("UPDATE faces SET cluster_id = ? WHERE id = ?", (cluster_id, face_id))
+    conn.commit()
+    conn.close()
