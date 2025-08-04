@@ -28,9 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         personListContainer.innerHTML = '<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
         try {
             const response = await fetch('/api/trainer/persons');
+            if (!response.ok) throw new Error("Szerver hiba a személyek listájának lekérésekor.");
+            
             const persons = await response.json();
 
-            personListContainer.innerHTML = ''; // Töröljük a töltés jelzőt
+            personListContainer.innerHTML = '';
             persons.forEach(person => {
                 const personLink = document.createElement('a');
                 personLink.href = "#";
@@ -74,30 +76,52 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/api/trainer/person_details/${name}`);
+            if (!response.ok) throw new Error("Szerver hiba a részletek lekérésekor.");
+
             const details = await response.json();
 
-            // Fantomkép megjelenítése
             if (details.average_face_image) {
-                averageFaceContainer.innerHTML = `<img src="${details.average_face_image}?t=${new Date().getTime()}" class="img-fluid rounded">`;
+                averageFaceContainer.innerHTML = `<img src="${details.average_face_image}?t=${new Date().getTime()}" class="img-fluid rounded" alt="Átlag-arc">`;
             } else {
-                averageFaceContainer.innerHTML = '<p class="text-muted small">Nincs elég tanítókép a fantomkép generálásához.</p>';
+                averageFaceContainer.innerHTML = '<div class="p-3 text-center text-muted small">Nincs elég tanítókép a fantomkép generálásához.</div>';
             }
 
-            // Tanítóképek megjelenítése
             knownFacesGrid.innerHTML = '';
             const template = document.getElementById('trainer-face-card-template');
             if (details.training_images && details.training_images.length > 0) {
-                details.training_images.forEach(imgPath => {
+                details.training_images.forEach(imgData => {
                     const cardClone = template.content.cloneNode(true);
-                    cardClone.querySelector('img').src = imgPath;
-                    cardClone.querySelector('.quality-info').textContent = "Elemzés...";
+                    cardClone.querySelector('img').src = imgData.path;
+                    
+                    const qualityInfo = cardClone.querySelector('.quality-info');
+                    
+                    // --- JAVÍTÁS ITT: "Bombabiztos" ellenőrzés ---
+                    if (imgData && imgData.analysis) {
+                        if (imgData.analysis.error) {
+                            qualityInfo.innerHTML = `<span class="text-danger" title="${imgData.analysis.error}">Hiba</span>`;
+                        } else {
+                            const sharpness = imgData.analysis.sharpness;
+                            const sharpClass = sharpness < 50 ? 'text-danger' : (sharpness < 100 ? 'text-warning' : 'text-success');
+                            const brightness = imgData.analysis.brightness;
+                            const brightClass = brightness < 70 || brightness > 200 ? 'text-danger' : 'text-success';
+
+                            qualityInfo.innerHTML = `
+                                <span class="${sharpClass}" title="Élesség: ${sharpness}">🌫️</span>
+                                <span class="${brightClass}" title="Fényerő: ${brightness}">☀️</span>
+                            `;
+                        }
+                    } else {
+                        // Ha az 'analysis' objektum hiányzik, azt is jelezzük
+                        qualityInfo.innerHTML = `<span class="text-danger">N/A</span>`;
+                        console.warn("Hiányzó 'analysis' adat a képhez:", imgData);
+                    }
+
                     knownFacesGrid.appendChild(cardClone);
                 });
             } else {
                 knownFacesGrid.innerHTML = '<div class="col-12"><p class="text-muted">Ehhez a személyhez nincsenek tanítóképek.</p></div>';
             }
             
-            // Javaslatok megjelenítése
             if (details.suggestions && details.suggestions.length > 0) {
                 details.suggestions.forEach(suggestion => {
                     const listItem = document.createElement('li');
@@ -112,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
             knownFacesGrid.innerHTML = '<div class="col-12"><p class="text-danger">Hiba a részletek betöltésekor.</p></div>';
         }
     }
-
 
     if (trainerTabButton.classList.contains('active')) {
         initTrainerTab();

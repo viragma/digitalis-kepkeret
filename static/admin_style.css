@@ -63,3 +63,9 @@ main { padding-left: calc(var(--sidebar-width) + 24px); padding-right: 24px; }
 .confidence-score[data-level="good"] { background-color: rgba(25, 135, 84, 0.8); } /* Bootstrap zöld */
 .confidence-score[data-level="medium"] { background-color: rgba(255, 193, 7, 0.8); } /* Bootstrap sárga */
 .confidence-score[data-level="low"] { background-color: rgba(220, 53, 69, 0.8); } /* Bootstrap piros */
+#trainer-person-list .list-group-item-action {
+    transition: background-color 0.2s ease-in-out;
+}
+.quality-info span {
+    font-size: 0.9rem;
+}
