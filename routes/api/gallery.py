@@ -36,8 +36,6 @@ def get_all_images():
             filtered_filenames = {row['filename'] for row in images_with_person_rows}
         
         elif filter_status == 'no_faces':
-            # Ezt a lekérdezést át kell írni a helyes logikára, de a koncepció marad
-            # Ideiglenesen egy egyszerűbb, de nem teljesen pontos logikát használunk
             images_with_faces_rows = conn.execute("SELECT DISTINCT i.filename FROM images i JOIN faces f ON i.id = f.image_id").fetchall()
             images_with_faces = {row['filename'] for row in images_with_faces_rows}
             all_images_set = set(all_physical_files)
@@ -72,20 +70,24 @@ def get_all_images():
 @gallery_api_bp.route('/image_details/<filename>', methods=['GET'])
 def get_image_details(filename):
     conn = data_manager.get_db_connection()
+    # JAVÍTÁS: Csak a szükséges, JSON-barát oszlopokat kérdezzük le
     faces_rows = conn.execute("""
-        SELECT f.*, p.name FROM faces f
+        SELECT f.id, f.image_id, f.person_id, f.face_location, f.face_path, f.distance, p.name 
+        FROM faces f
         JOIN images i ON f.image_id = i.id
         LEFT JOIN persons p ON f.person_id = p.id
         WHERE i.filename = ?
     """, (filename,)).fetchall()
     conn.close()
     
-    # A face_location-t visszaalakítjuk listává
     faces = []
     for row in faces_rows:
         face_dict = dict(row)
         if face_dict.get('face_location'):
-            face_dict['face_location'] = json.loads(face_dict['face_location'])
+            try:
+                face_dict['face_location'] = json.loads(face_dict['face_location'])
+            except (json.JSONDecodeError, TypeError):
+                face_dict['face_location'] = None
         faces.append(face_dict)
         
     return jsonify(faces)

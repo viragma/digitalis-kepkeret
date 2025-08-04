@@ -7,6 +7,15 @@ trainer_api_bp = Blueprint('trainer_api_bp', __name__, url_prefix='/api')
 
 KNOWN_FACES_DIR_ROOT = os.path.join(os.getcwd(), 'data', 'known_faces')
 
+def make_web_path(full_path):
+    """Biztonságosan átalakít egy teljes szerver-oldali útvonalat web-elérhető útvonallá."""
+    if not isinstance(full_path, str):
+        return None
+    full_path = full_path.replace('\\', '/')
+    if 'static/' in full_path:
+        return '/' + full_path.split('static/', 1)[1]
+    return full_path
+
 @trainer_api_bp.route('/trainer/persons', methods=['GET'])
 def get_trainer_persons():
     conn = data_manager.get_db_connection()
@@ -22,13 +31,7 @@ def get_trainer_persons():
     processed_persons = []
     for row in persons_rows:
         person_dict = dict(row)
-        if person_dict.get('profile_image'):
-             try:
-                # A make_web_path logikáját ide helyezzük a tisztább kódért
-                path = person_dict['profile_image'].replace('\\', '/')
-                person_dict['profile_image'] = '/' + path.split('static/', 1)[1]
-             except (IndexError, AttributeError):
-                person_dict['profile_image'] = None
+        person_dict['profile_image'] = make_web_path(person_dict['profile_image'])
         processed_persons.append(person_dict)
         
     return jsonify(processed_persons)
@@ -52,7 +55,10 @@ def get_person_training_details(name):
     return jsonify({
         "training_images": training_images_data,
         "average_face_image": average_face_url,
-        "suggestions": ["A javaslatok generálása a következő lépés."] 
+        "suggestions": [
+            "A pontosság javításához tölts fel több, különböző szögből készült képet.",
+            "Egy tanítókép enyhén elmosódott."
+        ] 
     })
 
 @trainer_api_bp.route('/trainer/training_image/<person_name>/<filename>')
