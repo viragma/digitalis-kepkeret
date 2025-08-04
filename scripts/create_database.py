@@ -13,6 +13,9 @@ def create_database():
     """
     if os.path.exists(DB_PATH):
         print(f"Az adatbázis már létezik itt: {DB_PATH}")
+        # Itt lehetne bővíteni a logikát, hogy ellenőrizze és hozzáadja a hiányzó oszlopokat,
+        # de a tiszta megoldás az, ha a fejlesztés ezen fázisában töröljük és újra létrehozzuk.
+        print("A folytatáshoz a régi adatbázist törölni kell. Futtasd a 'reset_database.py'-t, ha létezik, vagy töröld manuálisan a 'data/database.db' fájlt.")
         return
 
     print("Adatbázis létrehozása...")
@@ -33,8 +36,7 @@ def create_database():
             is_active BOOLEAN DEFAULT 1,
             color_tag TEXT,
             average_encoding BLOB,
-            custom_tolerance REAL,
-            FOREIGN KEY (profile_face_id) REFERENCES faces (id)
+            custom_tolerance REAL
         )
         ''')
         print("- 'persons' tábla létrehozva.")
@@ -60,7 +62,7 @@ def create_database():
         ''')
         print("- 'images' tábla létrehozva.")
 
-        # --- faces tábla ---
+        # --- faces tábla (BŐVÍTVE) ---
         cursor.execute('''
         CREATE TABLE faces (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,11 +74,12 @@ def create_database():
             is_manual BOOLEAN DEFAULT 0,
             is_confirmed BOOLEAN DEFAULT 0,
             cluster_id INTEGER,
-            FOREIGN KEY (image_id) REFERENCES images (id),
-            FOREIGN KEY (person_id) REFERENCES persons (id)
+            face_encoding BLOB,  -- ÚJ OSZLOP
+            FOREIGN KEY (image_id) REFERENCES images (id) ON DELETE CASCADE,
+            FOREIGN KEY (person_id) REFERENCES persons (id) ON DELETE SET NULL
         )
         ''')
-        print("- 'faces' tábla létrehozva.")
+        print("- 'faces' tábla létrehozva az új oszlopokkal.")
 
         conn.commit()
         conn.close()

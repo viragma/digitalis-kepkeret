@@ -9,24 +9,18 @@ DB_PATH = os.path.join(PROJECT_ROOT, 'data', 'database.db')
 CONFIG_JSON_PATH = os.path.join(PROJECT_ROOT, 'data', 'config.json')
 
 def get_db_connection():
-    """Létrehoz egy kapcsolatot az adatbázissal."""
     conn = sqlite3.connect(DB_PATH)
-    # Ez a beállítás teszi lehetővé, hogy oszlopnevek szerint hivatkozzunk az adatokra,
-    # ami megelőzi a 'tuple indices' hibát.
     conn.row_factory = sqlite3.Row 
     return conn
 
 # --- Olvasó Funkciók ---
-
 def get_persons():
-    """Visszaadja az összes aktív személyt az adatbázisból, a program által várt szótár formátumban."""
     conn = get_db_connection()
     persons_rows = conn.execute('SELECT * FROM persons WHERE is_active = 1 ORDER BY name').fetchall()
     conn.close()
     return {row['name']: dict(row) for row in persons_rows}
 
 def get_faces():
-    """Visszaadja az összes arc adatát az adatbázisból, a régi JSON-hoz hasonló formátumban."""
     conn = get_db_connection()
     faces_rows = conn.execute("""
         SELECT f.id, f.image_id, f.person_id, f.face_location, f.face_path, f.distance,
@@ -36,7 +30,6 @@ def get_faces():
         LEFT JOIN persons p ON f.person_id = p.id
     """).fetchall()
     conn.close()
-    
     faces_list = []
     for row in faces_rows:
         face_dict = dict(row)
@@ -49,15 +42,12 @@ def get_faces():
     return faces_list
 
 def get_config():
-    """Beolvassa a konfigurációs JSON fájlt."""
     try:
         with open(CONFIG_JSON_PATH, 'r', encoding='utf-8') as f:
             return json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return {}
+    except (FileNotFoundError, json.JSONDecodeError): return {}
 
 def get_todays_birthday_person():
-    """Megkeresi, hogy van-e ma születésnapos."""
     conn = get_db_connection()
     persons = conn.execute("SELECT name, birthday FROM persons WHERE is_active = 1").fetchall()
     conn.close()
@@ -74,7 +64,6 @@ def get_todays_birthday_person():
     return None
 
 # --- Arcfelismerő Segédfüggvények ---
-
 def get_processed_images():
     """Visszaadja a már feldolgozott képek fájlneveinek halmazát."""
     conn = get_db_connection()
@@ -103,27 +92,24 @@ def get_person_id_by_name(name):
     conn.close()
     return person_row['id'] if person_row else None
 
-def add_face_to_db(image_id, person_id, location, path, distance):
-    """Elment egyetlen új arcot az adatbázisba."""
+def add_face_to_db(image_id, person_id, location, path, distance, encoding_bytes):
+    """Elment egyetlen új arcot az adatbázisba, az arclenyomattal együtt."""
     conn = get_db_connection()
     conn.execute("""
-        INSERT INTO faces (image_id, person_id, face_location, face_path, distance)
-        VALUES (?, ?, ?, ?, ?)
-    """, (image_id, person_id, json.dumps(location), path, distance))
+        INSERT INTO faces (image_id, person_id, face_location, face_path, distance, face_encoding)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (image_id, person_id, json.dumps(location), path, distance, encoding_bytes))
     conn.commit()
     conn.close()
 
 def add_no_face_record(image_id):
     """Bejegyzést hoz létre arról, hogy egy képen nem található arc."""
     conn = get_db_connection()
-    # Az 'arc_nélkül' egy speciális állapot, a person_id NULL marad
     conn.execute('INSERT OR IGNORE INTO faces (image_id) VALUES (?)', (image_id,))
     conn.commit()
     conn.close()
 
 # --- Író Funkciók (Admin felülethez) ---
-
 def save_config(config_data):
-    """Elmenti a konfigurációs JSON fájlt."""
     with open(CONFIG_JSON_PATH, 'w', encoding='utf-8') as f:
         json.dump(config_data, f, indent=4, ensure_ascii=False)

@@ -17,6 +17,7 @@ idna==3.10
 ImageHash==4.3.2
 itsdangerous==2.2.0
 Jinja2==3.1.6
+joblib==1.5.1
 MarkupSafe==3.0.2
 numpy==2.2.6
 opencv-python==4.12.0.88
@@ -28,10 +29,12 @@ python-engineio==4.12.2
 python-socketio==5.13.0
 PyWavelets==1.8.0
 requests==2.32.4
+scikit-learn==1.7.1
 scipy==1.16.1
 setuptools==80.9.0
 simple-websocket==1.1.0
 six==1.17.0
+threadpoolctl==3.6.0
 tinydb==4.8.2
 urllib3==2.5.0
 watchdog==6.0.0
