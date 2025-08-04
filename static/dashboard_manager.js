@@ -59,20 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('stat-known-persons').textContent = stats.known_persons;
             document.getElementById('stat-recognized-faces').textContent = stats.recognized_faces;
             document.getElementById('stat-unknown-faces').textContent = stats.unknown_faces;
-
-            const latestImagesContainer = document.getElementById('latest-images-container');
-            if (latestImagesContainer) {
-                if (stats.latest_images && stats.latest_images.length > 0) {
-                    let html = '<div class="row row-cols-5 g-2">';
-                    stats.latest_images.forEach(filename => {
-                        html += `<div class="col"><img src="/static/images/${filename}" class="img-fluid rounded"></div>`;
-                    });
-                    html += '</div>';
-                    latestImagesContainer.innerHTML = html;
-                } else {
-                    latestImagesContainer.innerHTML = '<p class="text-muted">Nincsenek feltöltött képek.</p>';
-                }
-            }
+            
+            // A latest_images konténer már nem része a dashboardnak, így ezt a részt törölhetjük vagy kikommentezhetjük
+            // const latestImagesContainer = document.getElementById('latest-images-container'); ...
 
             if (stats.model_stats) {
                 const trainingStatsList = document.getElementById('model-training-stats');

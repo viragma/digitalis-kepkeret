@@ -1,6 +1,43 @@
 /* static/admin_style.css */
 :root { --sidebar-width: 280px; }
 body { font-size: .875rem; background-color: #212529; }
+
+/* ÚJ: Login oldal stílusai */
+.login-page-body {
+    background-color: #111; /* Sötét alap háttér */
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.login-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* A háttérben van */
+}
+.login-container {
+    max-width: 400px;
+    width: 100%;
+    z-index: 1; /* A vászon felett van */
+}
+.login-card {
+    padding: 2rem;
+    border-radius: 15px;
+    background: rgba(33, 37, 41, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: box-shadow 0.3s ease-in-out;
+}
+.login-card:has(input:focus) {
+    box-shadow: 0 0 20px rgba(13, 110, 253, 0.5);
+}
+
+/* --- Normál admin felület stílusai --- */
 .sidebar { position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; padding: 48px 0 0; box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1); width: var(--sidebar-width); }
 .nav-link { color: #c4c4c4; margin: 0.25rem 1rem; border-radius: .25rem; }
 .nav-link:hover, .nav-link.active { color: #fff; background-color: #0d6efd; }
@@ -47,48 +84,23 @@ main { padding-left: calc(var(--sidebar-width) + 24px); padding-right: 24px; }
 #latest-images-container .row { max-height: 200px; overflow-y: auto; }
 #latest-images-container img { aspect-ratio: 1 / 1; object-fit: cover; }
 .accordion.disabled { opacity: 0.5; pointer-events: none; }
+.confidence-score { position: absolute; top: 5px; left: 5px; padding: 2px 6px; font-size: 0.75rem; font-weight: bold; color: white; border-radius: .25rem; text-shadow: 0 1px 1px rgba(0,0,0,0.5); }
+.confidence-score[data-level="good"] { background-color: rgba(25, 135, 84, 0.8); }
+.confidence-score[data-level="medium"] { background-color: rgba(255, 193, 7, 0.8); }
+.confidence-score[data-level="low"] { background-color: rgba(220, 53, 69, 0.8); }
 
-/* ÚJ: Konfidencia Pontszám Stílusa */
-.confidence-score {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    padding: 2px 6px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    color: white;
-    border-radius: .25rem;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
-}
-.confidence-score[data-level="good"] { background-color: rgba(25, 135, 84, 0.8); } /* Bootstrap zöld */
-.confidence-score[data-level="medium"] { background-color: rgba(255, 193, 7, 0.8); } /* Bootstrap sárga */
-.confidence-score[data-level="low"] { background-color: rgba(220, 53, 69, 0.8); } /* Bootstrap piros */
-#trainer-person-list .list-group-item-action {
-    transition: background-color 0.2s ease-in-out;
-}
-.quality-info span {
-    font-size: 0.9rem;
-}
-#latest-images-container .row {
-    max-height: 200px;
-    overflow-y: auto;
-}
-#latest-images-container img {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-}
-
+/* ÚJ: Modell Státusz stílusok */
 .confidence-bar {
     height: 10px;
     border-radius: 5px;
     background-color: #555;
-    overflow: hidden; /* Biztosítja, hogy a belső sáv is lekerekített maradjon */
+    overflow: hidden;
 }
 .confidence-bar-inner {
     height: 100%;
     border-radius: 5px;
     transition: width 0.5s ease-in-out;
 }
-.confidence-bar-inner.good { background-color: #198754; } /* zöld */
-.confidence-bar-inner.medium { background-color: #ffc107; } /* sárga */
-.confidence-bar-inner.low { background-color: #dc3545; } /* piros */
+.confidence-bar-inner.good { background-color: #198754; }
+.confidence-bar-inner.medium { background-color: #ffc107; }
+.confidence-bar-inner.low { background-color: #dc3545; }

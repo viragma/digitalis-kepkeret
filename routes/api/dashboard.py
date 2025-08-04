@@ -47,7 +47,7 @@ def get_dashboard_stats():
         unknown_faces = conn.execute('SELECT COUNT(id) FROM faces WHERE person_id IS NULL').fetchone()[0]
         latest_images_rows = conn.execute('SELECT filename FROM images ORDER BY id DESC LIMIT 5').fetchall()
         
-        # --- ÚJ: Modell Státusz Adatok ---
+        # Modell Státusz Adatok
         known_faces_dir = os.path.join(os.getcwd(), 'data', 'known_faces')
         total_training_images = sum([len(files) for r, d, files in os.walk(known_faces_dir)])
         
@@ -102,16 +102,11 @@ def get_dashboard_stats():
 def retrain_model():
     """ Törli a régi tanítási cache-t és elindítja az újratanítást. """
     try:
-        encodings_cache_path = os.path.join(os.getcwd(), 'data', 'known_encodings.pkl')
-        if os.path.exists(encodings_cache_path):
-            os.remove(encodings_cache_path)
-            print("Régi tanítási cache törölve.")
-        
         python_executable = sys.executable
-        script_path = os.path.join(os.getcwd(), 'scripts', 'detect_faces.py')
-        if not os.path.exists(script_path): return jsonify({"status": "error", "message": "A detect_faces.py script nem található."}), 404
+        script_path = os.path.join(os.getcwd(), 'scripts', 'train_model.py') # A helyes scriptet hívjuk
+        if not os.path.exists(script_path): return jsonify({"status": "error", "message": "A train_model.py script nem található."}), 404
         
-        subprocess.Popen([python_executable, script_path, "--force-retrain"])
+        subprocess.Popen([python_executable, script_path])
         event_logger.log_event("Modell újratanítása manuálisan elindítva.")
         return jsonify({"status": "success", "message": "Modell újratanítása elindítva a háttérben."})
     except Exception as e:
