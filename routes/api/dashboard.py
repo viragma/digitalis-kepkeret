@@ -5,7 +5,7 @@ import subprocess
 import sys
 import psutil
 import pickle
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from services import data_manager, event_logger
 from extensions import socketio
 from datetime import datetime
@@ -38,22 +38,31 @@ def get_event_log():
 
 @dashboard_api_bp.route('/dashboard_stats', methods=['GET'])
 def get_dashboard_stats():
+    """ Összegyűjti a statikus adatokat a műszerfalhoz. """
     try:
         conn = data_manager.get_db_connection()
         total_images = conn.execute('SELECT COUNT(id) FROM images').fetchone()[0]
         known_persons = conn.execute('SELECT COUNT(id) FROM persons WHERE is_active = 1').fetchone()[0]
         recognized_faces = conn.execute('SELECT COUNT(id) FROM faces WHERE person_id IS NOT NULL').fetchone()[0]
         unknown_faces = conn.execute('SELECT COUNT(id) FROM faces WHERE person_id IS NULL').fetchone()[0]
-        
         latest_images_rows = conn.execute('SELECT filename FROM images ORDER BY id DESC LIMIT 5').fetchall()
         
+        # --- ÚJ: Modell Státusz Adatok ---
         known_faces_dir = os.path.join(os.getcwd(), 'data', 'known_faces')
         total_training_images = sum([len(files) for r, d, files in os.walk(known_faces_dir)])
         
         encodings_cache_path = os.path.join(os.getcwd(), 'data', 'known_encodings.pkl')
-        last_training_time = None
+        last_training_time, retrain_needed = None, True
         if os.path.exists(encodings_cache_path):
-            last_training_time = datetime.fromtimestamp(os.path.getmtime(encodings_cache_path)).strftime('%Y-%m-%d %H:%M:%S')
+            cache_mod_time = os.path.getmtime(encodings_cache_path)
+            last_training_time = datetime.fromtimestamp(cache_mod_time).strftime('%Y-%m-%d %H:%M:%S')
+            retrain_needed = False
+            for r, d, files in os.walk(known_faces_dir):
+                for file in files:
+                    if os.path.getmtime(os.path.join(r, file)) > cache_mod_time:
+                        retrain_needed = True
+                        break
+                if retrain_needed: break
 
         confidence_rows = conn.execute("""
             SELECT p.name, AVG(f.distance) as avg_distance, COUNT(f.id) as face_count
@@ -62,7 +71,6 @@ def get_dashboard_stats():
             WHERE p.is_active = 1 AND f.distance IS NOT NULL AND f.is_manual = 0
             GROUP BY p.name
         """).fetchall()
-        
         conn.close()
 
         confidence_data = []
@@ -77,19 +85,37 @@ def get_dashboard_stats():
         latest_images = [row['filename'] for row in latest_images_rows]
 
         return jsonify({
-            "total_images": total_images,
-            "known_persons": known_persons,
-            "recognized_faces": recognized_faces,
-            "unknown_faces": unknown_faces,
+            "total_images": total_images, "known_persons": known_persons,
+            "recognized_faces": recognized_faces, "unknown_faces": unknown_faces,
             "latest_images": latest_images,
             "model_stats": {
                 "total_training_images": total_training_images,
                 "last_training_time": last_training_time,
+                "retrain_needed": retrain_needed,
                 "confidence_data": sorted(confidence_data, key=lambda x: x['confidence'], reverse=True)
             }
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@dashboard_api_bp.route('/retrain_model', methods=['POST'])
+def retrain_model():
+    """ Törli a régi tanítási cache-t és elindítja az újratanítást. """
+    try:
+        encodings_cache_path = os.path.join(os.getcwd(), 'data', 'known_encodings.pkl')
+        if os.path.exists(encodings_cache_path):
+            os.remove(encodings_cache_path)
+            print("Régi tanítási cache törölve.")
+        
+        python_executable = sys.executable
+        script_path = os.path.join(os.getcwd(), 'scripts', 'detect_faces.py')
+        if not os.path.exists(script_path): return jsonify({"status": "error", "message": "A detect_faces.py script nem található."}), 404
+        
+        subprocess.Popen([python_executable, script_path, "--force-retrain"])
+        event_logger.log_event("Modell újratanítása manuálisan elindítva.")
+        return jsonify({"status": "success", "message": "Modell újratanítása elindítva a háttérben."})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @dashboard_api_bp.route('/system_stats', methods=['GET'])
 def get_system_stats():

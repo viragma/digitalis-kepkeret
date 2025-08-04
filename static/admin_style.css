@@ -69,13 +69,20 @@ main { padding-left: calc(var(--sidebar-width) + 24px); padding-right: 24px; }
 .quality-info span {
     font-size: 0.9rem;
 }
-#latest-images-container .row { max-height: 200px; overflow-y: auto; }
-#latest-images-container img { aspect-ratio: 1 / 1; object-fit: cover; }
+#latest-images-container .row {
+    max-height: 200px;
+    overflow-y: auto;
+}
+#latest-images-container img {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
 
 .confidence-bar {
     height: 10px;
     border-radius: 5px;
     background-color: #555;
+    overflow: hidden; /* Biztosítja, hogy a belső sáv is lekerekített maradjon */
 }
 .confidence-bar-inner {
     height: 100%;

@@ -79,7 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const confidenceList = document.getElementById('model-confidence-list');
 
                 if (trainingStatsList) {
+                    let retrainStatusHTML = stats.model_stats.retrain_needed 
+                        ? '<span class="badge bg-danger">Újratanítás szükséges</span>' 
+                        : '<span class="badge bg-success">Naprakész</span>';
+
                     trainingStatsList.innerHTML = `
+                        <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">Modell állapota: ${retrainStatusHTML}</li>
                         <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">Ismert személyek száma: <span class="badge bg-primary rounded-pill">${stats.known_persons}</span></li>
                         <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">Összes tanítókép: <span class="badge bg-primary rounded-pill">${stats.model_stats.total_training_images}</span></li>
                         <li class="list-group-item bg-transparent d-flex justify-content-between align-items-center">Utolsó tanítás: <span class="badge bg-secondary rounded-pill">${stats.model_stats.last_training_time || 'Soha'}</span></li>
@@ -109,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         confidenceList.innerHTML = confidenceHTML;
                     } else {
-                        confidenceList.innerHTML = '<p class="text-muted">Még nincsenek adatok. Futtasd az arcfelismerést a statisztikák generálásához.</p>';
+                        confidenceList.innerHTML = '<p class="text-muted">Még nincsenek adatok a felismerési pontosságról. Futtasd az arcfelismerést a statisztikák generálásához.</p>';
                     }
                 }
             }
@@ -124,32 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
         isInitialized = true;
         
         const runDetectionBtn = document.getElementById('run-detection-btn');
+        const retrainBtn = document.getElementById('retrain-model-btn');
+        
         if (runDetectionBtn) {
-            runDetectionBtn.addEventListener('click', async () => {
-                if (!confirm('Biztosan elindítod az arcfelismerést az összes új képen?')) return;
-                const spinner = runDetectionBtn.querySelector('.spinner-border');
-                const icon = runDetectionBtn.querySelector('.bi');
-                spinner.classList.remove('d-none');
-                icon.classList.add('d-none');
-                runDetectionBtn.disabled = true;
-                try {
-                    const response = await fetch('/api/run_face_detection', { method: 'POST' });
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        showToast(result.message, 'success');
-                    } else {
-                        showToast(result.message, 'danger');
-                    }
-                } catch (error) {
-                    showToast('Hiba történt a script indításakor.', 'danger');
-                } finally {
-                    setTimeout(() => {
-                        spinner.classList.add('d-none');
-                        icon.classList.remove('d-none');
-                        runDetectionBtn.disabled = false;
-                    }, 5000);
-                }
-            });
+            runDetectionBtn.addEventListener('click', () => handleScriptRun(runDetectionBtn, '/api/run_face_detection', 'Biztosan elindítod az arcfelismerést az összes új képen?'));
+        }
+        if (retrainBtn) {
+            retrainBtn.addEventListener('click', () => handleScriptRun(retrainBtn, '/api/retrain_model', 'Biztosan újraépíted a tanítási adatbázist? Ez eltarthat egy ideig.'));
         }
 
         loadStaticDashboardData();
@@ -159,6 +145,34 @@ document.addEventListener('DOMContentLoaded', () => {
         eventLogInterval = setInterval(updateEventLog, 10000);
     };
     
+    async function handleScriptRun(button, endpoint, confirmMessage) {
+        if (!confirm(confirmMessage)) return;
+        
+        const spinner = button.querySelector('.spinner-border');
+        const icon = button.querySelector('.bi');
+        spinner.classList.remove('d-none');
+        icon.classList.add('d-none');
+        button.disabled = true;
+
+        try {
+            const response = await fetch(endpoint, { method: 'POST' });
+            const result = await response.json();
+            if (result.status === 'success') {
+                showToast(result.message, 'success');
+            } else {
+                showToast(result.message, 'danger');
+            }
+        } catch (error) {
+            showToast('Hiba történt a script indításakor.', 'danger');
+        } finally {
+            setTimeout(() => {
+                spinner.classList.add('d-none');
+                icon.classList.remove('d-none');
+                button.disabled = false;
+            }, 5000);
+        }
+    }
+
     const stopDashboardUpdates = () => {
         clearInterval(systemStatsInterval);
         clearInterval(eventLogInterval);
