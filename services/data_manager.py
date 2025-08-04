@@ -3,6 +3,7 @@ import sqlite3
 import os
 import json
 from datetime import datetime
+import numpy as np
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DB_PATH = os.path.join(PROJECT_ROOT, 'data', 'database.db')
@@ -63,7 +64,7 @@ def get_todays_birthday_person():
             continue
     return None
 
-# --- Arcfelismerő Segédfüggvények ---
+# --- Arcfelismerő és Csoportosító Segédfüggvények ---
 def get_processed_images():
     """Visszaadja a már feldolgozott képek fájlneveinek halmazát."""
     conn = get_db_connection()
@@ -92,28 +93,6 @@ def get_person_id_by_name(name):
     conn.close()
     return person_row['id'] if person_row else None
 
-def add_face_to_db(image_id, person_id, location, path, distance, encoding_bytes):
-    """Elment egyetlen új arcot az adatbázisba, az arclenyomattal együtt."""
-    conn = get_db_connection()
-    conn.execute("""
-        INSERT INTO faces (image_id, person_id, face_location, face_path, distance, face_encoding)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (image_id, person_id, json.dumps(location), path, distance, encoding_bytes))
-    conn.commit()
-    conn.close()
-
-def add_no_face_record(image_id):
-    """Bejegyzést hoz létre arról, hogy egy képen nem található arc."""
-    conn = get_db_connection()
-    conn.execute('INSERT OR IGNORE INTO faces (image_id) VALUES (?)', (image_id,))
-    conn.commit()
-    conn.close()
-
-# --- Író Funkciók (Admin felülethez) ---
-def save_config(config_data):
-    with open(CONFIG_JSON_PATH, 'w', encoding='utf-8') as f:
-        json.dump(config_data, f, indent=4, ensure_ascii=False)
-        # --- ÚJ: Csoportosításhoz szükséges funkciók ---
 def get_unclustered_unknown_faces():
     """Visszaadja az összes ismeretlen arcot, ami még nincs csoportosítva."""
     conn = get_db_connection()
@@ -137,3 +116,26 @@ def update_face_cluster_id(face_id, cluster_id):
     conn.execute("UPDATE faces SET cluster_id = ? WHERE id = ?", (cluster_id, face_id))
     conn.commit()
     conn.close()
+
+# --- Író Funkciók ---
+def add_face_to_db(image_id, person_id, location, path, distance, encoding_bytes):
+    """Elment egyetlen új arcot az adatbázisba, az arclenyomattal együtt."""
+    conn = get_db_connection()
+    conn.execute("""
+        INSERT INTO faces (image_id, person_id, face_location, face_path, distance, face_encoding)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (image_id, person_id, json.dumps(location), path, distance, encoding_bytes))
+    conn.commit()
+    conn.close()
+
+def add_no_face_record(image_id):
+    """Bejegyzést hoz létre arról, hogy egy képen nem található arc."""
+    conn = get_db_connection()
+    conn.execute('INSERT OR IGNORE INTO faces (image_id) VALUES (?)', (image_id,))
+    conn.commit()
+    conn.close()
+    
+def save_config(config_data):
+    """Elmenti a konfigurációs JSON fájlt."""
+    with open(CONFIG_JSON_PATH, 'w', encoding='utf-8') as f:
+        json.dump(config_data, f, indent=4, ensure_ascii=False)

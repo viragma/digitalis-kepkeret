@@ -3,6 +3,7 @@ import os
 import sys
 import face_recognition
 import pickle
+import json
 from PIL import Image
 import numpy as np
 import traceback
@@ -56,7 +57,11 @@ def detect_new_faces():
     config = data_manager.get_config()
     recognition_tolerance = config.get('slideshow', {}).get('recognition_tolerance', 0.6)
     
-    processed_images = data_manager.get_processed_images()
+    conn = data_manager.get_db_connection()
+    cursor = conn.cursor()
+    
+    processed_images_rows = cursor.execute('SELECT filename FROM images WHERE id IN (SELECT DISTINCT image_id FROM faces)').fetchall()
+    processed_images = {row['filename'] for row in processed_images_rows}
     all_images_in_folder = {f for f in os.listdir(UPLOAD_FOLDER) if f.lower().endswith(('.png', '.jpg', '.jpeg'))}
     
     images_to_process = all_images_in_folder - processed_images
@@ -64,6 +69,7 @@ def detect_new_faces():
     print(f"{len(images_to_process)} új kép vár feldolgozásra.")
     if not images_to_process:
         print("--- Ciklus vége: Nincs új kép. ---")
+        conn.close()
         return
 
     for filename in images_to_process:
@@ -88,8 +94,11 @@ def detect_new_faces():
                 face_filename = f"{os.path.splitext(filename)[0]}_face_{i}.jpg"
                 face_path = os.path.join(FACES_OUTPUT_DIR, face_filename).replace('\\', '/')
                 
-                if not os.path.exists(face_path):
-                    face_image.save(face_path)
+                # Ellenőrizzük, hogy ez az arckép-fájl már létezik-e az adatbázisban
+                existing_face = cursor.execute('SELECT id FROM faces WHERE face_path = ?', (face_path,)).fetchone()
+                if existing_face:
+                    print(f"  - Arc #{i+1}: Már létezik az adatbázisban, átugorva.")
+                    continue
 
                 person_id, min_distance = None, 1.0
 
@@ -106,13 +115,19 @@ def detect_new_faces():
                 else:
                     print(f"  - Arc #{i+1}: Ismeretlen.")
 
+                if not os.path.exists(face_path):
+                    face_image.save(face_path)
+
+                # Az arclenyomatot byte-okká alakítjuk az adatbázis számára
                 encoding_bytes = face_encoding.tobytes()
+                
                 data_manager.add_face_to_db(image_id, person_id, face_locations[i], face_path, min_distance, encoding_bytes)
 
         except Exception:
             print(f"!!! RÉSZLETES HIBA a '{filename}' feldolgozása közben: !!!")
             traceback.print_exc()
 
+    conn.close()
     print("\n--- Arcfelismerési ciklus befejezve. ---")
 
 if __name__ == '__main__':

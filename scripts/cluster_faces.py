@@ -15,7 +15,10 @@ def cluster_unknown_faces():
     """
     print("--- Ismeretlen arcok intelligens csoportosítása indul ---")
     
-    # 1. Lekérdezzük az összes, még nem csoportosított ismeretlen arcot és a kódolásukat
+    config = data_manager.get_config()
+    clustering_tolerance = config.get('slideshow', {}).get('clustering_tolerance', 0.45)
+    print(f"Csoportosítási tolerancia beállítva (az admin felületről): {clustering_tolerance}")
+
     unclustered_faces = data_manager.get_unclustered_unknown_faces()
 
     if len(unclustered_faces) < 2:
@@ -24,20 +27,12 @@ def cluster_unknown_faces():
 
     print(f"{len(unclustered_faces)} új arc kerül csoportosításra...")
     
-    # Kinyerjük a kódolásokat és az ID-kat a további feldolgozáshoz
     encodings = [face['encoding'] for face in unclustered_faces]
     face_ids = [face['id'] for face in unclustered_faces]
 
-    # 2. A DBSCAN algoritmus futtatása a kódolásokon
-    # Az 'eps' a tolerancia: mekkora "távolság" számít egy csoportnak.
-    # Ezt később a beállításokból is olvashatjuk.
-    clt = DBSCAN(metric="euclidean", n_jobs=-1, eps=0.4)
+    clt = DBSCAN(metric="euclidean", n_jobs=-1, eps=clustering_tolerance)
     clt.fit(encodings)
 
-    # 3. Az eredmények feldolgozása és visszaírása az adatbázisba
-    # A '-1' címke a "zaj", vagyis azokat az arcokat jelöli, amik egyik csoporthoz sem illenek.
-    
-    # Először a legnagyobb meglévő cluster_id-t kérdezzük le, hogy onnan folytassuk a számozást
     conn = data_manager.get_db_connection()
     max_cluster_id_row = conn.execute("SELECT MAX(cluster_id) FROM faces").fetchone()
     conn.close()
@@ -48,18 +43,14 @@ def cluster_unknown_faces():
     print(f"-> {num_clusters} új csoportot találtunk.")
 
     for label in label_ids:
-        if label == -1: # A zajt egyelőre nem jelöljük
+        if label == -1:
             continue
 
-        # Az új, egyedi cluster ID
-        cluster_id = next_cluster_id + label
-        
-        # Megkeressük az összes arcot, ami ehhez a címkéhez tartozik
+        cluster_id = int(next_cluster_id + label)
         idxs = np.where(clt.labels_ == label)[0]
         
         print(f"  - Csoport #{cluster_id}: {len(idxs)} arc.")
         
-        # Frissítjük az adatbázisban a cluster_id-t minden archoz
         for i in idxs:
             data_manager.update_face_cluster_id(face_ids[i], cluster_id)
             

@@ -9,17 +9,22 @@
                 <div class="mb-3 row">
                     <label for="recognition_tolerance" class="col-sm-4 col-form-label">Felismerési Tolerancia</label>
                     <div class="col-sm-8">
+                        </div>
+                </div>
+                <div class="mb-3 row">
+                    <label for="clustering_tolerance" class="col-sm-4 col-form-label">Csoportosítási Tolerancia</label>
+                    <div class="col-sm-8">
                         <div class="d-flex align-items-center">
                             <span class="small me-2">Szigorú</span>
-                            <input type="range" class="form-range" id="recognition_tolerance" name="recognition_tolerance" 
-                                   min="0.4" max="0.7" step="0.05" 
-                                   value="{{ config.slideshow.get('recognition_tolerance', 0.6) }}"
+                            <input type="range" class="form-range" id="clustering_tolerance" name="clustering_tolerance" 
+                                   min="0.3" max="0.6" step="0.01" 
+                                   value="{{ config.slideshow.get('clustering_tolerance', 0.45) }}"
                                    oninput="this.nextElementSibling.value = this.value">
-                            <output class="ms-2 fw-bold">{{ config.slideshow.get('recognition_tolerance', 0.6) }}</output>
+                            <output class="ms-2 fw-bold">{{ config.slideshow.get('clustering_tolerance', 0.45) }}</output>
                             <span class="small ms-2">Megengedő</span>
                         </div>
                         <div class="form-text">
-                            Alacsonyabb érték = kevesebb, de pontosabb találat. Magasabb érték = több találat, de több tévedés. Ajánlott érték: 0.55 - 0.6.
+                            Meghatározza, mennyire kell két ismeretlen arcnak hasonlítania egymásra, hogy egy csoportba kerüljenek. Ajánlott érték: 0.4 - 0.5.
                         </div>
                     </div>
                 </div>

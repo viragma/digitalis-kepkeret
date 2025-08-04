@@ -74,6 +74,8 @@ def save_config_route():
     config_data = data_manager.get_config()
     slideshow_config = config_data.get('slideshow', {})
 
+    slideshow_config['recognition_tolerance'] = float(request.form.get('recognition_tolerance', 0.6))
+    slideshow_config['clustering_tolerance'] = float(request.form.get('clustering_tolerance', 0.45))
     slideshow_config['interval'] = int(request.form.get('interval', 10000))
     slideshow_config['transition_speed'] = int(request.form.get('transition_speed', 1000))
     slideshow_config['blur_strength'] = int(request.form.get('blur_strength', 20))
