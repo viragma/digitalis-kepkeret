@@ -4,8 +4,11 @@ import shutil
 import subprocess
 import sys
 import psutil
+import pickle
 from flask import Blueprint, jsonify
 from services import data_manager, event_logger
+from extensions import socketio
+from datetime import datetime
 
 dashboard_api_bp = Blueprint('dashboard_api_bp', __name__, url_prefix='/api')
 
@@ -43,7 +46,33 @@ def get_dashboard_stats():
         unknown_faces = conn.execute('SELECT COUNT(id) FROM faces WHERE person_id IS NULL').fetchone()[0]
         
         latest_images_rows = conn.execute('SELECT filename FROM images ORDER BY id DESC LIMIT 5').fetchall()
+        
+        known_faces_dir = os.path.join(os.getcwd(), 'data', 'known_faces')
+        total_training_images = sum([len(files) for r, d, files in os.walk(known_faces_dir)])
+        
+        encodings_cache_path = os.path.join(os.getcwd(), 'data', 'known_encodings.pkl')
+        last_training_time = None
+        if os.path.exists(encodings_cache_path):
+            last_training_time = datetime.fromtimestamp(os.path.getmtime(encodings_cache_path)).strftime('%Y-%m-%d %H:%M:%S')
+
+        confidence_rows = conn.execute("""
+            SELECT p.name, AVG(f.distance) as avg_distance, COUNT(f.id) as face_count
+            FROM persons p
+            JOIN faces f ON p.id = f.person_id
+            WHERE p.is_active = 1 AND f.distance IS NOT NULL AND f.is_manual = 0
+            GROUP BY p.name
+        """).fetchall()
+        
         conn.close()
+
+        confidence_data = []
+        for row in confidence_rows:
+            confidence = max(0, round((1 - (row['avg_distance'] / 0.7)) * 100))
+            confidence_data.append({
+                "name": row['name'],
+                "confidence": confidence,
+                "face_count": row['face_count']
+            })
 
         latest_images = [row['filename'] for row in latest_images_rows]
 
@@ -52,7 +81,12 @@ def get_dashboard_stats():
             "known_persons": known_persons,
             "recognized_faces": recognized_faces,
             "unknown_faces": unknown_faces,
-            "latest_images": latest_images
+            "latest_images": latest_images,
+            "model_stats": {
+                "total_training_images": total_training_images,
+                "last_training_time": last_training_time,
+                "confidence_data": sorted(confidence_data, key=lambda x: x['confidence'], reverse=True)
+            }
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -88,3 +122,12 @@ def run_face_detection():
         return jsonify({"status": "success", "message": "Arcfelismerés elindítva a háttérben."})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+        
+@dashboard_api_bp.route('/force_reload', methods=['POST'])
+def force_reload_clients():
+    try:
+        socketio.emit('reload_clients', {'message': 'Manual refresh triggered'})
+        event_logger.log_event("Manuális frissítési parancs kiküldve.")
+        return jsonify({'status': "success", 'message': 'Frissítési parancs elküldve.'})
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500

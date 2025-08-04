@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isInitialized) return;
         isInitialized = true;
         
-        console.log("Tanító Adatbázis inicializálása...");
         await loadPersonList();
     };
 
@@ -28,8 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         personListContainer.innerHTML = '<div class="text-center"><div class="spinner-border spinner-border-sm" role="status"></div></div>';
         try {
             const response = await fetch('/api/trainer/persons');
-            if (!response.ok) throw new Error("Szerver hiba a személyek listájának lekérésekor.");
-            
             const persons = await response.json();
 
             personListContainer.innerHTML = '';
@@ -76,8 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`/api/trainer/person_details/${name}`);
-            if (!response.ok) throw new Error("Szerver hiba a részletek lekérésekor.");
-
             const details = await response.json();
 
             if (details.average_face_image) {
@@ -95,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     const qualityInfo = cardClone.querySelector('.quality-info');
                     
-                    // --- JAVÍTÁS ITT: "Bombabiztos" ellenőrzés ---
                     if (imgData && imgData.analysis) {
                         if (imgData.analysis.error) {
                             qualityInfo.innerHTML = `<span class="text-danger" title="${imgData.analysis.error}">Hiba</span>`;
@@ -111,8 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             `;
                         }
                     } else {
-                        // Ha az 'analysis' objektum hiányzik, azt is jelezzük
-                        qualityInfo.innerHTML = `<span class="text-danger">N/A</span>`;
+                        qualityInfo.innerHTML = `<span class="text-danger" title="Hiányzó elemzési adatok.">N/A</span>`;
                         console.warn("Hiányzó 'analysis' adat a képhez:", imgData);
                     }
 

@@ -2,54 +2,22 @@
     <div class="row">
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card text-white bg-primary h-100">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Összes kép</div>
-                            <div id="stat-total-images" class="h5 mb-0 font-weight-bold">0</div>
-                        </div>
-                        <div class="col-auto"><i class="bi bi-images fs-2 text-gray-300"></i></div>
-                    </div>
-                </div>
+                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-uppercase mb-1">Összes kép</div><div id="stat-total-images" class="h5 mb-0 font-weight-bold">0</div></div><div class="col-auto"><i class="bi bi-images fs-2 text-gray-300"></i></div></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card text-white bg-success h-100">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Ismert Személy</div>
-                            <div id="stat-known-persons" class="h5 mb-0 font-weight-bold">0</div>
-                        </div>
-                        <div class="col-auto"><i class="bi bi-people-fill fs-2 text-gray-300"></i></div>
-                    </div>
-                </div>
+                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-uppercase mb-1">Ismert Személy</div><div id="stat-known-persons" class="h5 mb-0 font-weight-bold">0</div></div><div class="col-auto"><i class="bi bi-people-fill fs-2 text-gray-300"></i></div></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card text-white bg-info h-100">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Felismert Arc</div>
-                            <div id="stat-recognized-faces" class="h5 mb-0 font-weight-bold">0</div>
-                        </div>
-                        <div class="col-auto"><i class="bi bi-person-check-fill fs-2 text-gray-300"></i></div>
-                    </div>
-                </div>
+                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-uppercase mb-1">Felismert Arc</div><div id="stat-recognized-faces" class="h5 mb-0 font-weight-bold">0</div></div><div class="col-auto"><i class="bi bi-person-check-fill fs-2 text-gray-300"></i></div></div></div>
             </div>
         </div>
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card text-white bg-warning h-100">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Ismeretlen Arc</div>
-                            <div id="stat-unknown-faces" class="h5 mb-0 font-weight-bold">0</div>
-                        </div>
-                        <div class="col-auto"><i class="bi bi-person-fill-question fs-2 text-gray-300"></i></div>
-                    </div>
-                </div>
+                <div class="card-body"><div class="row no-gutters align-items-center"><div class="col mr-2"><div class="text-xs font-weight-bold text-uppercase mb-1">Ismeretlen Arc</div><div id="stat-unknown-faces" class="h5 mb-0 font-weight-bold">0</div></div><div class="col-auto"><i class="bi bi-person-fill-question fs-2 text-gray-300"></i></div></div></div>
             </div>
         </div>
     </div>
@@ -58,44 +26,36 @@
         <div class="col-lg-4 mb-4">
             <div class="card h-100">
                 <div class="card-header"><h5><i class="bi bi-lightning-charge-fill"></i> Gyors Műveletek</h5></div>
-                <div class="card-body">
-                    <p>Itt indíthatsz el karbantartási és feldolgozási feladatokat.</p>
-                    <button id="run-detection-btn" class="btn btn-lg btn-danger w-100">
-                        <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
-                        <i class="bi bi-search"></i> Új arcok keresése
-                    </button>
-                    <div class="form-text mt-2">Ez a művelet a háttérben fut, és eltarthat egy ideig.</div>
-                </div>
+                <div class="card-body"><p>Itt indíthatsz el karbantartási és feldolgozási feladatokat.</p><button id="run-detection-btn" class="btn btn-lg btn-danger w-100"><span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span><i class="bi bi-search"></i> Új arcok keresése</button><div class="form-text mt-2">Ez a művelet a háttérben fut, és eltarthat egy ideig.</div></div>
             </div>
         </div>
         <div class="col-lg-4 mb-4">
             <div class="card h-100">
                 <div class="card-header"><h5><i class="bi bi-hdd-stack-fill"></i> Rendszerinformáció</h5></div>
-                <div class="card-body">
-                    <h6 class="mb-1">Tárhely <span id="stat-disk-info" class="float-end text-muted"></span></h6>
-                    <div class="progress mb-3" style="height: 20px;"><div id="stat-disk-progress" class="progress-bar" role="progressbar"></div></div>
-                    <h6 class="mb-1">Memória <span id="stat-memory-info" class="float-end text-muted"></span></h6>
-                    <div class="progress mb-3" style="height: 20px;"><div id="stat-memory-progress" class="progress-bar bg-success" role="progressbar"></div></div>
-                    <h6 class="mb-1">CPU Használat</h6>
-                    <div class="progress" style="height: 20px;"><div id="stat-cpu-progress" class="progress-bar bg-info" role="progressbar"></div></div>
-                </div>
+                <div class="card-body"><h6 class="mb-1">Tárhely <span id="stat-disk-info" class="float-end text-muted"></span></h6><div class="progress mb-3" style="height: 20px;"><div id="stat-disk-progress" class="progress-bar" role="progressbar"></div></div><h6 class="mb-1">Memória <span id="stat-memory-info" class="float-end text-muted"></span></h6><div class="progress mb-3" style="height: 20px;"><div id="stat-memory-progress" class="progress-bar bg-success" role="progressbar"></div></div><h6 class="mb-1">CPU Használat</h6><div class="progress" style="height: 20px;"><div id="stat-cpu-progress" class="progress-bar bg-info" role="progressbar"></div></div></div>
             </div>
         </div>
         <div class="col-lg-4 mb-4">
             <div class="card h-100">
                 <div class="card-header"><h5><i class="bi bi-folder2-open"></i> Adattárolás</h5></div>
+                <div class="card-body"><ul class="list-group list-group-flush"><li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0 px-0">Forrásképek <span id="stat-images-size" class="badge bg-primary rounded-pill">0 MB</span></li><li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0 px-0">Arcképek <span id="stat-faces-size" class="badge bg-secondary rounded-pill">0 MB</span></li></ul></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-lg-5 mb-4">
+            <div class="card h-100">
+                <div class="card-header"><h5><i class="bi bi-robot"></i> Modell Tanulási Összefoglaló</h5></div>
                 <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0 px-0">
-                            Forrásképek
-                            <span id="stat-images-size" class="badge bg-primary rounded-pill">0 MB</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent border-0 px-0">
-                            Arcképek
-                            <span id="stat-faces-size" class="badge bg-secondary rounded-pill">0 MB</span>
-                        </li>
-                    </ul>
+                    <ul id="model-training-stats" class="list-group list-group-flush"></ul>
                 </div>
+            </div>
+        </div>
+        <div class="col-lg-7 mb-4">
+            <div class="card h-100">
+                <div class="card-header"><h5><i class="bi bi-bullseye"></i> Felismerési Magabiztosság</h5></div>
+                <div id="model-confidence-list" class="card-body"></div>
             </div>
         </div>
     </div>
@@ -103,12 +63,8 @@
     <div class="row mt-3">
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <h5><i class="bi bi-journal-text"></i> Eseménynapló</h5>
-                </div>
-                <div id="event-log-container" class="card-body" style="font-family: monospace; font-size: 0.8rem; max-height: 200px; overflow-y: auto;">
-                    Napló betöltése...
-                </div>
+                <div class="card-header"><h5><i class="bi bi-journal-text"></i> Eseménynapló</h5></div>
+                <div id="event-log-container" class="card-body" style="font-family: monospace; font-size: 0.8rem; max-height: 200px; overflow-y: auto;">Napló betöltése...</div>
             </div>
         </div>
     </div>

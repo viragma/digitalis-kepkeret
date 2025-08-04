@@ -69,3 +69,19 @@ main { padding-left: calc(var(--sidebar-width) + 24px); padding-right: 24px; }
 .quality-info span {
     font-size: 0.9rem;
 }
+#latest-images-container .row { max-height: 200px; overflow-y: auto; }
+#latest-images-container img { aspect-ratio: 1 / 1; object-fit: cover; }
+
+.confidence-bar {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #555;
+}
+.confidence-bar-inner {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.5s ease-in-out;
+}
+.confidence-bar-inner.good { background-color: #198754; } /* zöld */
+.confidence-bar-inner.medium { background-color: #ffc107; } /* sárga */
+.confidence-bar-inner.low { background-color: #dc3545; } /* piros */
