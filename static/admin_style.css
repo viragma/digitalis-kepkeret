@@ -37,6 +37,7 @@ body { font-size: .875rem; background-color: #212529; }
     box-shadow: 0 0 20px rgba(13, 110, 253, 0.5);
 }
 
+
 /* --- Normál admin felület stílusai --- */
 .sidebar { position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; padding: 48px 0 0; box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1); width: var(--sidebar-width); }
 .nav-link { color: #c4c4c4; margin: 0.25rem 1rem; border-radius: .25rem; }
@@ -84,23 +85,22 @@ main { padding-left: calc(var(--sidebar-width) + 24px); padding-right: 24px; }
 #latest-images-container .row { max-height: 200px; overflow-y: auto; }
 #latest-images-container img { aspect-ratio: 1 / 1; object-fit: cover; }
 .accordion.disabled { opacity: 0.5; pointer-events: none; }
-.confidence-score { position: absolute; top: 5px; left: 5px; padding: 2px 6px; font-size: 0.75rem; font-weight: bold; color: white; border-radius: .25rem; text-shadow: 0 1px 1px rgba(0,0,0,0.5); }
+.confidence-score {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    color: white;
+    border-radius: .25rem;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.5);
+}
 .confidence-score[data-level="good"] { background-color: rgba(25, 135, 84, 0.8); }
 .confidence-score[data-level="medium"] { background-color: rgba(255, 193, 7, 0.8); }
 .confidence-score[data-level="low"] { background-color: rgba(220, 53, 69, 0.8); }
-
-/* ÚJ: Modell Státusz stílusok */
-.confidence-bar {
-    height: 10px;
-    border-radius: 5px;
-    background-color: #555;
-    overflow: hidden;
-}
-.confidence-bar-inner {
-    height: 100%;
-    border-radius: 5px;
-    transition: width 0.5s ease-in-out;
-}
+.confidence-bar { height: 10px; border-radius: 5px; background-color: #555; overflow: hidden; }
+.confidence-bar-inner { height: 100%; border-radius: 5px; transition: width 0.5s ease-in-out; }
 .confidence-bar-inner.good { background-color: #198754; }
 .confidence-bar-inner.medium { background-color: #ffc107; }
 .confidence-bar-inner.low { background-color: #dc3545; }

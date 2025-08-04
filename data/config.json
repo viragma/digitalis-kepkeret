@@ -25,7 +25,8 @@
         "birthday_message": "Boldog Születésnapot!",
         "show_upcoming_birthdays": true,
         "upcoming_days_limit": 30,
-        "recognition_tolerance": 0.5
+        "recognition_tolerance": 0.5,
+        "clustering_tolerance": 0.6
     },
     "themes": {
         "enabled": true,

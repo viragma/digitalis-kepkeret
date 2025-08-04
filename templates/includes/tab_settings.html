@@ -9,7 +9,19 @@
                 <div class="mb-3 row">
                     <label for="recognition_tolerance" class="col-sm-4 col-form-label">Felismerési Tolerancia</label>
                     <div class="col-sm-8">
+                        <div class="d-flex align-items-center">
+                            <span class="small me-2">Szigorú</span>
+                            <input type="range" class="form-range" id="recognition_tolerance" name="recognition_tolerance" 
+                                   min="0.4" max="0.7" step="0.05" 
+                                   value="{{ config.slideshow.get('recognition_tolerance', 0.6) }}"
+                                   oninput="this.nextElementSibling.value = this.value">
+                            <output class="ms-2 fw-bold">{{ config.slideshow.get('recognition_tolerance', 0.6) }}</output>
+                            <span class="small ms-2">Megengedő</span>
                         </div>
+                        <div class="form-text">
+                            Alacsonyabb érték = kevesebb, de pontosabb találat. Magasabb érték = több találat, de több tévedés. Ajánlott érték: 0.55 - 0.6.
+                        </div>
+                    </div>
                 </div>
                 <div class="mb-3 row">
                     <label for="clustering_tolerance" class="col-sm-4 col-form-label">Csoportosítási Tolerancia</label>
@@ -40,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 row">
+                 <div class="mb-3 row">
                     <label for="birthday_message" class="col-sm-4 col-form-label">Szülinapi köszöntő</label>
                     <div class="col-sm-8"><input type="text" class="form-control" id="birthday_message" name="birthday_message" value="{{ config.slideshow.get('birthday_message', 'Boldog Születésnapot!') }}"></div>
                 </div>
@@ -64,7 +76,7 @@
                     <label for="clock_size" class="col-sm-4 col-form-label">Óra betűmérete</label>
                     <div class="col-sm-8"><input type="text" class="form-control" id="clock_size" name="clock_size" value="{{ config.slideshow.get('clock_size', '2.5rem') }}"></div>
                 </div>
-
+                
                 <h5 class="mt-4"><i class="bi bi-clock"></i> Időzítés</h5>
                 <hr>
                 <div class="mb-3 row">

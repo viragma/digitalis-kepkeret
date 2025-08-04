@@ -9,14 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const knownFacesTabButton = document.getElementById('v-pills-known-faces-tab');
     if (!knownFacesTabButton) return;
     let isInitialized = false;
-    
     const init = () => {
         if (isInitialized) return;
-        isInitialized = true;
         loadPersonsGrid();
         document.getElementById('back-to-grid-btn').addEventListener('click', showPersonGrid);
+        isInitialized = true;
     };
-    
     if (knownFacesTabButton.classList.contains('active')) init();
     knownFacesTabButton.addEventListener('shown.bs.tab', init);
 });
@@ -30,8 +28,7 @@ async function loadPersonsGrid() {
     const persons = await response.json();
     allPersonNames = persons.map(p => p.name);
     grid.innerHTML = '';
-    
-    console.log("--- DIAG: /api/persons/gallery_data (Profilképek) ---");
+
     persons.forEach(person => {
         const cardClone = template.content.cloneNode(true);
         const card = cardClone.querySelector('.person-card');
@@ -41,7 +38,6 @@ async function loadPersonsGrid() {
         
         const img = card.querySelector('.profile-image');
         if (person.data.profile_image) {
-            console.log(`Profilkép (${person.name}): Kapott útvonal: '${person.data.profile_image}'`);
             img.src = person.data.profile_image;
         } else {
             img.src = `https://via.placeholder.com/150/444444/FFFFFF?text=${encodeURIComponent(person.name.charAt(0))}`;
@@ -83,18 +79,16 @@ async function loadFacesForPerson(isFirstLoad = false) {
     const data = await response.json();
     totalFaces = data.total;
 
-    console.log(`--- DIAG: /api/faces/by_person/${currentPerson} (Galéria képek) ---`);
     data.faces.forEach(face => {
         const cardClone = template.content.cloneNode(true);
         const cardContainer = cardClone.querySelector('.col');
         const cardElement = cardContainer.querySelector('.face-gallery-card');
-        const img = cardElement.querySelector('.card-img-top');
+        const img = cardElement.querySelector('img');
         const scoreDiv = cardElement.querySelector('.confidence-score');
         
-        console.log(`Galéria kép: Kapott útvonal: '${face.face_path}'`);
         img.src = face.face_path;
         cardElement.dataset.facePath = face.face_path;
-
+        
         if (face.distance !== null && face.distance !== undefined) {
             const confidence = Math.max(0, Math.round((1 - (face.distance / 0.7)) * 100));
             scoreDiv.textContent = `${confidence}%`;

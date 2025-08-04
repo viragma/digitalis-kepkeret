@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetch('/api/persons')
             ]);
 
-            if (!facesRes.ok) throw new Error(`Hiba az ismeretlen arcok lekérdezésekor. Státusz: ${facesRes.status}`);
+            if (!facesRes.ok) throw new Error(`Hiba a szerverrel való kommunikáció során (${facesRes.status})`);
             if (!personsRes.ok) throw new Error('Hiba a személyek lekérdezésekor.');
 
             const faces = await facesRes.json();
@@ -52,11 +52,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const card = cardClone.querySelector('.face-card');
                     const img = card.querySelector('img');
 
-                    if (face.face_path) {
+                    if (face.face_path && typeof face.face_path === 'string') {
                         img.src = face.face_path;
                         card.dataset.facePath = face.face_path;
                     } else {
-                        img.src = "https://via.placeholder.com/150/dc3545/FFFFFF?text=HIBA";
+                        console.error("Érvénytelen face_path kapva:", face);
+                        img.src = "https://via.placeholder.com/150/dc3545/FFFFFF?text=HIBA"; // Hibás kép
                     }
                     
                     card.addEventListener('click', () => {
