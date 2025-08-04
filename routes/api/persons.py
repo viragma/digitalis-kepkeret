@@ -9,11 +9,9 @@ def make_web_path(full_path):
     """Biztonságosan átalakít egy teljes szerver-oldali útvonalat web-elérhető útvonallá."""
     if not isinstance(full_path, str):
         return None
-    
     full_path = full_path.replace('\\', '/')
-    
-    # A 'static' szótól kezdve adjuk vissza az útvonalat, egy / jellel az elején
     try:
+        # Megkeressük a 'static' mappát az útvonalban, és onnan adjuk vissza az útvonalat
         index = full_path.index('static/')
         return '/' + full_path[index:]
     except ValueError:
@@ -58,7 +56,6 @@ def set_profile_image():
     person_name, face_path = data.get('name'), data.get('face_path')
     if not person_name or not face_path: return jsonify({'status': 'error', 'message': 'Hiányzó adatok'}), 400
     
-    # A bejövő web-útvonalat adatbázis-barát formátumra alakítjuk a kereséshez
     db_face_path_pattern = '%' + face_path.strip('/')
 
     conn = data_manager.get_db_connection()
@@ -116,7 +113,7 @@ def reassign_persons_batch():
 @persons_api_bp.route('/persons/delete_batch', methods=['POST'])
 def delete_persons_batch():
     names_to_delete = request.get_json().get('names', [])
-    if not names_to_delete: return jsonify({'status': 'error', 'message': 'Nincs kiválosztott személy.'}), 400
+    if not names_to_delete: return jsonify({'status': 'error', 'message': 'Nincs kiválasztott személy.'}), 400
     conn = data_manager.get_db_connection()
     cursor = conn.cursor()
     placeholders = ', '.join('?' for _ in names_to_delete)

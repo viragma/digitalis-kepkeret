@@ -31,6 +31,7 @@ def create_app():
     from routes.api.faces import faces_api_bp
     from routes.api.persons import persons_api_bp
     from routes.api.slideshow import slideshow_api_bp
+    from routes.api.trainer import trainer_api_bp
     
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp)
@@ -39,6 +40,7 @@ def create_app():
     app.register_blueprint(faces_api_bp)
     app.register_blueprint(persons_api_bp)
     app.register_blueprint(slideshow_api_bp)
+    app.register_blueprint(trainer_api_bp)
     app.register_blueprint(api_bp)
 
     # Kiegészítők inicializálása

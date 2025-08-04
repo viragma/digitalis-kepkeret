@@ -1,5 +1,6 @@
 # routes/api/gallery.py
 import os
+import json
 from flask import Blueprint, request, jsonify
 from services import data_manager
 

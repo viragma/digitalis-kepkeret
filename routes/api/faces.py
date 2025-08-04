@@ -12,9 +12,11 @@ def make_web_path(full_path):
     if not isinstance(full_path, str):
         return None
     full_path = full_path.replace('\\', '/')
-    if 'static/' in full_path:
-        return '/' + full_path.split('static/', 1)[1]
-    return full_path
+    try:
+        index = full_path.index('static/')
+        return '/' + full_path[index:]
+    except ValueError:
+        return full_path
 
 @faces_api_bp.route('/faces/unknown', methods=['GET'])
 def get_unknown_faces():
@@ -66,6 +68,62 @@ def get_faces_by_person(name):
         
     return jsonify({"faces": processed_faces, "total": total_faces})
     
+@faces_api_bp.route('/faces/add_manual', methods=['POST'])
+def add_manual_face():
+    """ Manuálisan hozzáad egy új arcot egy képhez. """
+    data = request.get_json()
+    filename, name, coords_percent = data.get('filename'), data.get('name'), data.get('coords')
+    if not all([filename, name, coords_percent]): 
+        return jsonify({'status': 'error', 'message': 'Hiányzó adatok.'}), 400
+    
+    config = data_manager.get_config()
+    image_folder_name = config.get('UPLOAD_FOLDER', 'static/images')
+    image_path_abs = os.path.join(os.getcwd(), image_folder_name, filename)
+
+    if not os.path.exists(image_path_abs): 
+        return jsonify({'status': 'error', 'message': 'A képfájl nem található.'}), 404
+
+    try:
+        with Image.open(image_path_abs) as img:
+            img_width, img_height = img.size
+            left = int(coords_percent['left'] * img_width)
+            top = int(coords_percent['top'] * img_height)
+            width = int(coords_percent['width'] * img_width)
+            height = int(coords_percent['height'] * img_height)
+            right, bottom = left + width, top + height
+            face_location = [top, right, bottom, left]
+            face_image = img.crop((left, top, right, bottom))
+        
+        conn = data_manager.get_db_connection()
+        face_count = conn.execute('SELECT COUNT(id) FROM faces').fetchone()[0]
+        conn.close()
+
+        face_filename = f"manual_{os.path.splitext(filename)[0]}_{face_count}.jpg"
+        face_filepath_relative = os.path.join('static/faces', face_filename).replace('\\', '/')
+        face_filepath_abs = os.path.join(os.getcwd(), face_filepath_relative)
+        face_image.save(face_filepath_abs)
+
+        image_id = data_manager.get_or_create_image_id(filename)
+        person_id = data_manager.get_person_id_by_name(name)
+
+        if not image_id or not person_id:
+            return jsonify({'status': 'error', 'message': 'A kép vagy a személy nem található az adatbázisban.'}), 404
+
+        data_manager.add_face_to_db(image_id, person_id, face_location, face_filepath_abs, 0.0) # 0.0 distance a manuális arcoknak
+        
+        event_logger.log_event(f"Manuális arc hozzáadva: '{name}' a '{filename}' képen.")
+        # A new_face objektumot is vissza kell adni, hogy a JS frissíteni tudja a felületet
+        new_face_data = {
+            "face_location": face_location,
+            "face_path": make_web_path(face_filepath_abs),
+            "name": name
+        }
+        return jsonify({'status': 'success', 'message': 'Új arc sikeresen mentve.', 'new_face': new_face_data})
+
+    except Exception as e:
+        print(f"Hiba a manuális arc mentésekor: {e}")
+        return jsonify({'status': 'error', 'message': 'Szerver oldali hiba történt.'}), 500
+
 @faces_api_bp.route('/update_face_name', methods=['POST'])
 def update_face_name():
     data = request.get_json()
