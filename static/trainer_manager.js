@@ -34,11 +34,20 @@ document.addEventListener('DOMContentLoaded', () => {
             persons.forEach(person => {
                 const personLink = document.createElement('a');
                 personLink.href = "#";
-                personLink.className = 'list-group-item list-group-item-action';
-                personLink.textContent = person.name;
+                personLink.className = 'list-group-item list-group-item-action d-flex align-items-center';
+                
+                const img = document.createElement('img');
+                img.src = person.profile_image || `https://via.placeholder.com/30/444444/FFFFFF?text=${encodeURIComponent(person.name.charAt(0))}`;
+                img.className = 'rounded-circle me-2';
+                img.width = 30;
+                img.height = 30;
+                img.style.objectFit = 'cover';
+
+                personLink.appendChild(img);
+                personLink.append(person.name);
+
                 personLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // Aktív állapot beállítása a listában
                     document.querySelectorAll('#trainer-person-list .list-group-item-action').forEach(link => link.classList.remove('active'));
                     personLink.classList.add('active');
                     
@@ -58,14 +67,21 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsView.classList.remove('d-none');
         personNameTitle.textContent = name;
         
-        // Ürítjük a konténereket a betöltés előtt
-        knownFacesGrid.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+        knownFacesGrid.innerHTML = '<div class="col-12 text-center"><div class="spinner-border" role="status"></div></div>';
+        averageFaceContainer.innerHTML = '<div class="spinner-border spinner-border-sm"></div>';
         suggestionsList.innerHTML = '';
         newFacesGrid.innerHTML = '';
 
         try {
             const response = await fetch(`/api/trainer/person_details/${name}`);
             const details = await response.json();
+
+            // Fantomkép megjelenítése
+            if (details.average_face_image) {
+                averageFaceContainer.innerHTML = `<img src="${details.average_face_image}?t=${new Date().getTime()}" class="img-fluid rounded">`;
+            } else {
+                averageFaceContainer.innerHTML = '<p class="text-muted small">Nincs elég tanítókép a fantomkép generálásához.</p>';
+            }
 
             // Tanítóképek megjelenítése
             knownFacesGrid.innerHTML = '';
@@ -74,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 details.training_images.forEach(imgPath => {
                     const cardClone = template.content.cloneNode(true);
                     cardClone.querySelector('img').src = imgPath;
-                    cardClone.querySelector('.quality-info').textContent = "Elemzés..."; // Placeholder
+                    cardClone.querySelector('.quality-info').textContent = "Elemzés...";
                     knownFacesGrid.appendChild(cardClone);
                 });
             } else {
