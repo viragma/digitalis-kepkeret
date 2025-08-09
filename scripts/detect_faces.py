@@ -79,7 +79,7 @@ def detect_new_faces():
         try:
             image_id = data_manager.get_or_create_image_id(filename)
             image_data = face_recognition.load_image_file(image_path)
-            face_locations = face_recognition.face_locations(image_data)
+            face_locations = face_recognition.face_locations(image_data, model="cnn")
             face_encodings = face_recognition.face_encodings(image_data, face_locations)
 
             if not face_encodings:
