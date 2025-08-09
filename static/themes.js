@@ -16,6 +16,11 @@ function stopAllThemes() {
         skyThemeContainer.innerHTML = '';
         skyThemeContainer.className = '';
     }
+    
+    // Élethű eső leállítása
+    if (typeof stopRealisticRain === 'function') {
+        stopRealisticRain();
+    }
 }
 
 // --- Esemény Témák ---
@@ -65,9 +70,11 @@ function startEasterTheme() {
 
 function startRainTheme() {
     stopAllThemes();
-    themeOverlay.classList.add('theme-rain'); // Ezt a hangulati szűrőhöz használhatjuk
+    themeOverlay.classList.add('theme-rain');
     if (typeof startRealisticRain === 'function') {
-        startRealisticRain(); // Elindítjuk az új, vászonalapú esőt
+        startRealisticRain(); // Élethű eső indítása
+    } else {
+        console.error('startRealisticRain függvény nem található!');
     }
 }
 
@@ -88,7 +95,7 @@ function startAtmosphereTheme() {
 }
 
 function startThunderstormTheme() {
-    startRainTheme();
+    startRainTheme(); // Élethű eső indítása
     themeOverlay.classList.add('theme-thunderstorm');
     createLightning();
 }
@@ -176,31 +183,6 @@ function createEgg() {
     themeOverlay.appendChild(egg);
 }
 
-function createRainStreak() {
-    const streak = document.createElement('div');
-    streak.className = 'streak';
-    const startX = Math.random() * 100;
-    const windEffect = (Math.random() - 0.5) * 10; // Enyhe szél
-    streak.style.setProperty('--x-start', `${startX}vw`);
-    streak.style.setProperty('--x-end', `${startX + windEffect}vw`);
-    streak.style.height = `${Math.random() * 150 + 100}px`;
-    streak.style.animationDuration = `${Math.random() * 0.5 + 0.3}s`;
-    streak.style.animationDelay = `${Math.random() * 2}s`;
-    themeOverlay.appendChild(streak);
-    setTimeout(() => streak.remove(), (parseFloat(streak.style.animationDuration) + parseFloat(streak.style.animationDelay)) * 1000);
-}
-
-function createRainSplat() {
-    const splat = document.createElement('div');
-    splat.className = 'splat';
-    splat.style.left = `${Math.random() * 100}vw`;
-    splat.style.top = `${Math.random() * 100}vh`;
-    splat.style.width = `${Math.random() * 5 + 10}px`;
-    splat.style.height = splat.style.width;
-    splat.style.animationDelay = `${Math.random() * 3}s`;
-    themeOverlay.appendChild(splat);
-    setTimeout(() => splat.remove(), 3000);
-}
 function createSunbeam() {
     const sunbeam = document.createElement('div');
     sunbeam.className = 'sunbeam';

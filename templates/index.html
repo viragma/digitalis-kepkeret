@@ -2,7 +2,9 @@
 
 {% block content %}
 <div id="theme-overlay"></div>
+
 <div id="sky-theme-container"></div>
+
 <canvas id="rain-canvas"></canvas>
 
 <div id="background-wrapper">
@@ -10,38 +12,17 @@
     <div id="next-background" class="background-layer"></div>
 </div>
 
-<div class="frame-container">
-    <div class="image-display">
-        <div class="image active parallax" id="current-image"></div>
-        <div class="image parallax" id="next-image"></div>
+<div class="slideshow-container">
+    <div class="image-wrapper">
+        <div id="current-image" class="image"></div>
+        <div id="next-image" class="image"></div>
     </div>
-    
     <div class="vignette"></div>
-    
-    <div class="ui-overlay">
-        <div class="time-display interactive" id="time-display">
-            <div class="time" id="time"></div>
-            <div class="date" id="date"></div>
-        </div>
-        
-        <div class="info-panel interactive" id="info-panel">
-            </div>
-        
-        <div class="upcoming-panel" id="upcoming-panel">
-            <div class="upcoming-title">Közelgő Szülinapok</div>
-            <ul class="upcoming-list" id="upcoming-list">
-                </ul>
-        </div>
-        
-        <div class="birthday-notification breathe" id="birthday-notification">
-            <span class="birthday-emoji">🎉</span>
-            <div class="birthday-title" id="birthday-title">Boldog Szülinapot</div>
-            <div class="birthday-name" id="birthday-name"></div>
-        </div>
-    </div>
-    
-    <div class="progress-line">
-        <div class="progress-fill" id="progress-fill"></div>
+    <div class="overlay">
+        <div id="clock" class="clock" style="display: none;"></div>
+        <div id="info-container" class="info-container"></div>
+        <div id="birthday-container" class="birthday-container"></div>
+        <div id="upcoming-birthdays-container" class="upcoming-birthdays-container"></div>
     </div>
 </div>
 {% endblock %}

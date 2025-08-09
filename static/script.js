@@ -1,4 +1,4 @@
-// static/script.js
+// static/script.js - JAVÍTOTT VERZIÓ
 
 let config = {};
 let imageList = [];
@@ -7,7 +7,7 @@ let isPaused = false;
 let currentAmbientTheme = 'none';
 let currentEventTheme = 'none';
 
-// DOM elemek - BIZTONSÁGOS lekérdezés
+// DOM elemek
 const currentImageDiv = document.getElementById('current-image');
 const nextImageDiv = document.getElementById('next-image');
 const clockDiv = document.getElementById('clock');
@@ -17,59 +17,59 @@ const currentBackgroundDiv = document.getElementById('current-background');
 const nextBackgroundDiv = document.getElementById('next-background');
 const upcomingBirthdaysContainer = document.getElementById('upcoming-birthdays-container');
 
-// ÚJ: Intelligens blur számítás
-function calculateOptimalBlur(imageObject) {
-    const peopleCount = imageObject.people ? imageObject.people.length : 0;
-    const baseBlur = config.slideshow?.blur_strength || 35;
-    
-    // Ha sok ember van a képen, kevesebb blur a háttérben
-    const adjustedBlur = Math.max(25, baseBlur - (peopleCount * 3));
-    
-    return adjustedBlur;
-}
-
 async function initializeApp() {
     try {
         const [configRes, imageListRes] = await Promise.all([ fetch('/config'), fetch('/imagelist') ]);
         config = await configRes.json();
         imageList = await imageListRes.json();
         
+        // JAVÍTÁS: Inicializáljuk az órát és a közelgő születésnapokat rögtön az elején
+        initializeClock();
         await checkBirthdays();
         await updateUpcomingBirthdays();
         await updateTheme();
 
-        const transitionSpeed = (config.transition_speed || 2000) / 1000;
-        if (currentImageDiv) currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
-        if (nextImageDiv) nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
-        if (currentBackgroundDiv) currentBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
-        if (nextBackgroundDiv) nextBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
+        const transitionSpeed = (config.transition_speed || 1500) / 1000;
+        currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
+        nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
+        currentBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
+        nextBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
 
-        if (clockDiv) {
-            if (config.enable_clock) {
-                clockDiv.style.display = 'block';
-                clockDiv.style.fontSize = config.clock_size || '2.5rem';
-            } else {
-                clockDiv.style.display = 'none';
-            }
-        }
         startSlideshow();
-    } catch (error) { console.error("Hiba az alkalmazás inicializálása során:", error); }
+    } catch (error) { 
+        console.error("Hiba az alkalmazás inicializálása során:", error); 
+    }
+}
+
+// JAVÍTÁS: Külön függvény az óra inicializálásához
+function initializeClock() {
+    console.log("Óra inicializálása...", config); // Debug log
+    
+    if (clockDiv) {
+        if (config.enable_clock) {
+            clockDiv.style.display = 'block';
+            clockDiv.style.fontSize = config.clock_size || '2.5rem';
+            console.log("Óra engedélyezve, méret:", config.clock_size); // Debug log
+            updateClock(); // Azonnal frissítjük
+        } else {
+            clockDiv.style.display = 'none';
+            console.log("Óra letiltva"); // Debug log
+        }
+    } else {
+        console.error("Clock div nem található! Ellenőrizd az index.html-t."); // Debug log
+    }
 }
 
 function startSlideshow() {
     if (imageList.length === 0) return;
-    if (!currentImageDiv || !currentBackgroundDiv) return; // Biztonsági ellenőrzés
-    
     currentIndex = 0;
     const initialImageObject = imageList[0];
     if (!initialImageObject) return;
     
     const initialImageUrl = `/static/images/${initialImageObject.file}`;
-    const initialBlur = calculateOptimalBlur(initialImageObject);
-    
     currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
     currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
-    currentBackgroundDiv.style.filter = `blur(${initialBlur}px) brightness(0.3) saturate(1.5) contrast(1.2)`;
+    currentBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
     currentImageDiv.classList.add('visible');
     currentBackgroundDiv.classList.add('visible');
     
@@ -79,7 +79,6 @@ function startSlideshow() {
 
 function showNextImage() {
     if (isPaused) { setTimeout(showNextImage, 1000); return; }
-    if (!currentImageDiv || !nextImageDiv || !currentBackgroundDiv || !nextBackgroundDiv) return;
 
     currentIndex = (currentIndex + 1) % imageList.length;
     const imageObject = imageList[currentIndex];
@@ -95,11 +94,8 @@ function showNextImage() {
     img.onload = () => {
         updateInfo(imageObject);
         
-        // FEJLESZTETT háttér blur számítás
-        const optimalBlur = calculateOptimalBlur(imageObject);
         nextBackgroundDiv.style.backgroundImage = `url('${imageUrl}')`;
-        nextBackgroundDiv.style.filter = `blur(${optimalBlur}px) brightness(0.3) saturate(1.5) contrast(1.2)`;
-        
+        nextBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
         nextImageDiv.style.backgroundImage = `url('${imageUrl}')`;
         nextImageDiv.style.filter = config.image_filter || 'none';
 
@@ -122,8 +118,7 @@ function showNextImage() {
         setTimeout(() => {
             currentImageDiv.style.backgroundImage = nextImageDiv.style.backgroundImage;
             currentBackgroundDiv.style.backgroundImage = nextBackgroundDiv.style.backgroundImage;
-            currentBackgroundDiv.style.filter = nextBackgroundDiv.style.filter;
-        }, config.transition_speed || 2000);
+        }, config.transition_speed || 1500);
         
         setTimeout(showNextImage, config.interval || 10000);
     };
@@ -183,47 +178,50 @@ function applyTheme(theme) {
 
 function applyAmbientTheme(themeName) {
     // A napszak témák a skyThemeContainer-t használják, nem törlik a többit
-    const skyThemeContainer = document.getElementById('sky-theme-container');
     if (skyThemeContainer) skyThemeContainer.innerHTML = '';
     
     switch (themeName) {
-        case 'sunrise': if (typeof startSunriseTheme === 'function') startSunriseTheme(); break;
-        case 'daytime': if (typeof startDaytimeTheme === 'function') startDaytimeTheme(); break;
-        case 'sunset': if (typeof startSunsetTheme === 'function') startSunsetTheme(); break;
-        case 'night': if (typeof startNightTheme === 'function') startNightTheme(); break;
+        case 'sunrise': startSunriseTheme(); break;
+        case 'daytime': startDaytimeTheme(); break;
+        case 'sunset': startSunsetTheme(); break;
+        case 'night': startNightTheme(); break;
         default: break;
     }
 }
 
 function updateInfo(imageObject) {
-    if (!infoContainer) return; // Biztonsági ellenőrzés
+    if (!infoContainer) {
+        console.error("Info container nem található!");
+        return;
+    }
     
     let infoText = '';
-    if (imageObject.people && imageObject.people.length > 0) { 
-        infoText += imageObject.people.join(' & '); 
-    }
-    if (imageObject.date) { 
-        infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date); 
-    }
-    
+    if (imageObject.people && imageObject.people.length > 0) { infoText += imageObject.people.join(' & '); }
+    if (imageObject.date) { infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date); }
     infoContainer.textContent = infoText;
     infoContainer.classList.add('visible');
-    setTimeout(() => { 
-        if (infoContainer) infoContainer.classList.remove('visible'); 
-    }, (config.interval || 10000) - (config.transition_speed || 2000));
+    setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
 }
 
 async function checkBirthdays() {
-    if (!birthdayContainer) return; // Biztonsági ellenőrzés
+    if (!birthdayContainer) {
+        console.error("Birthday container nem található!");
+        return;
+    }
     
     try {
         const response = await fetch('/api/birthday_info');
         const birthdayData = await response.json();
+        
+        console.log("Születésnap adat:", birthdayData); // Debug log
+        
         if (birthdayData && birthdayData.name) {
             birthdayContainer.innerHTML = `${birthdayData.message}<br><span class="birthday-name">${birthdayData.name} (${birthdayData.age})</span>`;
             birthdayContainer.classList.add('visible');
+            console.log("Születésnap megjelenítve"); // Debug log
         } else {
             birthdayContainer.classList.remove('visible');
+            console.log("Nincs mai születésnap"); // Debug log
         }
     } catch (error) { 
         console.error("Hiba a születésnapok lekérdezésekor:", error); 
@@ -231,15 +229,32 @@ async function checkBirthdays() {
 }
 
 async function updateUpcomingBirthdays() {
-    if (!upcomingBirthdaysContainer) return; // Biztonsági ellenőrzés
+    if (!upcomingBirthdaysContainer) {
+        console.error("Upcoming birthdays container nem található!");
+        return;
+    }
+    
+    console.log("Közelgő születésnapok frissítése..."); // Debug log
+    
+    // JAVÍTÁS: Ellenőrizzük, hogy a config már betöltődött-e
+    if (!config.hasOwnProperty('show_upcoming_birthdays')) {
+        console.log("Config még nem töltődött be, várakozás..."); // Debug log
+        setTimeout(updateUpcomingBirthdays, 1000);
+        return;
+    }
     
     if (config.show_upcoming_birthdays === false) {
         upcomingBirthdaysContainer.innerHTML = '';
+        console.log("Közelgő születésnapok letiltva"); // Debug log
         return;
     }
+    
     try {
         const response = await fetch('/api/upcoming_birthdays');
         const upcoming = await response.json();
+        
+        console.log("Közelgő születésnapok:", upcoming); // Debug log
+        
         if (upcoming.length > 0) {
             let html = '<h5>Közelgő Szülinapok</h5><ul>';
             upcoming.forEach(person => {
@@ -248,8 +263,10 @@ async function updateUpcomingBirthdays() {
             });
             html += '</ul>';
             upcomingBirthdaysContainer.innerHTML = html;
+            console.log("Közelgő születésnapok megjelenítve"); // Debug log
         } else {
             upcomingBirthdaysContainer.innerHTML = '';
+            console.log("Nincs közelgő születésnap"); // Debug log
         }
     } catch (error) {
         console.error("Hiba a közelgő születésnapok lekérdezésekor:", error);
@@ -262,22 +279,28 @@ function updateClock() {
         const timeString = now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
         const dateString = now.toLocaleDateString('hu-HU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
         clockDiv.innerHTML = `${timeString}<br><span class="date">${dateString}</span>`;
+    } else if (!clockDiv) {
+        console.error("Clock div nem található az updateClock függvényben!");
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM betöltődött, alkalmazás indítása..."); // Debug log
+    
     initializeApp();
+    
+    // JAVÍTÁS: Az óra frissítését azonnal elindítjuk
+    updateClock();
     setInterval(updateClock, 1000);
-    setInterval(checkBirthdays, 3600000); 
-    setInterval(updateUpcomingBirthdays, 6 * 3600000); 
+    
+    // JAVÍTÁS: Gyakrabban ellenőrizzük a születésnapokat
+    setInterval(checkBirthdays, 1800000); // 30 perc
+    setInterval(updateUpcomingBirthdays, 3600000); // 1 óra
     setInterval(updateTheme, 60000);
 
-    // Socket.IO kapcsolat - ellenőrzéssel
-    if (typeof io !== 'undefined') {
-        const socket = io();
-        socket.on('reload_clients', (data) => {
-            console.log('FRISSÍTÉSI PARANCS FOGADVA:', data.message);
-            location.reload(true);
-        });
-    }
+    const socket = io();
+    socket.on('reload_clients', (data) => {
+        console.log('FRISSÍTÉSI PARANCS FOGADVA:', data.message);
+        location.reload(true);
+    });
 });

@@ -28,32 +28,7 @@
 .theme-eggs .egg { position: absolute; width: 30px; height: 40px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; animation: egg-fall linear infinite; }
 @keyframes egg-fall { 0% { transform: translateY(-10vh) rotate(-15deg); } 100% { transform: translateY(110vh) rotate(15deg); } }
 
-.theme-rain .streak {
-    position: absolute;
-    width: 2px;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.25));
-    animation-name: streak-fall;
-    animation-timing-function: cubic-bezier(0.4, 0, 1, 1); /* Gyorsuló mozgás */
-    animation-iteration-count: infinite;
-}
-@keyframes streak-fall {
-    0% { transform: translateY(-20vh) translateX(var(--x-start)); }
-    100% { transform: translateY(120vh) translateX(var(--x-end)); }
-}
-.theme-rain .splat {
-    position: absolute;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 50%;
-    transform: scale(0);
-    animation: splat-pop 3s ease-out infinite;
-    backdrop-filter: blur(1px) brightness(0.9);
-}
-@keyframes splat-pop {
-    0% { transform: scale(0); opacity: 1; }
-    5% { transform: scale(1); }
-    80% { opacity: 0.1; }
-    100% { opacity: 0; }
-}
+/* RÉGI ESŐ TÉMÁK ELTÁVOLÍTVA - Most az élethű canvas-alapú eső van használatban */
 
 .theme-clear .sunbeam { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle at center, rgba(255, 255, 220, 0.15) 0%, rgba(255, 255, 220, 0) 40%); animation: sun-rotate 60s linear infinite; }
 @keyframes sun-rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -95,7 +70,7 @@
     background-color: white;
     border-radius: 50%;
     animation: twinkle 5s infinite;
-    top: calc(var(--y, 0) * 100%); /* Teljes képernyőn jelenjenek meg */
+    top: calc(var(--y, 0) * 100%);
     left: calc(var(--x, 0) * 100%);
 }
 

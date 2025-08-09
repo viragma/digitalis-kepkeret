@@ -1,221 +1,102 @@
 /* static/style.css */
-html, body { 
-    margin: 0; 
-    padding: 0; 
-    width: 100%; 
-    height: 100%; 
-    overflow: hidden; 
-    background-color: #000; 
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
-}
+html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background-color: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
 
-/* ÚJ: A vászon stílusa */
+/* MÓDOSÍTOTT RÉSZ - ÚJ ESŐ VÁSZON */
 #rain-canvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 4; /* Legfelső réteg, hogy a cseppek mindenen rajta legyenek */
-    pointer-events: none; /* Ne zavarja a kattintást, ha később lesz távirányító */
+    z-index: 5; /* Magasabb z-index */
+    pointer-events: none;
+    opacity: 0.9; /* Enyhe átlátszóság a realisztikusság érdekében */
 }
 
-/* FEJLESZTETT Háttérkép rétegek */
-.background-layer { 
-    position: fixed; 
-    top: -60px; 
-    left: -60px; 
-    width: calc(100% + 120px); 
-    height: calc(100% + 120px); 
-    background-size: cover; 
-    background-position: center center; 
-    opacity: 0; 
-    transition: opacity 2s ease-in-out; 
-    z-index: 0;
-    /* FEJLESZTETT blur és színkorrekció */
-    filter: blur(35px) brightness(0.3) saturate(1.5) contrast(1.2);
-}
-
-.background-layer.visible, .image.visible { 
-    opacity: 1; 
-}
-
-/* FEJLESZTETT gradiens overlay a háttéren */
-.background-layer::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(ellipse at 30% 70%, rgba(0,0,0,0.1) 0%, transparent 50%),
-        linear-gradient(135deg, 
-            rgba(0,0,0,0.05) 0%, 
-            rgba(0,0,0,0.2) 30%,
-            rgba(0,0,0,0.3) 70%,
-            rgba(0,0,0,0.5) 100%
-        );
-}
+/* Háttérkép rétegek */
+.background-layer { position: fixed; top: -20px; left: -20px; width: calc(100% + 40px); height: calc(100% + 40px); background-size: cover; background-position: center center; opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 0; }
+.background-layer.visible, .image.visible { opacity: 1; }
 
 /* Vetítő konténer */
-.slideshow-container { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    z-index: 1; 
-}
+.slideshow-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.image-wrapper, .image { position: absolute; width: 100%; height: 100%; }
+.image { background-size: contain; background-position: center center; background-repeat: no-repeat; opacity: 0; transition: opacity 1.5s ease-in-out; transform: scale(1.0); }
+.image.ken-burns { animation-name: kenburns; animation-timing-function: linear; animation-iteration-count: 1; animation-direction: normal; animation-fill-mode: forwards; }
+@keyframes kenburns { 0% { transform: scale(1.0); } 100% { transform: scale(1.2); } }
 
-.image-wrapper, .image { 
-    position: absolute; 
-    width: 100%; 
-    height: 100%; 
-}
+/* Átfedő rétegek */
+.vignette, .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.vignette { box-shadow: inset 0 0 150px rgba(0,0,0,0.8); }
+.overlay { background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0) 80%, rgba(0,0,0,0.5) 100%); color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
 
-.image { 
-    background-size: contain; /* FONTOS: contain, hogy minden részlet látható legyen */
-    background-position: center center; 
-    background-repeat: no-repeat; 
-    opacity: 0; 
-    transition: opacity 2s ease-in-out; 
-    transform: scale(1.0); 
-}
-
-.image.ken-burns { 
-    animation-name: kenburns; 
-    animation-timing-function: linear; 
-    animation-iteration-count: 1; 
-    animation-direction: normal; 
-    animation-fill-mode: forwards; 
-}
-
-@keyframes kenburns { 
-    0% { transform: scale(1.0); } 
-    100% { transform: scale(1.15); } 
-}
-
-/* FEJLESZTETT Átfedő rétegek */
-.vignette, .overlay { 
-    position: absolute; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    z-index: 1; 
-}
-
-.vignette { 
-    box-shadow: inset 0 0 200px rgba(0,0,0,0.6); 
-}
-
-.overlay { 
-    background: linear-gradient(to top, 
-        rgba(0,0,0,0.7) 0%, 
-        rgba(0,0,0,0) 40%, 
-        rgba(0,0,0,0) 80%, 
-        rgba(0,0,0,0.5) 100%
-    ); 
-    color: white; 
-    text-shadow: 0 3px 6px rgba(0,0,0,0.8); 
-}
-
-/* FEJLESZTETT Információs elemek */
+/* Információs elemek - MÓDOSÍTOTT RÉSZ */
 .clock, .info-container, .birthday-container, .upcoming-birthdays-container { 
-    z-index: 2; 
+    z-index: 10; /* Magasabb z-index */
     position: absolute; 
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8); /* Erősebb árnyék */
 }
 
 .clock { 
-    top: 40px; 
-    left: 40px; 
+    top: 30px; 
+    left: 30px; 
     font-size: 2.5rem; 
-    font-weight: 200; 
-    line-height: 1.1;
-    background: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(15px);
-    padding: 20px 30px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    font-weight: 300; 
+    line-height: 1.2; 
+    background: rgba(0,0,0,0.3); /* Háttér az átláthatóság érdekében */
+    padding: 10px 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .clock .date { 
-    font-size: 0.4em; 
-    font-weight: 300;
-    opacity: 0.8;
-    margin-top: 8px;
-    display: block;
+    font-size: 0.5em; 
+    font-weight: 400; 
 }
 
 .info-container { 
-    bottom: 40px; 
-    left: 40px; 
-    font-size: 1.6rem;
-    font-weight: 300;
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(15px);
-    padding: 16px 24px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    max-width: 60%;
+    bottom: 30px; 
+    left: 30px; 
+    font-size: 1.5rem; 
+    background: rgba(0,0,0,0.3);
+    padding: 10px 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
 }
 
-.birthday-container { 
-    bottom: 40px; 
-    right: 40px; 
+.birthday-container {
+    bottom: 30px; 
+    right: 30px; 
     text-align: right; 
     font-size: 1.8rem; 
     color: #ffdd57;
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(15px);
-    padding: 20px 30px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 193, 7, 0.3);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-}
-
-.info-container, .birthday-container { 
-    opacity: 0; 
-    transition: opacity 0.8s ease-in-out; 
-}
-
-.info-container.visible, .birthday-container.visible { 
-    opacity: 1; 
-}
-
-.birthday-name { 
-    font-size: 0.75em; 
-    font-weight: 600;
-    margin-top: 8px;
-    display: block;
+    background: rgba(0,0,0,0.4);
+    padding: 15px 20px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    border: 2px solid #ffdd57;
 }
 
 .upcoming-birthdays-container { 
     position: absolute; 
-    top: 40px; 
-    right: 40px; 
+    top: 30px; /* Ugyanolyan magasságban mint az óra */
+    right: 30px; 
     text-align: right; 
-    font-size: 1.4rem; 
-    line-height: 1.5; 
-    max-width: 320px;
-    background: rgba(0, 0, 0, 0.25);
-    backdrop-filter: blur(15px);
-    padding: 20px 24px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    font-size: 1.2rem; /* Kisebb betűméret */
+    line-height: 1.4; 
+    max-width: 300px; 
+    background: rgba(0,0,0,0.3); /* Háttér */
+    padding: 10px 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
 }
 
 .upcoming-birthdays-container h5 { 
-    font-weight: 500; 
-    margin-bottom: 15px; 
-    font-size: 1.1em; 
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
-    padding-bottom: 10px;
-    color: #ffc107;
+    font-weight: bold; 
+    margin-bottom: 0.5rem; 
+    font-size: 1.1rem; 
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3); 
+    padding-bottom: 0.3rem; 
 }
 
 .upcoming-birthdays-container ul { 
@@ -225,13 +106,9 @@ html, body {
 }
 
 .upcoming-birthdays-container li {
-    margin-bottom: 8px;
-    opacity: 0.9;
-    padding: 4px 0;
-    transition: all 0.3s ease;
+    margin-bottom: 0.3rem;
 }
 
-.upcoming-birthdays-container li:hover {
-    opacity: 1;
-    transform: translateX(-4px);
-}
+.info-container, .birthday-container { opacity: 0; transition: opacity 0.5s ease-in-out; }
+.info-container.visible, .birthday-container.visible { opacity: 1; }
+.birthday-name { font-size: 0.8em; font-weight: bold; }
