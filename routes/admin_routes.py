@@ -88,6 +88,11 @@ def save_config_route():
     slideshow_config['birthday_message'] = request.form.get('birthday_message', 'Boldog Születésnapot!')
     slideshow_config['show_upcoming_birthdays'] = 'show_upcoming_birthdays' in request.form
     slideshow_config['upcoming_days_limit'] = int(request.form.get('upcoming_days_limit', 30))
+    slideshow_config['parallax_duration'] = int(request.form.get('parallax_duration', 25))
+    slideshow_config['info_panel_duration_ratio'] = int(request.form.get('info_panel_duration_ratio', 50))
+    slideshow_config['upcoming_panel_duration'] = int(request.form.get('upcoming_panel_duration', 12))
+    slideshow_config['birthday_notification_duration'] = int(request.form.get('birthday_notification_duration', 8))
+
     
     # ÚJ: Tolerancia mentése
     slideshow_config['recognition_tolerance'] = float(request.form.get('recognition_tolerance', 0.6))

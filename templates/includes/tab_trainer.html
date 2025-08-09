@@ -14,26 +14,22 @@
                 <div class="row mb-4">
                     <div class="col-md-4 text-center">
                         <h5>A Modell "Fantomképe"</h5>
-                        <div id="trainer-average-face" class="mb-2" style="width: 200px; height: 200px; background-color: #333; margin: auto; border-radius: 5px;">
-                            </div>
+                        <div id="trainer-average-face" class="mb-2" style="width: 200px; height: 200px; background-color: #333; margin: auto; border-radius: 5px;"></div>
                     </div>
                     <div class="col-md-8">
                         <h5>Javaslatok a Pontosság Javításához</h5>
-                        <ul id="trainer-suggestions" class="list-group">
-                            </ul>
+                        <ul id="trainer-suggestions" class="list-group"></ul>
                     </div>
                 </div>
 
                 <h5>Jelenlegi Tanítóképek</h5>
-                <div id="trainer-known-faces-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
-                    </div>
+                <div id="trainer-known-faces-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3"></div>
 
-                <hr>
+                <hr class="my-4">
 
                 <h5>Új Tanítóképek Hozzáadása (Javaslatok)</h5>
-                <p class="text-muted">A rendszer által felismert, jó minőségű, általad megerősített arcok. Kattints egyre, hogy hozzáadd a tanítóképekhez.</p>
-                <div id="trainer-new-faces-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3">
-                    </div>
+                <p class="text-muted">A rendszer által felismert, jó minőségű, általad megerősített arcok. Kattints a <button class="btn btn-sm btn-success py-0 px-1"><i class="bi bi-plus-lg"></i></button> gombra, hogy hozzáadd a tanítóképekhez.</p>
+                <div id="trainer-new-faces-grid" class="row row-cols-2 row-cols-sm-3 row-cols-md-4 row-cols-lg-5 g-3"></div>
             </div>
 
             <div id="trainer-welcome-message" class="text-center p-5">
@@ -51,6 +47,17 @@
             <div class="card-footer text-center p-1">
                 <small class="quality-info"></small>
                 <button class="btn btn-sm btn-outline-danger float-end delete-known-btn" title="Tanítókép törlése">🗑️</button>
+            </div>
+        </div>
+    </div>
+</template>
+
+<template id="trainer-suggestion-card-template">
+    <div class="col">
+        <div class="card face-card">
+            <img src="" class="card-img-top">
+            <div class="card-img-overlay d-flex p-1">
+                <button class="btn btn-sm btn-success ms-auto add-new-training-btn" title="Hozzáadás a tanítóképekhez">+</button>
             </div>
         </div>
     </div>

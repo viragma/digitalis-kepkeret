@@ -26,7 +26,11 @@
         "show_upcoming_birthdays": true,
         "upcoming_days_limit": 30,
         "recognition_tolerance": 0.5,
-        "clustering_tolerance": 0.6
+        "clustering_tolerance": 0.6,
+        "parallax_duration": 25,
+        "info_panel_duration_ratio": 50,
+        "upcoming_panel_duration": 12,
+        "birthday_notification_duration": 8
     },
     "themes": {
         "enabled": true,

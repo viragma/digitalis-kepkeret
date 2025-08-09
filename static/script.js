@@ -1,245 +1,262 @@
 // static/script.js
 
-let config = {};
-let imageList = [];
-let currentIndex = 0;
-let isPaused = false;
-let currentAmbientTheme = 'none';
-let currentEventTheme = 'none';
+document.addEventListener('DOMContentLoaded', () => {
+    let config = {};
+    let imageList = [];
+    let currentIndex = 0;
+    let slideInterval;
+    let startTime;
+    let currentAmbientTheme = 'none';
+    let currentEventTheme = 'none';
 
-// DOM elemek
-const currentImageDiv = document.getElementById('current-image');
-const nextImageDiv = document.getElementById('next-image');
-const clockDiv = document.getElementById('clock');
-const infoContainer = document.getElementById('info-container');
-const birthdayContainer = document.getElementById('birthday-container');
-const currentBackgroundDiv = document.getElementById('current-background');
-const nextBackgroundDiv = document.getElementById('next-background');
-const upcomingBirthdaysContainer = document.getElementById('upcoming-birthdays-container');
+    // DOM Elemek
+    const currentImage = document.getElementById('current-image');
+    const nextImage = document.getElementById('next-image');
+    const currentBackground = document.getElementById('current-background');
+    const nextBackground = document.getElementById('next-background');
+    const progressFill = document.getElementById('progress-fill');
+    const timeDisplay = document.getElementById('time-display');
+    const infoPanel = document.getElementById('info-panel');
+    const timeEl = document.getElementById('time');
+    const dateEl = document.getElementById('date');
+    const birthdayNotification = document.getElementById('birthday-notification');
+    const birthdayNameEl = document.getElementById('birthday-name');
+    const birthdayTitleEl = document.getElementById('birthday-title');
+    const upcomingPanel = document.getElementById('upcoming-panel');
+    const upcomingList = document.getElementById('upcoming-list');
+    
+    // --- FŐ INICIALIZÁLÓ FUNKCIÓ ---
+    async function initializeApp() {
+        try {
+            const [configRes, imageListRes] = await Promise.all([fetch('/config'), fetch('/imagelist')]);
+            config = await configRes.json();
+            imageList = await imageListRes.json();
+            
+            slideInterval = config.interval || 10000;
 
-
-async function initializeApp() {
-    try {
-        const [configRes, imageListRes] = await Promise.all([ fetch('/config'), fetch('/imagelist') ]);
-        config = await configRes.json();
-        imageList = await imageListRes.json();
-        
-        await checkBirthdays();
-        await updateUpcomingBirthdays();
-        await updateTheme();
-
-        const transitionSpeed = (config.transition_speed || 1500) / 1000;
-        currentImageDiv.style.transitionDuration = `${transitionSpeed}s`;
-        nextImageDiv.style.transitionDuration = `${transitionSpeed}s`;
-        currentBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
-        nextBackgroundDiv.style.transitionDuration = `${transitionSpeed}s`;
-
-        if (clockDiv) {
-            if (config.enable_clock) {
-                clockDiv.style.display = 'block';
-                clockDiv.style.fontSize = config.clock_size || '2.5rem';
-            } else {
-                clockDiv.style.display = 'none';
+            if (imageList.length > 0) {
+                preloadImages();
+                changeImage(true);
+                setInterval(changeImage, slideInterval);
             }
+
+            // UI frissítők
+            updateClock();
+            checkBirthdays();
+            updateUpcomingBirthdays();
+            updateTheme();
+            
+            setInterval(updateClock, 1000);
+            setInterval(updateProgress, 100);
+            setInterval(checkBirthdays, 3600000);
+            setInterval(updateUpcomingBirthdays, 1800000); // 30 percenként
+            setInterval(updateTheme, 60000);
+
+            timeDisplay.classList.add('visible'); // Óra mindig látszik
+        } catch (error) {
+            console.error("Hiba az alkalmazás inicializálása során:", error);
         }
-        startSlideshow();
-    } catch (error) { console.error("Hiba az alkalmazás inicializálása során:", error); }
-}
-
-function startSlideshow() {
-    if (imageList.length === 0) return;
-    currentIndex = 0;
-    const initialImageObject = imageList[0];
-    if (!initialImageObject) return;
-    
-    const initialImageUrl = `/static/images/${initialImageObject.file}`;
-    currentImageDiv.style.backgroundImage = `url('${initialImageUrl}')`;
-    currentBackgroundDiv.style.backgroundImage = `url('${initialImageUrl}')`;
-    currentBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
-    currentImageDiv.classList.add('visible');
-    currentBackgroundDiv.classList.add('visible');
-    
-    updateInfo(initialImageObject);
-    setTimeout(showNextImage, config.interval || 10000);
-}
-
-function showNextImage() {
-    if (isPaused) { setTimeout(showNextImage, 1000); return; }
-
-    currentIndex = (currentIndex + 1) % imageList.length;
-    const imageObject = imageList[currentIndex];
-    if (!imageObject) {
-        setTimeout(showNextImage, 100);
-        return;
     }
-    
-    const imageUrl = `/static/images/${imageObject.file}`;
-    
-    const img = new Image();
-    img.src = imageUrl;
-    img.onload = () => {
-        updateInfo(imageObject);
+
+    // --- KÉPKEZELÉS ---
+    function preloadImages() {
+        imageList.forEach(imgObject => {
+            const img = new Image();
+            img.src = `/static/images/${imgObject.file}`;
+        });
+    }
+
+    function changeImage(isFirst = false) {
+        if (imageList.length === 0) return;
         
-        nextBackgroundDiv.style.backgroundImage = `url('${imageUrl}')`;
-        nextBackgroundDiv.style.filter = `blur(${config.blur_strength || 20}px)`;
-        nextImageDiv.style.backgroundImage = `url('${imageUrl}')`;
-        nextImageDiv.style.filter = config.image_filter || 'none';
-
-        nextImageDiv.classList.remove('ken-burns');
-        if (config.zoom_enabled) {
-            nextImageDiv.style.animationDuration = (config.interval || 10000) + 'ms';
-            const origins = ['top left', 'top right', 'bottom left', 'bottom right', 'center center'];
-            const randomOrigin = origins[Math.floor(Math.random() * origins.length)];
-            nextImageDiv.style.transformOrigin = randomOrigin;
-            setTimeout(() => nextImageDiv.classList.add('ken-burns'), 50);
+        const nextIndex = isFirst ? 0 : (currentIndex + 1) % imageList.length;
+        const imageObject = imageList[nextIndex];
+        const imageUrl = `/static/images/${imageObject.file}`;
+        
+        // Háttér és fő kép beállítása
+        nextImage.style.backgroundImage = `url('${imageUrl}')`;
+        nextBackground.style.backgroundImage = `url('${imageUrl}')`;
+        nextBackground.style.filter = `blur(${config.blur_strength || 20}px)`;
+        
+        if (isFirst) {
+            currentImage.style.backgroundImage = `url('${imageUrl}')`;
+            currentBackground.style.backgroundImage = `url('${imageUrl}')`;
+            currentBackground.style.filter = `blur(${config.blur_strength || 20}px)`;
+            currentBackground.classList.add('visible');
         } else {
-            nextImageDiv.style.transform = `scale(1.0)`;
+            nextImage.classList.add('active');
+            currentImage.classList.remove('active');
+            nextBackground.classList.add('visible');
+            currentBackground.classList.remove('visible');
         }
-
-        currentImageDiv.classList.remove('visible');
-        nextImageDiv.classList.add('visible');
-        currentBackgroundDiv.classList.remove('visible');
-        nextBackgroundDiv.classList.add('visible');
         
         setTimeout(() => {
-            currentImageDiv.style.backgroundImage = nextImageDiv.style.backgroundImage;
-            currentBackgroundDiv.style.backgroundImage = nextBackgroundDiv.style.backgroundImage;
-        }, config.transition_speed || 1500);
-        
-        setTimeout(showNextImage, config.interval || 10000);
-    };
-    img.onerror = () => {
-        console.error("Hiba a kép betöltésekor:", imageUrl);
-        setTimeout(showNextImage, 100); 
-    };
-}
+            currentImage.style.backgroundImage = nextImage.style.backgroundImage;
+            currentBackground.style.backgroundImage = nextBackground.style.backgroundImage;
+            currentImage.classList.add('active');
+            nextImage.classList.remove('active');
+            currentBackground.classList.add('visible');
+            nextBackground.classList.remove('visible');
+            currentIndex = nextIndex;
+            updateInfoPanel(imageObject);
+        }, isFirst ? 0 : 3000);
 
-async function updateTheme() {
-    try {
-        const response = await fetch('/api/active_theme');
-        const themes = await response.json();
-
-        if (themes.event_theme.name !== currentEventTheme) {
-            console.log(`Esemény téma váltás: ${currentEventTheme} -> ${themes.event_theme.name}`);
-            currentEventTheme = themes.event_theme.name;
-            applyTheme(themes.event_theme);
-        }
-
-        if (themes.ambient_theme !== currentAmbientTheme) {
-            console.log(`Napszak téma váltás: ${currentAmbientTheme} -> ${themes.ambient_theme}`);
-            currentAmbientTheme = themes.ambient_theme;
-            applyAmbientTheme(themes.ambient_theme);
-        }
-
-    } catch (error) {
-        console.error("Hiba a téma frissítésekor:", error);
+        startTime = Date.now();
     }
-}
 
-function applyTheme(theme) {
-    stopAllThemes();
-    switch (theme.name) {
-        case 'birthday':
-            if (theme.settings.animation === 'confetti') startConfettiTheme();
-            else if (theme.settings.animation === 'balloons') startBalloonsTheme();
-            break;
-        case 'christmas':
-            if (theme.settings.animation === 'snow') startSnowTheme();
-            break;
-        case 'new_year_eve':
-            if (theme.settings.animation === 'fireworks') startFireworksTheme();
-            break;
-        case 'easter':
-            if (theme.settings.animation === 'eggs') startEasterTheme();
-            break;
-        case 'rain': case 'drizzle': startRainTheme(); break;
-        case 'snow': startSnowTheme(); break;
-        case 'clear': startClearTheme(); break;
-        case 'clouds': startCloudsTheme(); break;
-        case 'atmosphere': startAtmosphereTheme(); break;
-        case 'thunderstorm': startThunderstormTheme(); break;
-        case 'none': default: break;
-    }
-}
-
-function applyAmbientTheme(themeName) {
-    // A napszak témák a skyThemeContainer-t használják, nem törlik a többit
-    if (skyThemeContainer) skyThemeContainer.innerHTML = '';
-    
-    switch (themeName) {
-        case 'sunrise': startSunriseTheme(); break;
-        case 'daytime': startDaytimeTheme(); break;
-        case 'sunset': startSunsetTheme(); break;
-        case 'night': startNightTheme(); break;
-        default: break;
-    }
-}
-
-function updateInfo(imageObject) {
-    let infoText = '';
-    if (imageObject.people && imageObject.people.length > 0) { infoText += imageObject.people.join(' & '); }
-    if (imageObject.date) { infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date); }
-    infoContainer.textContent = infoText;
-    infoContainer.classList.add('visible');
-    setTimeout(() => { infoContainer.classList.remove('visible'); }, (config.interval || 10000) - (config.transition_speed || 1500));
-}
-
-async function checkBirthdays() {
-    try {
-        const response = await fetch('/api/birthday_info');
-        const birthdayData = await response.json();
-        if (birthdayData && birthdayData.name) {
-            birthdayContainer.innerHTML = `${birthdayData.message}<br><span class="birthday-name">${birthdayData.name} (${birthdayData.age})</span>`;
-            birthdayContainer.classList.add('visible');
-        } else {
-            birthdayContainer.classList.remove('visible');
-        }
-    } catch (error) { console.error("Hiba a születésnapok lekérdezésekor:", error); }
-}
-
-async function updateUpcomingBirthdays() {
-    if (config.show_upcoming_birthdays === false) {
-        if (upcomingBirthdaysContainer) upcomingBirthdaysContainer.innerHTML = '';
-        return;
-    }
-    try {
-        const response = await fetch('/api/upcoming_birthdays');
-        const upcoming = await response.json();
-        if (upcoming.length > 0) {
-            let html = '<h5>Közelgő Szülinapok</h5><ul>';
-            upcoming.forEach(person => {
-                let dayText = person.days_left === 0 ? 'Ma!' : (person.days_left === 1 ? 'Holnap!' : `${person.days_left} nap múlva`);
-                html += `<li>🎂 ${person.name} - ${dayText}</li>`;
-            });
-            html += '</ul>';
-            upcomingBirthdaysContainer.innerHTML = html;
-        } else {
-            upcomingBirthdaysContainer.innerHTML = '';
-        }
-    } catch (error) {
-        console.error("Hiba a közelgő születésnapok lekérdezésekor:", error);
-    }
-}
-
-function updateClock() {
-    if (config.enable_clock && clockDiv) {
+    // --- UI FRISSÍTŐ FUNKCIÓK ---
+    function updateClock() {
         const now = new Date();
-        const timeString = now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit' });
-        const dateString = now.toLocaleDateString('hu-HU', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        clockDiv.innerHTML = `${timeString}<br><span class="date">${dateString}</span>`;
+        const timeString = now.toLocaleTimeString('hu-HU', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const dateString = now.toLocaleDateString('hu-HU', { month: 'long', day: 'numeric', weekday: 'long' });
+        timeEl.textContent = timeString;
+        dateEl.textContent = dateString;
     }
-}
 
-document.addEventListener('DOMContentLoaded', () => {
+    function updateProgress() {
+        if (!startTime) return;
+        const elapsed = Date.now() - startTime;
+        const progress = (elapsed / slideInterval) * 100;
+        progressFill.style.width = `${Math.min(progress, 100)}%`;
+        if (progress >= 100) {
+            progressFill.style.transition = 'none';
+            progressFill.style.width = '0%';
+            setTimeout(() => {
+                progressFill.style.transition = 'width 0.1s linear';
+            }, 50);
+        }
+    }
+    
+    function updateInfoPanel(imageObject) {
+        let infoText = '';
+        if (imageObject.people && imageObject.people.length > 0) infoText += imageObject.people.join(' & ');
+        if (imageObject.date) infoText += (infoText ? ` - ${imageObject.date}` : imageObject.date);
+        infoPanel.textContent = infoText;
+        
+        infoPanel.classList.add('visible');
+        setTimeout(() => {
+            infoPanel.classList.remove('visible');
+        }, (slideInterval * (config.info_panel_duration_ratio || 50)) / 100);
+    }
+
+    async function checkBirthdays() {
+        try {
+            const response = await fetch('/api/birthday_info');
+            const birthdayData = await response.json();
+            if (birthdayData && birthdayData.name) {
+                showBirthdayNotification(birthdayData);
+            }
+        } catch (error) { console.error("Hiba a születésnapok lekérdezésekor:", error); }
+    }
+
+    async function updateUpcomingBirthdays() {
+        if (!config.show_upcoming_birthdays) {
+            upcomingList.innerHTML = ''; return;
+        }
+        try {
+            const response = await fetch('/api/upcoming_birthdays');
+            const upcoming = await response.json();
+            upcomingList.innerHTML = '';
+            if (upcoming.length > 0) {
+                upcoming.forEach(person => {
+                    const li = document.createElement('li');
+                    li.className = 'upcoming-item';
+                    let dayText = person.days_left === 0 ? 'Ma!' : (person.days_left === 1 ? 'Holnap!' : `${person.days_left} nap múlva`);
+                    li.textContent = `${person.name} - ${dayText}`;
+                    upcomingList.appendChild(li);
+                });
+                showUpcomingPanel();
+            }
+        } catch (error) { console.error("Hiba a közelgő születésnapok lekérdezésekor:", error); }
+    }
+
+    function showUpcomingPanel() {
+        if(upcomingList.children.length === 0) return;
+        upcomingPanel.classList.add('slide-in');
+        setTimeout(() => {
+            upcomingPanel.classList.remove('slide-in');
+        }, (config.upcoming_panel_duration || 12) * 1000);
+    }
+
+    function showBirthdayNotification(birthdayData) {
+        birthdayTitleEl.textContent = birthdayData.message;
+        birthdayNameEl.textContent = `${birthdayData.name} (${birthdayData.age})`;
+        birthdayNotification.classList.add('show');
+        setTimeout(() => {
+            birthdayNotification.classList.remove('show');
+        }, (config.birthday_notification_duration || 8) * 1000);
+    }
+
+    // --- TÉMA MOTOR ---
+    async function updateTheme() {
+        try {
+            const response = await fetch('/api/active_theme');
+            const themes = await response.json();
+
+            if (themes.event_theme.name !== currentEventTheme) {
+                currentEventTheme = themes.event_theme.name;
+                applyEventTheme(themes.event_theme);
+            }
+
+            if (themes.ambient_theme !== currentAmbientTheme) {
+                currentAmbientTheme = themes.ambient_theme;
+                applyAmbientTheme(themes.ambient_theme);
+            }
+        } catch (error) {
+            console.error("Hiba a téma frissítésekor:", error);
+        }
+    }    
+    function applyEventTheme(theme) {
+        if (typeof stopAllThemes === 'function') stopAllThemes();
+        switch (theme.name) {
+            case 'birthday':
+                if (theme.settings.animation === 'confetti') startConfettiTheme();
+                else if (theme.settings.animation === 'balloons') startBalloonsTheme();
+                break;
+            case 'christmas':
+                if (theme.settings.animation === 'snow') startSnowTheme();
+                break;
+            case 'new_year_eve':
+                if (theme.settings.animation === 'fireworks') startFireworksTheme();
+                break;
+            case 'easter':
+                if (theme.settings.animation === 'eggs') startEasterTheme();
+                break;
+            case 'rain':
+            case 'drizzle':
+                startRainTheme();
+                break;
+            case 'snow':
+                startSnowTheme();
+                break;
+            case 'clear':
+                startClearTheme();
+                break;
+            case 'clouds':
+                startCloudsTheme();
+                break;
+            case 'atmosphere':
+                startAtmosphereTheme();
+                break;
+            case 'thunderstorm':
+                startThunderstormTheme();
+                break;
+            case 'none':
+            default:
+                break;
+        }
+    }
+
+    function applyAmbientTheme(themeName) {
+        if (skyThemeContainer) skyThemeContainer.innerHTML = '';
+        switch (themeName) {
+            case 'sunrise': startSunriseTheme(); break;
+            case 'daytime': startDaytimeTheme(); break;
+            case 'sunset': startSunsetTheme(); break;
+            case 'night': startNightTheme(); break;
+        }
+    }
+
+    // Indítás
     initializeApp();
-    setInterval(updateClock, 1000);
-    setInterval(checkBirthdays, 3600000); 
-    setInterval(updateUpcomingBirthdays, 6 * 3600000); 
-    setInterval(updateTheme, 60000);
-
-    const socket = io();
-    socket.on('reload_clients', (data) => {
-        console.log('FRISSÍTÉSI PARANCS FOGADVA:', data.message);
-        location.reload(true);
-    });
 });
