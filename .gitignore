@@ -3,3 +3,13 @@ venv/
 
 # Python cache
 __pycache__/
+
+# Képek mappa és tartalma
+images/
+
+# Általános képformátumok
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
